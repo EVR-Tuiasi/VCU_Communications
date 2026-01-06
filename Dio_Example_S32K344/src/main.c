@@ -83,9 +83,9 @@ int main(void)
 	Mcl_Init(NULL_PTR);
 	Port_Init(NULL_PTR);
 	Platform_Init(NULL_PTR);
-	//Uart_Init(NULL_PTR);
 	Can_43_FLEXCAN_Init(NULL_PTR);
 	CanIf_Init(NULL_PTR);
+	Uart_Init(NULL_PTR);
 
 	Dio_WriteChannel(32, STD_HIGH); //CAN3_EN
 	volatile uint64 i = 1000000;
@@ -109,13 +109,10 @@ int main(void)
 	pduInfo.sdu=dataDeTrimis;
 	pduInfo.id=CAN_TARGET_ID | 0x80000000U;
 	while(1){
+		Uart_SyncReceive(UART_Channel, pduInfo.sdu, 8, 10000000);
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 		i=400000;
 		while(i--);
-		/*while(1){
-			unsigned int len=sizeof(dataTrimisa)/sizeof(uint8);
-			Uart_SyncSend(UART_Channel, dataTrimisa, len, 50000000);
-		}*/
 	}
     return (0U);
 }
