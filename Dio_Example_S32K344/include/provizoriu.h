@@ -29,6 +29,57 @@
 #define INVERTERS_MOTORS_TEMPERATURE 22
 #define ERROR 100
 
+struct dateInvertoare{
+	struct{
+		uint8 tmpMotor;
+		uint8 tmpInvertor;
+		uint8 throttleSignalFeedback;
+		uint16 curent;
+		uint16 rpm;
+		uint16 tensiune;
+	}st;
+	struct{
+		uint8 tmpMotor;
+		uint8 tmpInvertor;
+		uint8 throttleSignalFeedback;
+		uint16 curent;
+		uint16 rpm;
+		uint16 tensiune;
+	}dr;
+};
+
+struct dateFrana{
+	uint8 presiune;
+	uint16 tensiuneSenzorPresiune;
+	uint16 tensiune2;
+	uint16 tensiune1;
+	uint8 cursa2;
+	uint8 cursa1;
+	uint8 erori;
+};
+
+struct dateAcceleratie{
+	uint16 tensiune2;
+	uint16 tensiune1;
+	uint8 cursa2;
+	uint8 cursa1;
+	uint8 erori;
+};
+
+struct dateBaterie{
+	uint16 curent;
+	uint16 tensiuneTSAC;
+	uint16 tmpMax;
+	uint16 tensiuneMaxCelule;
+};
+
+struct dateBord{
+	bool activationLogic;
+	bool directieMasina;
+	uint8 eroriI2C;
+	//de completat
+};
+
 bool primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8* data);
 
 #endif
