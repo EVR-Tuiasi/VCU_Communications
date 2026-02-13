@@ -7,79 +7,92 @@
 
 #define MASK 0x3FFFFFFF
 
-#define idFrana 0x00000001
-#define idAcceleratie 0x00000002
-#define idInvertorSt 0x00000003
-#define idInvertorDr 0x00000004
-#define idBaterie 0x0CF11A05
-#define idBord 0x00000005
+#define idCanFrana 0x00000331
+#define idCanAcceleratie 0x00000330
+#define idCanInvertorStanga 0x00000110
+#define idCanInvertorDreapta 0x00000111
+#define idCanInvertoare 0x00000112
+#define idCanBaterie 0x00000440
+#define idCanBord 0x00000220
 
-#define CELL_TEMP 10
-#define CELL_VOLTAGE 11
-#define BMS_VOLTAGE 12
-#define BMS_CURRENT 13
-#define ACCELERATOR_PEDALS 14
-#define BRAKE_PEDAL 15
-#define SEVEN_SEGMENT 16
-#define INVERTERS_RPM 17
-#define INVERTERS_CURRENT 18
-#define INVERTERS_VOLTAGE 19
-#define INVERTERS_PEDALS 20
-#define INVERTERS_CONTROLLER_TEMPERATURE 21
-#define INVERTERS_MOTORS_TEMPERATURE 22
-#define ERROR 100
+#define idUartInvertorStanga 0x00000010
+#define idUartInvertorDreapta 0x00000011
+#define idUartInvertoare 0x00000012
+#define idUartBord 0x00000020
+#define idUartAcceleratie 0x00000030
+#define idUartFrana 0x00000031
+#define idUartBaterie 0x000040
 
 struct dateInvertoare{
 	struct{
-		uint8 tmpMotor;
-		uint8 tmpInvertor;
-		uint8 throttleSignalFeedback;
-		uint16 curent;
-		uint16 rpm;
-		uint16 tensiune;
-	}st;
+		uint16_t rpmMotor;
+		uint16_t tensiuneIntrareInvertor;
+		uint8_t throttleSignalFeedback;
+		uint8_t vitezaMotor;
+		uint8_t throttleInvertor;
+		uint8_t temperaturaInvertor;
+		uint8_t temperaturaMotor;
+		uint8_t curentInvertor;
+	}stanga;
 	struct{
-		uint8 tmpMotor;
-		uint8 tmpInvertor;
-		uint8 throttleSignalFeedback;
-		uint16 curent;
-		uint16 rpm;
-		uint16 tensiune;
-	}dr;
+		uint16_t rpmMotor;
+		uint16_t tensiuneIntrareInvertor;
+		uint8_t throttleSignalFeedback;
+		uint8_t vitezaMotor;
+		uint8_t throttleInvertor;
+		uint8_t temperaturaInvertor;
+		uint8_t temperaturaMotor;
+		uint8_t curentInvertor;
+	}dreapta;
+	bool isCarRunning;
+	bool isCarInReverse;
 };
 
 struct dateFrana{
-	uint8 presiune;
-	uint16 tensiuneSenzorPresiune;
-	uint16 tensiune2;
-	uint16 tensiune1;
-	uint8 cursa2;
-	uint8 cursa1;
-	uint8 erori;
+	uint16_t tensiune1;
+	uint16_t tensiune2;
+	uint8_t cursa1;
+	uint8_t cursa2;
+	uint8_t presiuneSenzor;
+	bool implausibility;
+	bool outOfRangeOutput1;
+	bool shortToVCC1;
+	bool shortToGND1;
+	bool outOfRangeOutput2;
+	bool shortToVCC2;
+	bool shortToGND2;
 };
 
 struct dateAcceleratie{
-	uint16 tensiune2;
-	uint16 tensiune1;
-	uint8 cursa2;
-	uint8 cursa1;
-	uint8 erori;
+	uint16_t tensiune1;
+	uint16_t tensiune2;
+	uint8_t cursa1;
+	uint8_t cursa2;
+	uint16_t tensiuneSenzorPresiune;
+	bool implausibility;
+	bool outOfRangeOutput1;
+	bool shortToVCC1;
+	bool shortToGND1;
+	bool outOfRangeOutput2;
+	bool shortToVCC2;
+	bool shortToGND2;
 };
 
 struct dateBaterie{
-	uint16 curent;
-	uint16 tensiuneTSAC;
-	uint16 tmpMax;
-	uint16 tensiuneMaxCelule;
+	uint16_t tensiuneaMaximaDinteCelule;
+	uint16_t temperaturaMaximaDintreCelule;
+	uint16_t tensiunePerTotal;
+	uint16_t curentPerTotal;
+	//More To Come:)
 };
 
 struct dateBord{
-	bool activationLogic;
-	bool directieMasina;
-	uint8 eroriI2C;
-	//de completat
+	bool activationLogicPressed; //1-active; 0-inactive
+	bool isCarInReverse;//1-reverse; 0-not in reverse
+	bool idDisplayWorking;//0-working; 1-err
+	bool isSegmentsDriverWorking;//0-working; 1-err
 };
 
-bool primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8* data);
+bool primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
 
 #endif

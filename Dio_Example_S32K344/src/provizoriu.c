@@ -2,63 +2,84 @@
 
 extern uint8 UART_Channel;
 
-struct dateInvertoare invt;
+struct dateInvertoare invertoare;
 struct dateFrana frana;
 struct dateAcceleratie acceleratie;
 struct dateBaterie baterie;
 struct dateBord bord;
 
-boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8* data){
+boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
 	//Uart_SyncSend(UART_Channel, buffer, length, 10000000);
-	if((id&MASK)==idFrana){
+	if((id&MASK)==idCanFrana){
 		//extragere date
-		frana.presiune = data[1];
-		frana.tensiuneSenzorPresiune = ((((uint16)data[3])<<8) | data[2]) & (0x01FF);
-		frana.tensiune2 = (((((uint16)data[4])<<8) | data[3]) >> 1) & (0x01FF);
-		frana.tensiune1 = (((((uint16)data[5])<<8) | data[4]) >> 2) & (0x01FF);
-		frana.cursa2 = (uint8)((((((uint16)data[6])<<8) | data[5]) >> 3) & (0x007F));
-		frana.cursa1 = (uint8)((((((uint16)data[7])<<8) | data[6]) >> 2) & (0x007F));
-		frana.erori = data[7] >> 1;
+		frana.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+		frana.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
+		frana.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
+		frana.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
+		frana.presiuneSenzor = ((uint8_t)(data[1]<<6)) | (data[2]>>2);
+		frana.implausibility = data[0] & (1<<1);
+		frana.outOfRangeOutput1 = data[0] & (1<<5);
+		frana.shortToVCC1 = data[0] & (1<<6);
+		frana.shortToGND1 = data[0] & (1<<7);
+		frana.outOfRangeOutput2 = data[0] & (1<<2);
+		frana.shortToVCC2 = data[0] & (1<<3);
+		frana.shortToGND2 = data[0] & (1<<4);
 	}
-	else if((id&MASK)==idAcceleratie){
+	else if((id&MASK)==idCanAcceleratie){
 		//extragere date
-		acceleratie.tensiune2 = (((((uint16)data[4])<<8) | data[3]) >> 1) & (0x01FF);
-		acceleratie.tensiune1 = (((((uint16)data[5])<<8) | data[4]) >> 2) & (0x01FF);
-		acceleratie.cursa2 = (uint8)((((((uint16)data[6])<<8) | data[5]) >> 3) & (0x007F));
-		acceleratie.cursa1 = (uint8)((((((uint16)data[7])<<8) | data[6]) >> 2) & (0x007F));
-		acceleratie.erori = data[7] >> 1;
+		acceleratie.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+		acceleratie.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
+		acceleratie.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
+		acceleratie.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
+		acceleratie.tensiuneSenzorPresiune = ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF);
+		acceleratie.implausibility = data[0] & (1<<1);
+		acceleratie.outOfRangeOutput1 = data[0] & (1<<5);
+		acceleratie.shortToVCC1 = data[0] & (1<<6);
+		acceleratie.shortToGND1 = data[0] & (1<<7);
+		acceleratie.outOfRangeOutput2 = data[0] & (1<<2);
+		acceleratie.shortToVCC2 = data[0] & (1<<3);
+		acceleratie.shortToGND2 = data[0] & (1<<4);
 	}
-	else if((id&MASK)==idInvertorSt){
+	else if((id&MASK)==idCanInvertorStanga){
 		//extragere date
-		invt.st.tmpMotor = data[7];
-		invt.st.tmpInvertor = data[6];
-		invt.st.throttleSignalFeedback = data[5];
-		invt.st.curent = (((uint16)data[3])<<8) | data[4];
-		invt.st.rpm = ((((uint16)data[1])<<8) | data[2]) & (0x1FFF);
-		invt.st.tensiune = ((((uint16)data[0])<<8) | data[1]) >> 5;
+		invertoare.stanga.temperaturaMotor = data[7];
+		invertoare.stanga.temperaturaInvertor = data[6];
+		invertoare.stanga.throttleInvertor = data[5];
+		invertoare.stanga.vitezaMotor = data[4];
+		invertoare.stanga.throttleSignalFeedback = data[3];
+		invertoare.stanga.tensiuneIntrareInvertor = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
+		invertoare.stanga.rpmMotor = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
 	}
-	else if((id&MASK)==idInvertorDr){
+	else if((id&MASK)==idCanInvertorDreapta){
 		//extragere date
-		invt.dr.tmpMotor = data[7];
-		invt.dr.tmpInvertor = data[6];
-		invt.dr.throttleSignalFeedback = data[5];
-		invt.dr.curent = (((uint16)data[3])<<8) | data[4];
-		invt.dr.rpm = ((((uint16)data[1])<<8) | data[2]) & (0x1FFF);
-		invt.dr.tensiune = ((((uint16)data[0])<<8) | data[1]) >> 5;
+		invertoare.dreapta.temperaturaMotor = data[7];
+		invertoare.dreapta.temperaturaInvertor = data[6];
+		invertoare.dreapta.throttleInvertor = data[5];
+		invertoare.dreapta.vitezaMotor = data[4];
+		invertoare.dreapta.throttleSignalFeedback = data[3];
+		invertoare.dreapta.tensiuneIntrareInvertor = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
+		invertoare.dreapta.rpmMotor = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
 	}
-	else if((id&MASK)==idBaterie){
-		//extragere date
-		baterie.curent = ((((uint16)data[6])<<8) | data[7]) & (0x1FFF);
-		baterie.tensiuneTSAC = ((((uint16)data[4])<<8) | data[5]) & (0x07FF);
-		baterie.tmpMax = ((((uint16)data[2])<<8) | data[3]) & (0x03FF);
-		baterie.tensiuneMaxCelule = ((((uint16)data[0])<<8) | data[1]) & (0x03FF);
+	else if((id&MASK)==idCanInvertoare){
+		invertoare.isCarRunning = data[0] & (1<<7);
+		invertoare.isCarInReverse = data[0] & (1<<6);
+		invertoare.stanga.curentInvertor = ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF);
+		invertoare.dreapta.curentInvertor = ((((uint16_t)data[5])<<8) | data[6]) >> 4;
 	}
-	else if((id&MASK)==idBord){
+	else if((id&MASK)==idCanBaterie){
 		//extragere date
-		bord.activationLogic = data[7] & (1<<7);
-		bord.directieMasina = data[7] & (1<<6);
-		bord.eroriI2C = (data[7] >> 3) & (0x0007);
-		//Mai e de completat
+		baterie.curentPerTotal = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+		baterie.tensiunePerTotal = ((((uint16_t)data[5])<<8) | data[6]) >> 5;
+		baterie.temperaturaMaximaDintreCelule = ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF);
+		baterie.tensiuneaMaximaDinteCelule = (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF);
+		//More To Come:)
+	}
+	else if((id&MASK)==idCanBord){
+		//extragere date
+		bord.activationLogicPressed = data[0] & (1<<7);
+		bord.isCarInReverse = data[0] & (1<<6);
+		bord.idDisplayWorking = data[0] & (1<<5);
+		bord.isSegmentsDriverWorking = data[0] & (1<<4);
 	}
 	return TRUE;
 }
