@@ -13,34 +13,34 @@ boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType lengt
 	switch((id&MASK)){
 		case idCanFrana:
 			//extragere date
-			frana.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+			frana.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
 			frana.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
 			frana.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
 			frana.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
 			frana.presiuneSenzor = ((uint8_t)(data[1]<<6)) | (data[2]>>2);
-			frana.implausibility = data[0] & (1<<1);
-			frana.outOfRangeOutput1 = data[0] & (1<<5);
-			frana.shortToVCC1 = data[0] & (1<<6);
-			frana.shortToGND1 = data[0] & (1<<7);
-			frana.outOfRangeOutput2 = data[0] & (1<<2);
-			frana.shortToVCC2 = data[0] & (1<<3);
-			frana.shortToGND2 = data[0] & (1<<4);
+			frana.implausibility = (data[0] & (1<<1)) >> 1;
+			frana.outOfRangeOutput1 = (data[0] & (1<<5)) >> 5;
+			frana.shortToVCC1 = (data[0] & (1<<6)) >> 6;
+			frana.shortToGND1 = (data[0] & (1<<7)) >> 7;
+			frana.outOfRangeOutput2 = (data[0] & (1<<2)) >> 2;
+			frana.shortToVCC2 = (data[0] & (1<<3)) >> 3;
+			frana.shortToGND2 = (data[0] & (1<<4)) >> 4;
 			break;
 
 		case idCanAcceleratie:
 			//extragere date
-			acceleratie.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+			acceleratie.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
 			acceleratie.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
 			acceleratie.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
 			acceleratie.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
 			acceleratie.tensiuneSenzorPresiune = ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF);
-			acceleratie.implausibility = data[0] & (1<<1);
-			acceleratie.outOfRangeOutput1 = data[0] & (1<<5);
-			acceleratie.shortToVCC1 = data[0] & (1<<6);
-			acceleratie.shortToGND1 = data[0] & (1<<7);
-			acceleratie.outOfRangeOutput2 = data[0] & (1<<2);
-			acceleratie.shortToVCC2 = data[0] & (1<<3);
-			acceleratie.shortToGND2 = data[0] & (1<<4);
+			acceleratie.implausibility = (data[0] & (1<<1)) >> 1;
+			acceleratie.outOfRangeOutput1 = (data[0] & (1<<5)) >> 5;
+			acceleratie.shortToVCC1 = (data[0] & (1<<6)) >> 6;
+			acceleratie.shortToGND1 = (data[0] & (1<<7)) >> 7;
+			acceleratie.outOfRangeOutput2 = (data[0] & (1<<2)) >> 2;
+			acceleratie.shortToVCC2 = (data[0] & (1<<3)) >> 3;
+			acceleratie.shortToGND2 = (data[0] & (1<<4)) >>4;
 			break;
 
 		case idCanInvertorStanga:
@@ -66,8 +66,8 @@ boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType lengt
 			break;
 
 		case idCanInvertoare:
-			invertoare.isCarRunning = data[0] & (1<<7);
-			invertoare.isCarInReverse = data[0] & (1<<6);
+			invertoare.isCarRunning = (data[0] & (1<<7)) >> 7;
+			invertoare.isCarInReverse = (data[0] & (1<<6)) >> 6;
 			invertoare.stanga.curentInvertor = ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF);
 			invertoare.dreapta.curentInvertor = ((((uint16_t)data[5])<<8) | data[6]) >> 4;
 			break;
@@ -83,10 +83,10 @@ boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType lengt
 
 		case idCanBord:
 			//extragere date
-			bord.activationLogicPressed = data[0] & (1<<7);
-			bord.isCarInReverse = data[0] & (1<<6);
-			bord.idDisplayWorking = data[0] & (1<<5);
-			bord.isSegmentsDriverWorking = data[0] & (1<<4);
+			bord.activationLogicPressed = (data[0] & (1<<7)) >> 7;
+			bord.isCarInReverse = (data[0] & (1<<6)) >> 6;
+			bord.idDisplayWorking = (data[0] & (1<<5)) >> 5;
+			bord.isSegmentsDriverWorking = (data[0] & (1<<4)) >> 4;
 			break;
 	}
 	return TRUE;
