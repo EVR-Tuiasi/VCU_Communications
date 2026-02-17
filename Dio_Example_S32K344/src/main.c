@@ -22,13 +22,12 @@ extern "C" {
 #include "Dio.h"
 #include "Mcl.h"
 #include "provizoriu.h"
+#include "CanMessaging.h"
+#include "UartMessaging.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
 ==================================================================================================*/
-
-#define CAN_TARGET_ID 0x0CF11A12
-#define CAN_HTH_HANDLE 0x00000001
 
 /*==================================================================================================
 *                                       LOCAL MACROS
@@ -83,31 +82,15 @@ int main(void)
 	Mcl_Init(NULL_PTR);
 	Port_Init(NULL_PTR);
 	Platform_Init(NULL_PTR);
-	Can_43_FLEXCAN_Init(NULL_PTR);
-	CanIf_Init(NULL_PTR);
-	Uart_Init(NULL_PTR);
-
-	Dio_WriteChannel(32, STD_HIGH); //CAN3_EN
-	volatile uint64 i = 1000000;
-	while(i--);
-	Dio_WriteChannel(33, STD_HIGH); //CAN3_STB_N
-	i = 1000000;
-	while(i--);
-	Dio_WriteChannel(100, STD_HIGH); //CAN2_EN
-	i = 1000000;
-	while(i--);
-	Dio_WriteChannel(118, STD_HIGH); //CAN2_STB_N
-	i = 1000000;
-	while(i--);
-	Can_43_FLEXCAN_SetControllerMode(Can_43_FLEXCANConf_CanController_CanController_0, CAN_CS_STARTED);
-	Can_43_FLEXCAN_SetControllerMode(Can_43_FLEXCANConf_CanController_CanController_1, CAN_CS_STARTED);
-	Can_43_FLEXCAN_EnableControllerInterrupts(0);
+	CanMessaging_Init();
+	UartMessaging_Init();
 
 	Can_PduType pduInfo;
 	pduInfo.swPduHandle=0;
 	pduInfo.length=8;
 	pduInfo.sdu=dataDeTrimis;
 	pduInfo.id=CAN_TARGET_ID | 0x80000000U;
+	volatile int i;
 	while(1){
 		Uart_SyncReceive(UART_Channel, pduInfo.sdu, 8, 10000000);
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);

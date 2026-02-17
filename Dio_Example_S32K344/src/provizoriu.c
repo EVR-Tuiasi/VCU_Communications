@@ -2,91 +2,90 @@
 
 extern uint8 UART_Channel;
 
-struct dateInvertoare invertoare;
-struct dateFrana frana;
-struct dateAcceleratie acceleratie;
-struct dateBaterie baterie;
-struct dateBord bord;
+InvertersMonitoredValues_t invertoare;
+PedalsMonitoredValues_t pedale;
+TsacMonitoredValues_t baterie;
+DashboardMonitoredValues_t bord;
 
 boolean primesteDate(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
 	//Uart_SyncSend(UART_Channel, buffer, length, 10000000);
 	switch((id&MASK)){
 		case idCanFrana:
 			//extragere date
-			frana.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
-			frana.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
-			frana.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
-			frana.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
-			frana.presiuneSenzor = ((uint8_t)(data[1]<<6)) | (data[2]>>2);
-			frana.implausibility = (data[0] & (1<<1)) >> 1;
-			frana.outOfRangeOutput1 = (data[0] & (1<<5)) >> 5;
-			frana.shortToVCC1 = (data[0] & (1<<6)) >> 6;
-			frana.shortToGND1 = (data[0] & (1<<7)) >> 7;
-			frana.outOfRangeOutput2 = (data[0] & (1<<2)) >> 2;
-			frana.shortToVCC2 = (data[0] & (1<<3)) >> 3;
-			frana.shortToGND2 = (data[0] & (1<<4)) >> 4;
+			pedale.BrakeSensor1Voltage = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
+			pedale.BrakeSensor2Voltage = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
+			pedale.BrakeSensor1TravelPercentage = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
+			pedale.BrakeSensor2TravelPercentage = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
+			pedale.PressureSensorBars = ((uint8_t)(data[1]<<6)) | (data[2]>>2);
+			pedale.Brake_Implausibility = (data[0] & (1<<1)) >> 1;
+			pedale.Brake_Sensor1_OutOfRangeOutput = (data[0] & (1<<5)) >> 5;
+			pedale.Brake_Sensor1_ShortToVcc = (data[0] & (1<<6)) >> 6;
+			pedale.Brake_Sensor1_ShortToGnd = (data[0] & (1<<7)) >> 7;
+			pedale.Brake_Sensor2_OutOfRangeOutput = (data[0] & (1<<2)) >> 2;
+			pedale.Brake_Sensor2_ShortToVcc = (data[0] & (1<<3)) >> 3;
+			pedale.Brake_Sensor2_ShortToGnd = (data[0] & (1<<4)) >> 4;
 			break;
 
 		case idCanAcceleratie:
 			//extragere date
-			acceleratie.tensiune1 = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
-			acceleratie.tensiune2 = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
-			acceleratie.cursa1 = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
-			acceleratie.cursa2 = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
-			acceleratie.tensiuneSenzorPresiune = ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF);
-			acceleratie.implausibility = (data[0] & (1<<1)) >> 1;
-			acceleratie.outOfRangeOutput1 = (data[0] & (1<<5)) >> 5;
-			acceleratie.shortToVCC1 = (data[0] & (1<<6)) >> 6;
-			acceleratie.shortToGND1 = (data[0] & (1<<7)) >> 7;
-			acceleratie.outOfRangeOutput2 = (data[0] & (1<<2)) >> 2;
-			acceleratie.shortToVCC2 = (data[0] & (1<<3)) >> 3;
-			acceleratie.shortToGND2 = (data[0] & (1<<4)) >>4;
+			pedale.AcceleratorSensor1Voltage = ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF);
+			pedale.AcceleratorSensor2Voltage = ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6);
+			pedale.AcceleratorSensor1TravelPercentage = (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F);
+			pedale.AcceleratorSensor2TravelPercentage = (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F);
+			pedale.PressureSensorVoltage = ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF);
+			pedale.Accel_Implausibility = (data[0] & (1<<1)) >> 1;
+			pedale.Accel_Sensor1_OutOfRangeOutput = (data[0] & (1<<5)) >> 5;
+			pedale.Accel_Sensor1_ShortToVcc = (data[0] & (1<<6)) >> 6;
+			pedale.Accel_Sensor1_ShortToGnd = (data[0] & (1<<7)) >> 7;
+			pedale.Accel_Sensor2_OutOfRangeOutput = (data[0] & (1<<2)) >> 2;
+			pedale.Accel_Sensor2_ShortToVcc = (data[0] & (1<<3)) >> 3;
+			pedale.Accel_Sensor2_ShortToGnd = (data[0] & (1<<4)) >>4;
 			break;
 
 		case idCanInvertorStanga:
 			//extragere date
-			invertoare.stanga.temperaturaMotor = data[7];
-			invertoare.stanga.temperaturaInvertor = data[6];
-			invertoare.stanga.throttleInvertor = data[5];
-			invertoare.stanga.vitezaMotor = data[4];
-			invertoare.stanga.throttleSignalFeedback = data[3];
-			invertoare.stanga.tensiuneIntrareInvertor = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
-			invertoare.stanga.rpmMotor = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
+			invertoare.LeftMotorTemperature = data[7];
+			invertoare.LeftInverterTemperature = data[6];
+			invertoare.LeftInverterThrottle = data[5];
+			invertoare.LeftMotorSpeedKmh = data[4];
+			invertoare.LeftInverterThrottleFeedback = data[3];
+			invertoare.LeftInverterInputVoltage = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
+			invertoare.LeftMotorRpm = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
 			break;
 
 		case idCanInvertorDreapta:
 			//extragere date
-			invertoare.dreapta.temperaturaMotor = data[7];
-			invertoare.dreapta.temperaturaInvertor = data[6];
-			invertoare.dreapta.throttleInvertor = data[5];
-			invertoare.dreapta.vitezaMotor = data[4];
-			invertoare.dreapta.throttleSignalFeedback = data[3];
-			invertoare.dreapta.tensiuneIntrareInvertor = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
-			invertoare.dreapta.rpmMotor = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
+			invertoare.RightMotorTemperature = data[7];
+			invertoare.RightInverterTemperature = data[6];
+			invertoare.RightInverterSentThrottle = data[5];
+			invertoare.RightMotorSpeedKmh = data[4];
+			invertoare.RightInverterThrottleFeedback = data[3];
+			invertoare.RightInverterInputVoltage = ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF);
+			invertoare.RightMotorRpm = ((((uint16_t)data[0])<<8) | data[1]) >> 3;
 			break;
 
 		case idCanInvertoare:
-			invertoare.isCarRunning = (data[0] & (1<<7)) >> 7;
-			invertoare.isCarInReverse = (data[0] & (1<<6)) >> 6;
-			invertoare.stanga.curentInvertor = ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF);
-			invertoare.dreapta.curentInvertor = ((((uint16_t)data[5])<<8) | data[6]) >> 4;
+			invertoare.IsCarRunning = (data[0] & (1<<7)) >> 7;
+			invertoare.IsCarInReverse = (data[0] & (1<<6)) >> 6;
+			invertoare.LeftInverterCurrent = ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF);
+			invertoare.RightInverterCurrent = ((((uint16_t)data[5])<<8) | data[6]) >> 4;
 			break;
 
 		case idCanBaterie:
 			//extragere date
-			baterie.curentPerTotal = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
-			baterie.tensiunePerTotal = ((((uint16_t)data[5])<<8) | data[6]) >> 5;
-			baterie.temperaturaMaximaDintreCelule = ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF);
-			baterie.tensiuneaMaximaDinteCelule = (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF);
+			baterie.OverallCurrent = ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF);
+			baterie.OverallVoltage = ((((uint16_t)data[5])<<8) | data[6]) >> 5;
+			baterie.HighestCellTemperature = ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF);
+			baterie.HighestCellVoltage = (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF);
 			//More To Come:)
 			break;
 
 		case idCanBord:
 			//extragere date
-			bord.activationLogicPressed = (data[0] & (1<<7)) >> 7;
-			bord.isCarInReverse = (data[0] & (1<<6)) >> 6;
-			bord.idDisplayWorking = (data[0] & (1<<5)) >> 5;
-			bord.isSegmentsDriverWorking = (data[0] & (1<<4)) >> 4;
+			bord.ActivationButtonPressed = (data[0] & (1<<7)) >> 7;
+			bord.CarReverseCommandPressed = (data[0] & (1<<6)) >> 6;
+			bord.IsDisplayWorking = (data[0] & (1<<5)) >> 5;
+			bord.IsSegmentsDriverWorking = (data[0] & (1<<4)) >> 4;
 			break;
 	}
 	return TRUE;
