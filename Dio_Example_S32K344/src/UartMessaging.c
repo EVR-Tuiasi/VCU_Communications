@@ -79,74 +79,74 @@ void UartMessaging_Init(void){
 }
 
 void UartMessaging_Test(void){
-	baterieUart.MedianCellTemperature = Uart_TSAC_MedianCellTemperature;
-	baterieUart.HighestCellTemperature = Uart_TSAC_HighestCellTemperature;
-	baterieUart.LowestCellTemperature = Uart_TSAC_LowestCellTemperature;
-	baterieUart.MedianCellVoltage = Uart_TSAC_MedianCellVoltage;
-	baterieUart.HighestCellVoltage = Uart_TSAC_HighestCellVoltage;
-	baterieUart.LowestCellVoltage = Uart_TSAC_LowestCellVoltage;
-	baterieUart.OverallVoltage = Uart_TSAC_OverallVoltage;
-	baterieUart.OverallCurrent = Uart_TSAC_OverallCurrent;
+	UartMessaging_SendValue(Uart_TSAC_MedianCellTemperature, Uart_TSAC_MedianCellTemperature);
+	UartMessaging_SendValue(Uart_TSAC_HighestCellTemperature, Uart_TSAC_HighestCellTemperature);
+	UartMessaging_SendValue(Uart_TSAC_LowestCellTemperature, Uart_TSAC_LowestCellTemperature);
+	UartMessaging_SendValue(Uart_TSAC_MedianCellVoltage, Uart_TSAC_MedianCellVoltage);
+	UartMessaging_SendValue(Uart_TSAC_HighestCellVoltage, Uart_TSAC_HighestCellVoltage);
+	UartMessaging_SendValue(Uart_TSAC_LowestCellVoltage, Uart_TSAC_LowestCellVoltage);
+	UartMessaging_SendValue(Uart_TSAC_OverallVoltage, Uart_TSAC_OverallVoltage);
+	UartMessaging_SendValue(Uart_TSAC_OverallCurrent, Uart_TSAC_OverallCurrent);
 	//baterieUart.CellVoltage[CELLS_NUM];
 	//baterieUart.ThermistorTemperature[THERMISTOR_NUM];
-	baterieUart.AmsError = 1;
-	baterieUart.ImdError = 1;
-	baterieUart.TransceiverError = 1;
-	baterieUart.ShuntError = 1;
-	baterieUart.Bms0Error = 1;
-	baterieUart.Bms1Error = 1;
+	UartMessaging_SendValue(Uart_TSAC_IsAmsSafe, 1);
+	UartMessaging_SendValue(Uart_TSAC_IsImdSafe, 1);
+	UartMessaging_SendValue(Uart_TSAC_IsTransceiverWorking, 1);
+	UartMessaging_SendValue(Uart_TSAC_IsShuntWorking, 1);
+	UartMessaging_SendValue(Uart_TSAC_IsBms0Working, 1);
+	UartMessaging_SendValue(Uart_TSAC_IsBms1Working, 1);
 
-	pedaleUart.AcceleratorSensor1Voltage = Uart_PEDALS_AcceleratorSensor1Voltage;
-	pedaleUart.AcceleratorSensor2Voltage = Uart_PEDALS_AcceleratorSensor2Voltage;
-	pedaleUart.AcceleratorSensor1TravelPercentage = Uart_PEDALS_AcceleratorSensor1TravelPercentage;
-	pedaleUart.AcceleratorSensor2TravelPercentage = Uart_PEDALS_AcceleratorSensor2TravelPercentage;
-	pedaleUart.BrakeSensor1Voltage = Uart_PEDALS_BrakeSensor1Voltage;
-	pedaleUart.BrakeSensor2Voltage = Uart_PEDALS_BrakeSensor2Voltage;
-	pedaleUart.BrakeSensor1TravelPercentage = Uart_PEDALS_BrakeSensor1TravelPercentage;
-	pedaleUart.BrakeSensor2TravelPercentage = Uart_PEDALS_BrakeSensor2TravelPercentage;
-	pedaleUart.PressureSensorVoltage = Uart_PEDALS_PressureSensorVoltage;
-	pedaleUart.PressureSensorBars = Uart_PEDALS_PressureSensorBars;
-	pedaleUart.Accel_Sensor1_ShortToGnd = 1;
-	pedaleUart.Accel_Sensor1_ShortToVcc = 1;
-	pedaleUart.Accel_Sensor1_OutOfRangeOutput = 1;
-	pedaleUart.Accel_Sensor2_ShortToGnd = 1;
-	pedaleUart.Accel_Sensor2_ShortToVcc = 1;
-	pedaleUart.Accel_Sensor2_OutOfRangeOutput = 1;
-	pedaleUart.Accel_Implausibility = 1;
-	pedaleUart.Brake_Sensor1_ShortToGnd = 1;
-	pedaleUart.Brake_Sensor1_ShortToVcc = 1;
-	pedaleUart.Brake_Sensor1_OutOfRangeOutput = 1;
-	pedaleUart.Brake_Sensor2_ShortToGnd = 1;
-	pedaleUart.Brake_Sensor2_ShortToVcc = 1;
-	pedaleUart.Brake_Sensor2_OutOfRangeOutput = 1;
-	pedaleUart.Brake_Implausibility = 1;
+	UartMessaging_SendValue(Uart_PEDALS_AcceleratorSensor1Voltage, Uart_PEDALS_AcceleratorSensor1Voltage);
+	UartMessaging_SendValue(Uart_PEDALS_AcceleratorSensor2Voltage, Uart_PEDALS_AcceleratorSensor2Voltage);
+	UartMessaging_SendValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage, Uart_PEDALS_AcceleratorSensor1TravelPercentage);
+	UartMessaging_SendValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, Uart_PEDALS_AcceleratorSensor2TravelPercentage);
+	UartMessaging_SendValue(Uart_PEDALS_BrakeSensor1Voltage, Uart_PEDALS_BrakeSensor1Voltage);
+	UartMessaging_SendValue(Uart_PEDALS_BrakeSensor2Voltage, Uart_PEDALS_BrakeSensor2Voltage);
+	UartMessaging_SendValue(Uart_PEDALS_BrakeSensor1TravelPercentage, Uart_PEDALS_BrakeSensor1TravelPercentage);
+	UartMessaging_SendValue(Uart_PEDALS_BrakeSensor2TravelPercentage, Uart_PEDALS_BrakeSensor2TravelPercentage);
+	UartMessaging_SendValue(Uart_PEDALS_PressureSensorVoltage, Uart_PEDALS_PressureSensorVoltage);
+	UartMessaging_SendValue(Uart_PEDALS_PressureSensorBars, Uart_PEDALS_PressureSensorBars);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor1_ShortToGnd, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor1_ShortToVcc, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor1_OutOfRangeOutput, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor2_ShortToGnd, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor2_ShortToVcc, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Sensor2_OutOfRangeOutput, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Accel_Implausibility, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor1_ShortToGnd, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor1_ShortToVcc, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor1_OutOfRangeOutput, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor2_ShortToGnd, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor2_ShortToVcc, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Sensor2_OutOfRangeOutput, 1);
+	UartMessaging_SendValue(Uart_PEDALS_Brake_Implausibility, 1);
 
-	invertoareUart.LeftInverterTemperature = Uart_INVERTERS_LeftInverterTemperature;
-	invertoareUart.LeftMotorTemperature = Uart_INVERTERS_LeftMotorTemperature;
-	invertoareUart.LeftInverterInputVoltage = Uart_INVERTERS_LeftInverterInputVoltage;
-	invertoareUart.LeftInverterCurrent = Uart_INVERTERS_LeftInverterCurrent;
-	invertoareUart.LeftMotorRpm = Uart_INVERTERS_LeftMotorRpm;
-	invertoareUart.LeftMotorSpeedKmh = Uart_INVERTERS_LeftMotorSpeedKmh;
-	invertoareUart.LeftInverterThrottle = Uart_INVERTERS_LeftInverterThrottle;
-	invertoareUart.LeftInverterThrottleFeedback = Uart_INVERTERS_LeftInverterThrottleFeedback;
-	invertoareUart.RightInverterTemperature = Uart_INVERTERS_RightInverterTemperature;
-	invertoareUart.RightMotorTemperature = Uart_INVERTERS_RightMotorTemperature;
-	invertoareUart.RightInverterInputVoltage = Uart_INVERTERS_RightInverterInputVoltage;
-	invertoareUart.RightInverterCurrent = Uart_INVERTERS_RightInverterCurrent;
-	invertoareUart.RightMotorRpm = Uart_INVERTERS_RightMotorRpm;
-	invertoareUart.RightMotorSpeedKmh = Uart_INVERTERS_RightMotorSpeedKmh;
-	invertoareUart.RightInverterSentThrottle = Uart_INVERTERS_RightInverterSentThrottle;
-	invertoareUart.RightInverterThrottleFeedback = Uart_INVERTERS_RightInverterThrottleFeedback;
-	invertoareUart.IsCarInReverse = 1;
-	invertoareUart.IsCarRunning = 1;
+	UartMessaging_SendValue(Uart_INVERTERS_LeftInverterTemperature, Uart_INVERTERS_LeftInverterTemperature);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftMotorTemperature, Uart_INVERTERS_LeftMotorTemperature);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftInverterInputVoltage, Uart_INVERTERS_LeftInverterInputVoltage);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftInverterCurrent, Uart_INVERTERS_LeftInverterCurrent);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftMotorRpm, Uart_INVERTERS_LeftMotorRpm);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftMotorSpeedKmh, Uart_INVERTERS_LeftMotorSpeedKmh);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftInverterThrottle, Uart_INVERTERS_LeftInverterThrottle);
+	UartMessaging_SendValue(Uart_INVERTERS_LeftInverterThrottleFeedback, Uart_INVERTERS_LeftInverterThrottleFeedback);
+	UartMessaging_SendValue(Uart_INVERTERS_RightInverterTemperature, Uart_INVERTERS_RightInverterTemperature);
+	UartMessaging_SendValue(Uart_INVERTERS_RightMotorTemperature, Uart_INVERTERS_RightMotorTemperature);
+	UartMessaging_SendValue(Uart_INVERTERS_RightInverterInputVoltage, Uart_INVERTERS_RightInverterInputVoltage);
+	UartMessaging_SendValue(Uart_INVERTERS_RightInverterCurrent, Uart_INVERTERS_RightInverterCurrent);
+	UartMessaging_SendValue(Uart_INVERTERS_RightMotorRpm, Uart_INVERTERS_RightMotorRpm);
+	UartMessaging_SendValue(Uart_INVERTERS_RightMotorSpeedKmh, Uart_INVERTERS_RightMotorSpeedKmh);
+	UartMessaging_SendValue(Uart_INVERTERS_RightInverterSentThrottle, Uart_INVERTERS_RightInverterSentThrottle);
+	UartMessaging_SendValue(Uart_INVERTERS_RightInverterThrottleFeedback, Uart_INVERTERS_RightInverterThrottleFeedback);
+	UartMessaging_SendValue(Uart_INVERTERS_IsCarInReverse, 1);
+	UartMessaging_SendValue(Uart_INVERTERS_IsCarRunning, 1);
 
-	bordUart.ActivationButtonPressed = 1;
-	bordUart.CarReverseCommandPressed = 1;
-	bordUart.IsDisplayWorking = 1;
-	bordUart.IsSegmentsDriverWorking = 1;
-	//E OK SA FIE ACELEASI STRUCTURI SAU SA FAC UNELE SPECIFICE PT TEST?
+	UartMessaging_SendValue(Uart_DASHBOARD_ActivationButtonPressed, 1);
+	UartMessaging_SendValue(Uart_DASHBOARD_CarReverseCommandPressed, 1);
+	UartMessaging_SendValue(Uart_DASHBOARD_IsDisplayWorking, 1);
+	UartMessaging_SendValue(Uart_DASHBOARD_IsSegmentsDriverWorking, 1);
+
 	while(1){
-		//DE COMPLETAT
+		UartMessaging_Update();
 	}
 }
 

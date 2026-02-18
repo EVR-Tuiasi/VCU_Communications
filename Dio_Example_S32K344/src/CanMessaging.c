@@ -97,7 +97,75 @@ void CanMessaging_Init(void){
 }
 
 void CanMessaging_Test(void){
+	CanMessaging_SendValue(Can_TSAC_MedianCellTemperature, Can_TSAC_MedianCellTemperature);
+	CanMessaging_SendValue(Can_TSAC_HighestCellTemperature, Can_TSAC_HighestCellTemperature);
+	CanMessaging_SendValue(Can_TSAC_LowestCellTemperature, Can_TSAC_LowestCellTemperature);
+	CanMessaging_SendValue(Can_TSAC_MedianCellVoltage, Can_TSAC_MedianCellVoltage);
+	CanMessaging_SendValue(Can_TSAC_HighestCellVoltage, Can_TSAC_HighestCellVoltage);
+	CanMessaging_SendValue(Can_TSAC_LowestCellVoltage, Can_TSAC_LowestCellVoltage);
+	CanMessaging_SendValue(Can_TSAC_OverallVoltage, Can_TSAC_OverallVoltage);
+	CanMessaging_SendValue(Can_TSAC_OverallCurrent, Can_TSAC_OverallCurrent);
+	//baterieCan.CellVoltage[CELLS_NUM];
+	//baterieCan.ThermistorTemperature[THERMISTOR_NUM];
+	CanMessaging_SendValue(Can_TSAC_IsAmsSafe, 1);
+	CanMessaging_SendValue(Can_TSAC_IsImdSafe, 1);
+	CanMessaging_SendValue(Can_TSAC_IsTransceiverWorking, 1);
+	CanMessaging_SendValue(Can_TSAC_IsShuntWorking, 1);
+	CanMessaging_SendValue(Can_TSAC_IsBms0Working, 1);
+	CanMessaging_SendValue(Can_TSAC_IsBms1Working, 1);
 
+	CanMessaging_SendValue(Can_PEDALS_AcceleratorSensor1Voltage, Can_PEDALS_AcceleratorSensor1Voltage);
+	CanMessaging_SendValue(Can_PEDALS_AcceleratorSensor2Voltage, Can_PEDALS_AcceleratorSensor2Voltage);
+	CanMessaging_SendValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, Can_PEDALS_AcceleratorSensor1TravelPercentage);
+	CanMessaging_SendValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, Can_PEDALS_AcceleratorSensor2TravelPercentage);
+	CanMessaging_SendValue(Can_PEDALS_BrakeSensor1Voltage, Can_PEDALS_BrakeSensor1Voltage);
+	CanMessaging_SendValue(Can_PEDALS_BrakeSensor2Voltage, Can_PEDALS_BrakeSensor2Voltage);
+	CanMessaging_SendValue(Can_PEDALS_BrakeSensor1TravelPercentage, Can_PEDALS_BrakeSensor1TravelPercentage);
+	CanMessaging_SendValue(Can_PEDALS_BrakeSensor2TravelPercentage, Can_PEDALS_BrakeSensor2TravelPercentage);
+	CanMessaging_SendValue(Can_PEDALS_PressureSensorVoltage, Can_PEDALS_PressureSensorVoltage);
+	CanMessaging_SendValue(Can_PEDALS_PressureSensorBars, Can_PEDALS_PressureSensorBars);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor1_ShortToGnd, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor1_ShortToVcc, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor2_ShortToGnd, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor2_ShortToVcc, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput, 1);
+	CanMessaging_SendValue(Can_PEDALS_Accel_Implausibility, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor1_ShortToGnd, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor1_ShortToVcc, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor2_ShortToGnd, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor2_ShortToVcc, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Sensor2_OutOfRangeOutput, 1);
+	CanMessaging_SendValue(Can_PEDALS_Brake_Implausibility, 1);
+
+	CanMessaging_SendValue(Can_INVERTERS_LeftInverterTemperature, Can_INVERTERS_LeftInverterTemperature);
+	CanMessaging_SendValue(Can_INVERTERS_LeftMotorTemperature, Can_INVERTERS_LeftMotorTemperature);
+	CanMessaging_SendValue(Can_INVERTERS_LeftInverterInputVoltage, Can_INVERTERS_LeftInverterInputVoltage);
+	CanMessaging_SendValue(Can_INVERTERS_LeftInverterCurrent, Can_INVERTERS_LeftInverterCurrent);
+	CanMessaging_SendValue(Can_INVERTERS_LeftMotorRpm, Can_INVERTERS_LeftMotorRpm);
+	CanMessaging_SendValue(Can_INVERTERS_LeftMotorSpeedKmh, Can_INVERTERS_LeftMotorSpeedKmh);
+	CanMessaging_SendValue(Can_INVERTERS_LeftInverterThrottle, Can_INVERTERS_LeftInverterThrottle);
+	CanMessaging_SendValue(Can_INVERTERS_LeftInverterThrottleFeedback, Can_INVERTERS_LeftInverterThrottleFeedback);
+	CanMessaging_SendValue(Can_INVERTERS_RightInverterTemperature, Can_INVERTERS_RightInverterTemperature);
+	CanMessaging_SendValue(Can_INVERTERS_RightMotorTemperature, Can_INVERTERS_RightMotorTemperature);
+	CanMessaging_SendValue(Can_INVERTERS_RightInverterInputVoltage, Can_INVERTERS_RightInverterInputVoltage);
+	CanMessaging_SendValue(Can_INVERTERS_RightInverterCurrent, Can_INVERTERS_RightInverterCurrent);
+	CanMessaging_SendValue(Can_INVERTERS_RightMotorRpm, Can_INVERTERS_RightMotorRpm);
+	CanMessaging_SendValue(Can_INVERTERS_RightMotorSpeedKmh, Can_INVERTERS_RightMotorSpeedKmh);
+	CanMessaging_SendValue(Can_INVERTERS_RightInverterSentThrottle, Can_INVERTERS_RightInverterSentThrottle);
+	CanMessaging_SendValue(Can_INVERTERS_RightInverterThrottleFeedback, Can_INVERTERS_RightInverterThrottleFeedback);
+	CanMessaging_SendValue(Can_INVERTERS_IsCarInReverse, 1);
+	CanMessaging_SendValue(Can_INVERTERS_IsCarRunning, 1);
+
+	CanMessaging_SendValue(Can_DASHBOARD_ActivationButtonPressed, 1);
+	CanMessaging_SendValue(Can_DASHBOARD_CarReverseCommandPressed, 1);
+	CanMessaging_SendValue(Can_DASHBOARD_IsDisplayWorking, 1);
+	CanMessaging_SendValue(Can_DASHBOARD_IsSegmentsDriverWorking, 1);
+
+	while(1){
+		CanMessaging_Update();
+	}
 }
 
 void CanMessaging_Update(void){
@@ -412,7 +480,7 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 		case Can_DASHBOARD_IsSegmentsDriverWorking:
 			return bordCan.IsSegmentsDriverWorking;
 	}
-	return -1;
+	return 0;
 }
 
 
