@@ -14,10 +14,36 @@ extern "C"{
 ==================================================================================================*/
 
 #include "stdint.h"
+#include"Mcu.h"
+#include"Can_43_FLEXCAN.h"
+#include "CDD_Uart.h"
+#include "Messaging_Types.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
 ==================================================================================================*/
+
+#define MASK 0x3FFFFFFF
+
+typedef enum{
+	idCanFrana = 0x00000331,
+	idCanAcceleratie = 0x00000330,
+	idCanInvertorStanga = 0x00000110,
+	idCanInvertorDreapta = 0x00000111,
+	idCanInvertoare = 0x00000112,
+	idCanBaterie = 0x00000440,
+	idCanBord = 0x00000220
+}idCan_t;
+
+typedef enum{
+	idUartInvertorStanga = 0x00000010,
+	idUartInvertorDreapta = 0x00000011,
+	idUartInvertoare = 0x00000012,
+	idUartBord = 0x00000020,
+	idUartAcceleratie = 0x00000030,
+	idUartFrana = 0x00000031,
+	idUartBaterie = 0x000040
+}idUart_t;
 
 typedef enum{
     /* TSAC */
@@ -130,8 +156,9 @@ typedef enum{
 void CanMessaging_Init(void);
 void CanMessaging_Test(void);
 void CanMessaging_Update(void);
-void CanMessaging_SendValue(CanMonitoredValue_t DesiredValueType, uint32_t Value);
+void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value);
 uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType);
+boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
 
 #ifdef __cplusplus
 }

@@ -21,7 +21,6 @@ extern "C" {
 #include "check_example.h"
 #include "Dio.h"
 #include "Mcl.h"
-#include "provizoriu.h"
 #include "CanMessaging.h"
 #include "UartMessaging.h"
 

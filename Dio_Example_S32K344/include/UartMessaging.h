@@ -127,7 +127,7 @@ typedef enum{
 void UartMessaging_Init(void);
 void UartMessaging_Test(void);
 void UartMessaging_Update(void);
-void UartMessaging_SendValue(UartMonitoredValue_t DesiredValueType, uint32_t Value);
+void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value);
 uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType);
 
 #ifdef __cplusplus

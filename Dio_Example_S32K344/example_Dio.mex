@@ -3014,7 +3014,7 @@
                            <setting name="CanTimeoutMethod" value="OSIF_COUNTER_DUMMY"/>
                            <setting name="CanTimeoutDuration" value="0.01"/>
                            <array name="CanLPduReceiveCalloutFunction">
-                              <setting name="0" value="primesteDate"/>
+                              <setting name="0" value="CanMessaging_ReceiveData"/>
                            </array>
                            <array name="CanEcucPartitionRef"/>
                            <array name="CanOsCounterRef"/>
@@ -3203,7 +3203,7 @@
                            <setting name="Name" value="CanIfPublicCfg"/>
                            <setting name="CanIfDevErrorDetect" value="true"/>
                            <array name="CanIfPublicCddHeaderFile">
-                              <setting name="0" value="provizoriu"/>
+                              <setting name="0" value="CanMessaging"/>
                            </array>
                         </struct>
                         <array name="CanIfCtrlDrvCfg">
