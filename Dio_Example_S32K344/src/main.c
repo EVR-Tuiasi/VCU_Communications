@@ -50,9 +50,6 @@ extern "C" {
 /*==================================================================================================
 *                                      GLOBAL VARIABLES
 ==================================================================================================*/
-uint8 UART_Channel;
-extern uint8 dataTrimisa[8];
-uint8 dataDeTrimis[8]={1, 2, 3, 4, 5, 6, 7, 8};
 
 /*==================================================================================================
 *                                   LOCAL FUNCTION PROTOTYPES
@@ -85,10 +82,10 @@ int main(void)
 	UartMessaging_Init();
 
 	Can_PduType pduInfo;
-	pduInfo.swPduHandle=0;
+	/*pduInfo.swPduHandle=0;
 	pduInfo.length=8;
 	pduInfo.sdu=dataDeTrimis;
-	pduInfo.id=CAN_TARGET_ID | 0x80000000U;
+	pduInfo.id=CAN_TARGET_ID | 0x80000000U;*/
 	volatile int i;
 	while(1){
 		Uart_SyncReceive(UART_Channel, pduInfo.sdu, 8, 10000000);

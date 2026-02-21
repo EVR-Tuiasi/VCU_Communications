@@ -20,6 +20,16 @@ extern "C"{
 ==================================================================================================*/
 
 typedef enum{
+	idUartInvertorStanga = 0x00000010,
+	idUartInvertorDreapta = 0x00000011,
+	idUartInvertoare = 0x00000012,
+	idUartBord = 0x00000020,
+	idUartAcceleratie = 0x00000030,
+	idUartFrana = 0x00000031,
+	idUartBaterie = 0x000040
+}idUart_t;
+
+typedef enum{
     /* TSAC */
     Uart_TSAC_MedianCellTemperature,
     Uart_TSAC_HighestCellTemperature,
@@ -86,6 +96,8 @@ typedef enum{
     Uart_DASHBOARD_IsSegmentsDriverWorking
 }UartMonitoredValue_t;
 
+#define UART_Channel 0x00000000
+
 /*==================================================================================================
 *                                       LOCAL MACROS
 ==================================================================================================*/
@@ -129,6 +141,8 @@ void UartMessaging_Test(void);
 void UartMessaging_Update(void);
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value);
 uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType);
+void UartMessaging_CreateBuffer(idUart_t type);
+uint8 CRC_calculate(uint8 length);
 
 #ifdef __cplusplus
 }

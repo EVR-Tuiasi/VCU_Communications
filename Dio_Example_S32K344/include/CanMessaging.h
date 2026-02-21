@@ -36,16 +36,6 @@ typedef enum{
 }idCan_t;
 
 typedef enum{
-	idUartInvertorStanga = 0x00000010,
-	idUartInvertorDreapta = 0x00000011,
-	idUartInvertoare = 0x00000012,
-	idUartBord = 0x00000020,
-	idUartAcceleratie = 0x00000030,
-	idUartFrana = 0x00000031,
-	idUartBaterie = 0x000040
-}idUart_t;
-
-typedef enum{
     /* TSAC */
     Can_TSAC_MedianCellTemperature,
     Can_TSAC_HighestCellTemperature,
