@@ -18,6 +18,7 @@ extern "C"{
 #include"Can_43_FLEXCAN.h"
 #include "CDD_Uart.h"
 #include "Messaging_Types.h"
+#include "UartMessaging.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
@@ -149,6 +150,7 @@ void CanMessaging_Update(void);
 void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value);
 uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType);
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
+void CanMessaging_CreateBuffer(idCan_t type);
 
 #ifdef __cplusplus
 }
