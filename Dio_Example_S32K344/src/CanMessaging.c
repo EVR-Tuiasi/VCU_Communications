@@ -533,6 +533,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 		case idCanFrana:
 			//extragere date
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
+			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
@@ -544,6 +545,20 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToGnd, (data[0] & (1<<4)) >> 4);
+
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_PressureSensorBars, ((uint8_t)(data[1]<<6)) | (data[2]>>2));
+			CanMessaging_SetValue(Can_PEDALS_Brake_Implausibility, (data[0] & (1<<1)) >> 1);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
+			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToGnd, (data[0] & (1<<4)) >> 4);
 			break;
 
 		case idCanAcceleratie:
@@ -560,6 +575,19 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_ShortToGnd, (data[0] & (1<<4)) >>4);
+
+			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
+			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
+			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF));
+			CanMessaging_SetValue(Can_PEDALS_Accel_Implausibility, (data[0] & (1<<1)) >> 1);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
+			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToGnd, (data[0] & (1<<4)) >>4);
 			break;
 
 		case idCanInvertorStanga:
@@ -571,6 +599,14 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, data[3]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
+
+			CanMessaging_SetValue(Can_INVERTERS_LeftMotorTemperature, data[7]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, data[6]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottle, data[5]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftMotorSpeedKmh, data[4]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottleFeedback, data[3]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
+			CanMessaging_SetValue(Can_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
 			break;
 
 		case idCanInvertorDreapta:
@@ -582,6 +618,14 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_INVERTERS_RightInverterThrottleFeedback, data[3]);
 			UartMessaging_SetValue(Uart_INVERTERS_RightInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
 			UartMessaging_SetValue(Uart_INVERTERS_RightMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
+
+			CanMessaging_SetValue(Can_INVERTERS_RightMotorTemperature, data[7]);
+			CanMessaging_SetValue(Can_INVERTERS_RightInverterTemperature, data[6]);
+			CanMessaging_SetValue(Can_INVERTERS_RightInverterSentThrottle, data[5]);
+			CanMessaging_SetValue(Can_INVERTERS_RightMotorSpeedKmh, data[4]);
+			CanMessaging_SetValue(Can_INVERTERS_RightInverterThrottleFeedback, data[3]);
+			CanMessaging_SetValue(Can_INVERTERS_RightInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
+			CanMessaging_SetValue(Can_INVERTERS_RightMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
 			break;
 
 		case idCanInvertoare:
@@ -589,6 +633,11 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_INVERTERS_IsCarInReverse, (data[0] & (1<<6)) >> 6);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF));
 			UartMessaging_SetValue(Uart_INVERTERS_RightInverterCurrent, ((((uint16_t)data[5])<<8) | data[6]) >> 4);
+
+			CanMessaging_SetValue(Can_INVERTERS_IsCarRunning, (data[0] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_INVERTERS_IsCarInReverse, (data[0] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF));
+			CanMessaging_SetValue(Can_INVERTERS_RightInverterCurrent, ((((uint16_t)data[5])<<8) | data[6]) >> 4);
 			break;
 
 		case idCanBaterie:
@@ -597,6 +646,12 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_TSAC_OverallVoltage, ((((uint16_t)data[5])<<8) | data[6]) >> 5);
 			UartMessaging_SetValue(Uart_TSAC_HighestCellTemperature, ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF));
 			UartMessaging_SetValue(Uart_TSAC_HighestCellVoltage, (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF));
+
+			CanMessaging_SetValue(Can_TSAC_OverallCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF));
+			CanMessaging_SetValue(Can_TSAC_OverallVoltage, ((((uint16_t)data[5])<<8) | data[6]) >> 5);
+			CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF));
+
 			//More To Come:)
 			break;
 
@@ -606,6 +661,11 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_DASHBOARD_CarReverseCommandPressed, (data[0] & (1<<6)) >> 6);
 			UartMessaging_SetValue(Uart_DASHBOARD_IsDisplayWorking, (data[0] & (1<<5)) >> 5);
 			UartMessaging_SetValue(Uart_DASHBOARD_IsSegmentsDriverWorking, (data[0] & (1<<4)) >> 4);
+
+			CanMessaging_SetValue(Can_DASHBOARD_ActivationButtonPressed, (data[0] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_DASHBOARD_CarReverseCommandPressed, (data[0] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_DASHBOARD_IsDisplayWorking, (data[0] & (1<<5)) >> 5);
+			CanMessaging_SetValue(Can_DASHBOARD_IsSegmentsDriverWorking, (data[0] & (1<<4)) >> 4);
 			break;
 		default:
 			return FALSE;

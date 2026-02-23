@@ -88,8 +88,7 @@ int main(void)
 	pduInfo.id=CAN_TARGET_ID | 0x80000000U;*/
 	volatile int i;
 	while(1){
-		Uart_SyncReceive(UART_Channel, pduInfo.sdu, 8, 10000000);
-		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+		UartMessaging_Update();
 		i=400000;
 		while(i--);
 	}
