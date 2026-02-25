@@ -533,7 +533,6 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 		case idCanFrana:
 			//extragere date
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
@@ -546,7 +545,6 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToGnd, (data[0] & (1<<4)) >> 4);
 
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
@@ -593,7 +591,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 		case idCanInvertorStanga:
 			//extragere date
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorTemperature, data[7]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, data[6]);
+			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterTemperature, data[6]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, data[5]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorSpeedKmh, data[4]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, data[3]);
@@ -601,7 +599,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
 
 			CanMessaging_SetValue(Can_INVERTERS_LeftMotorTemperature, data[7]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, data[6]);
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterTemperature, data[6]);
 			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottle, data[5]);
 			CanMessaging_SetValue(Can_INVERTERS_LeftMotorSpeedKmh, data[4]);
 			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottleFeedback, data[3]);
