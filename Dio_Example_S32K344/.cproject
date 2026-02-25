@@ -141,11 +141,14 @@
 									<listOptionValue builtIn="false" value="../RTD/include"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/generate/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/RTD/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/board&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${BASE_PLATFORMSDK_S32K3}/header&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${BASE_PLATFORMSDK_S32K3}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PLATFORM_PLATFORMSDK_S32K3}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PLATFORM_PLATFORMSDK_S32K3}/startup/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/generate\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/generate\src&quot;"/>
 								</option>
 								<option id="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.mcpu.1299281831" name="Arm family" superClass="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.mcpu" value="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.mcpu.cortex-m7" valueType="enumerated"/>
 								<option id="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.instructionset.2065131870" name="Instruction set" superClass="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.instructionset" value="com.nxp.s32ds.cle.arm.mbs.arm32.bare.tool.assembler.option.target.instructionset.thumb" valueType="enumerated"/>
@@ -220,6 +223,6 @@
 		<COND_TOOLCHAIN_COMPONENTS_OPTION>COPY=platform.driver.Platform;platform.driver.clock;platform.driver.osif;platform.driver.mcu;platform.driver.ecum;platform.driver.port;platform.driver.dio;platform.driver.dem;platform.driver.gpt;platform.driver.Can_43_FLEXCAN;platform.driver.uart;platform.driver.mcl;platform.driver.CanIf</COND_TOOLCHAIN_COMPONENTS_OPTION>
 	</storageModule>
 	<storageModule moduleId="com.nxp.s32ds.cle.uct.core">
-		<sdkComponents>platform.driver.clock;platform.driver.rte_mcu;platform.driver.osif;platform.driver.uart;platform.driver.rte_uart;platform.driver.det;platform.driver.CanIf;platform.driver.Can_43_FLEXCAN;platform.driver.rte_can;platform.driver.mcu;platform.driver.port;platform.driver.rte_port;platform.driver.dio;platform.driver.rte_dio;platform.driver.Platform;platform.driver.rte_platform;platform.driver.ecum;platform.driver.rte_mcl;platform.driver.gpt;platform.driver.rte_gpt;platform.driver.dem;platform.driver.rte_dem;platform.driver.mcl</sdkComponents>
+		<sdkComponents>platform.driver.Platform;platform.driver.det;platform.driver.rte_platform;platform.driver.clock;platform.driver.rte_mcu;platform.driver.osif;platform.driver.mcu;platform.driver.ecum;platform.driver.port;platform.driver.rte_port;platform.driver.dio;platform.driver.rte_dio;platform.driver.dem;platform.driver.rte_dem;platform.driver.gpt;platform.driver.rte_gpt;platform.driver.Can_43_FLEXCAN;platform.driver.rte_can;platform.driver.uart;platform.driver.rte_uart;platform.driver.mcl;platform.driver.rte_mcl;platform.driver.CanIf</sdkComponents>
 	</storageModule>
 </cproject>

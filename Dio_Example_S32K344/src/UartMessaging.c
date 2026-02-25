@@ -157,26 +157,35 @@ void UartMessaging_Test(void){
 }
 
 void UartMessaging_Update(void){
+	volatile int i;
 	UartMessaging_CreateBuffer(idUartInvertorStanga);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartInvertorDreapta);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartInvertoare);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartBord);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartAcceleratie);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartFrana);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-
+	i=100000;
+	while(i--);
 	UartMessaging_CreateBuffer(idUartBaterie);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
+	i=100000;
+	while(i--);
 }
 
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value){

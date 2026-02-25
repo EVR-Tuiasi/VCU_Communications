@@ -20,13 +20,13 @@ extern "C"{
 ==================================================================================================*/
 
 typedef enum{
-	idUartInvertorStanga = 0x00000010,
-	idUartInvertorDreapta = 0x00000011,
-	idUartInvertoare = 0x00000012,
-	idUartBord = 0x00000020,
-	idUartAcceleratie = 0x00000030,
-	idUartFrana = 0x00000031,
-	idUartBaterie = 0x000040
+	idUartInvertorStanga = 0x10,
+	idUartInvertorDreapta = 0x11,
+	idUartInvertoare = 0x12,
+	idUartBord = 0x13,
+	idUartAcceleratie = 0x30,
+	idUartFrana = 0x31,
+	idUartBaterie = 0x14
 }idUart_t;
 
 typedef enum{

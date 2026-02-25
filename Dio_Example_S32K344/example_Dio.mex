@@ -44,7 +44,7 @@
                <pins>
                   <pin peripheral="LPUART2" signal="lpuart2_tx" pin_num="B3" pin_signal="PTA9">
                      <pin_features>
-                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
                   <pin peripheral="CAN3" signal="can3_tx" pin_num="P17" pin_signal="PTC28"/>
@@ -3151,8 +3151,38 @@
                                  <array name="CanHwFilter">
                                     <struct name="0">
                                        <setting name="Name" value="Can_aHwFilter_Object_Mesaj1"/>
-                                       <setting name="CanHwFilterCode" value="0x0CF11A12"/>
-                                       <setting name="CanHwFilterMask" value="0x0CF11A12"/>
+                                       <setting name="CanHwFilterCode" value="0x110"/>
+                                       <setting name="CanHwFilterMask" value="0x110"/>
+                                    </struct>
+                                    <struct name="1">
+                                       <setting name="Name" value="Can_aHwFilter_Object_1"/>
+                                       <setting name="CanHwFilterCode" value="0x111"/>
+                                       <setting name="CanHwFilterMask" value="0x111"/>
+                                    </struct>
+                                    <struct name="2">
+                                       <setting name="Name" value="Can_aHwFilter_Object_2"/>
+                                       <setting name="CanHwFilterCode" value="0x112"/>
+                                       <setting name="CanHwFilterMask" value="0x112"/>
+                                    </struct>
+                                    <struct name="3">
+                                       <setting name="Name" value="Can_aHwFilter_Object_3"/>
+                                       <setting name="CanHwFilterCode" value="0x113"/>
+                                       <setting name="CanHwFilterMask" value="0x113"/>
+                                    </struct>
+                                    <struct name="4">
+                                       <setting name="Name" value="Can_aHwFilter_Object_4"/>
+                                       <setting name="CanHwFilterCode" value="0x330"/>
+                                       <setting name="CanHwFilterMask" value="0x330"/>
+                                    </struct>
+                                    <struct name="5">
+                                       <setting name="Name" value="Can_aHwFilter_Object_5"/>
+                                       <setting name="CanHwFilterCode" value="0x331"/>
+                                       <setting name="CanHwFilterMask" value="0x331"/>
+                                    </struct>
+                                    <struct name="6">
+                                       <setting name="Name" value="Can_aHwFilter_Object_6"/>
+                                       <setting name="CanHwFilterCode" value="0x114"/>
+                                       <setting name="CanHwFilterMask" value="0x114"/>
                                     </struct>
                                  </array>
                                  <array name="CanTTHardwareObjectTrigger"/>
@@ -3230,18 +3260,96 @@
                               <setting name="0" value="1"/>
                            </array>
                            <array name="CanIfMaxTxPduCfg">
-                              <setting name="0" value="1"/>
+                              <setting name="0" value="7"/>
                            </array>
                            <array name="CanIfTxPduCfg">
                               <struct name="0">
                                  <setting name="Name" value="CanIfTxPduCfg_0"/>
                                  <array name="CanIfTxPduCanId">
-                                    <setting name="0" value="0x0CF11A12"/>
+                                    <setting name="0" value="0x110"/>
                                  </array>
                                  <array name="CanIfTxPduCanIdType">
                                     <setting name="0" value="EXTENDED_CAN"/>
                                  </array>
                                  <setting name="CanIfTxPduId" value="0"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="1">
+                                 <setting name="Name" value="CanIfTxPduCfg_1"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x111"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="1"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="2">
+                                 <setting name="Name" value="CanIfTxPduCfg_2"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x112"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="2"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="3">
+                                 <setting name="Name" value="CanIfTxPduCfg_3"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x113"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="3"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="4">
+                                 <setting name="Name" value="CanIfTxPduCfg_4"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x330"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="4"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="5">
+                                 <setting name="Name" value="CanIfTxPduCfg_5"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x331"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="5"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="6">
+                                 <setting name="Name" value="CanIfTxPduCfg_6"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x114"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="6"/>
                                  <array name="CanIfTxPduUserTxConfirmationName"/>
                                  <array name="CanIfTxPduUserTxConfirmationUL"/>
                                  <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>

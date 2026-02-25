@@ -65,6 +65,8 @@ extern "C" {
 *                                       GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+uint8_t dataDeTrimis[8]={0, 0, 0, 0, 0, 0, 0x13, 0x88};
+
 int main(void)
 {
 	Mcu_Init(NULL_PTR);
@@ -81,11 +83,14 @@ int main(void)
 	CanMessaging_Init();
 	UartMessaging_Init();
 
-	Can_PduType pduInfo;
-	/*pduInfo.swPduHandle=0;
+	/*Can_PduType pduInfo;
+	pduInfo.swPduHandle=0;
 	pduInfo.length=8;
 	pduInfo.sdu=dataDeTrimis;
-	pduInfo.id=CAN_TARGET_ID | 0x80000000U;*/
+	pduInfo.id=0x114 | 0x80000000U;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);*/
+	UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
+	//Uart_SyncSend(UART_Channel, dataDeTrimis, 10, 10000000);
 	volatile int i;
 	while(1){
 		UartMessaging_Update();

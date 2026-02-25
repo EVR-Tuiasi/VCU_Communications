@@ -32,8 +32,8 @@ typedef enum{
 	idCanInvertorStanga = 0x00000110,
 	idCanInvertorDreapta = 0x00000111,
 	idCanInvertoare = 0x00000112,
-	idCanBaterie = 0x00000440,
-	idCanBord = 0x00000220
+	idCanBaterie = 0x00000114,
+	idCanBord = 0x00000113
 }idCan_t;
 
 typedef enum{
