@@ -219,6 +219,7 @@ void CanMessaging_Update(void){
 
 void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value){
 	switch(DesiredValueType){
+		//TSAC
 		case Can_TSAC_MedianCellTemperature:
 			baterieCan.MedianCellTemperature = Value;
 			break;
@@ -241,7 +242,10 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			baterieCan.OverallVoltage = Value;
 			break;
 		case Can_TSAC_OverallCurrent:
-			baterieCan.OverallCurrent = Value;
+			if(Value>8095)
+				baterieCan.OverallCurrent = 0;
+			else
+				baterieCan.OverallCurrent = Value;
 			break;
 		case Can_TSAC_IsAmsSafe:
 			baterieCan.AmsError = Value;
@@ -261,6 +265,7 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_TSAC_IsBms1Working:
 			baterieCan.Bms1Error = Value;
 			break;
+		//PEDALS
 		case Can_PEDALS_AcceleratorSensor1Voltage:
 			pedaleCan.AcceleratorSensor1Voltage = Value;
 			break;
@@ -268,10 +273,16 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			pedaleCan.AcceleratorSensor2Voltage = Value;
 			break;
 		case Can_PEDALS_AcceleratorSensor1TravelPercentage:
-			pedaleCan.AcceleratorSensor1TravelPercentage = Value;
+			if(Value>100)
+				pedaleCan.AcceleratorSensor1TravelPercentage = 0;
+			else
+				pedaleCan.AcceleratorSensor1TravelPercentage = Value;
 			break;
 		case Can_PEDALS_AcceleratorSensor2TravelPercentage:
-			pedaleCan.AcceleratorSensor2TravelPercentage = Value;
+			if(Value>100)
+				pedaleCan.AcceleratorSensor2TravelPercentage = 0;
+			else
+				pedaleCan.AcceleratorSensor2TravelPercentage = Value;
 			break;
 		case Can_PEDALS_BrakeSensor1Voltage:
 			pedaleCan.BrakeSensor1Voltage = Value;
@@ -280,13 +291,22 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			pedaleCan.BrakeSensor2Voltage = Value;
 			break;
 		case Can_PEDALS_BrakeSensor1TravelPercentage:
-			pedaleCan.BrakeSensor1TravelPercentage = Value;
+			if(Value>100)
+				pedaleCan.BrakeSensor1TravelPercentage = 0;
+			else
+				pedaleCan.BrakeSensor1TravelPercentage = Value;
 			break;
 		case Can_PEDALS_BrakeSensor2TravelPercentage:
-			pedaleCan.BrakeSensor2TravelPercentage = Value;
+			if(Value>100)
+				pedaleCan.BrakeSensor2TravelPercentage = 0;
+			else
+				pedaleCan.BrakeSensor2TravelPercentage = Value;
 			break;
 		case Can_PEDALS_PressureSensorVoltage:
-			pedaleCan.PressureSensorVoltage = Value;
+			if(Value>500)
+				pedaleCan.PressureSensorVoltage = 0;
+			else
+				pedaleCan.PressureSensorVoltage = Value;
 			break;
 		case Can_PEDALS_PressureSensorBars:
 			pedaleCan.PressureSensorBars = Value;
@@ -333,6 +353,7 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_PEDALS_Brake_Implausibility:
 			pedaleCan.Brake_Implausibility = Value;
 			break;
+		//INVERTERS
 		case Can_INVERTERS_LeftInverterTemperature:
 			invertoareCan.LeftInverterTemperature = Value;
 			break;
@@ -340,22 +361,37 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			invertoareCan.LeftMotorTemperature = Value;
 			break;
 		case Can_INVERTERS_LeftInverterInputVoltage:
-			invertoareCan.LeftInverterInputVoltage = Value;
+			if(Value>1800)
+				invertoareCan.LeftInverterInputVoltage = 0;
+			else
+				invertoareCan.LeftInverterInputVoltage = Value;
 			break;
 		case Can_INVERTERS_LeftInverterCurrent:
-			invertoareCan.LeftInverterCurrent = Value;
+			if(Value>4000)
+				invertoareCan.LeftInverterCurrent = 0;
+			else
+				invertoareCan.LeftInverterCurrent = Value;
 			break;
 		case Can_INVERTERS_LeftMotorRpm:
-			invertoareCan.LeftMotorRpm = Value;
+			if(Value>6000)
+				invertoareCan.LeftMotorRpm = 0;
+			else
+				invertoareCan.LeftMotorRpm = Value;
 			break;
 		case Can_INVERTERS_LeftMotorSpeedKmh:
 			invertoareCan.LeftMotorSpeedKmh = Value;
 			break;
 		case Can_INVERTERS_LeftInverterThrottle:
-			invertoareCan.LeftInverterThrottle = Value;
+			if(Value>250)
+				invertoareCan.LeftInverterThrottle = 0;
+			else
+				invertoareCan.LeftInverterThrottle = Value;
 			break;
 		case Can_INVERTERS_LeftInverterThrottleFeedback:
-			invertoareCan.LeftInverterThrottleFeedback = Value;
+			if(Value>250)
+				invertoareCan.LeftInverterThrottleFeedback = 0;
+			else
+				invertoareCan.LeftInverterThrottleFeedback = Value;
 			break;
 		case Can_INVERTERS_RightInverterTemperature:
 			invertoareCan.RightInverterTemperature = Value;
@@ -364,22 +400,37 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			invertoareCan.RightMotorTemperature = Value;
 			break;
 		case Can_INVERTERS_RightInverterInputVoltage:
-			invertoareCan.RightInverterInputVoltage = Value;
+			if(Value>1800)
+				invertoareCan.RightInverterInputVoltage = 0;
+			else
+				invertoareCan.RightInverterInputVoltage = Value;
 			break;
 		case Can_INVERTERS_RightInverterCurrent:
-			invertoareCan.RightInverterCurrent = Value;
+			if(Value>4000)
+				invertoareCan.RightInverterCurrent = 0;
+			else
+				invertoareCan.RightInverterCurrent = Value;
 			break;
 		case Can_INVERTERS_RightMotorRpm:
-			invertoareCan.RightMotorRpm = Value;
+			if(Value>6000)
+				invertoareCan.RightMotorRpm = 0;
+			else
+				invertoareCan.RightMotorRpm = Value;
 			break;
 		case Can_INVERTERS_RightMotorSpeedKmh:
 			invertoareCan.RightMotorSpeedKmh = Value;
 			break;
 		case Can_INVERTERS_RightInverterSentThrottle:
-			invertoareCan.RightInverterSentThrottle = Value;
+			if(Value>250)
+				invertoareCan.RightInverterSentThrottle = 0;
+			else
+				invertoareCan.RightInverterSentThrottle = Value;
 			break;
 		case Can_INVERTERS_RightInverterThrottleFeedback:
-			invertoareCan.RightInverterThrottleFeedback = Value;
+			if(Value>250)
+				invertoareCan.RightInverterThrottleFeedback = 0;
+			else
+				invertoareCan.RightInverterThrottleFeedback = Value;
 			break;
 		case Can_INVERTERS_IsCarInReverse:
 			invertoareCan.IsCarInReverse = Value;
@@ -387,6 +438,7 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_INVERTERS_IsCarRunning:
 			invertoareCan.IsCarRunning = Value;
 			break;
+		//DASHBOARD
 		case Can_DASHBOARD_ActivationButtonPressed:
 			bordCan.ActivationButtonPressed = Value;
 			break;

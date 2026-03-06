@@ -190,6 +190,7 @@ void UartMessaging_Update(void){
 
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value){
 	switch(DesiredValueType){
+		//TSAC
 		case Uart_TSAC_MedianCellTemperature:
 			baterieUart.MedianCellTemperature = Value;
 			break;
@@ -212,7 +213,10 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			baterieUart.OverallVoltage = Value;
 			break;
 		case Uart_TSAC_OverallCurrent:
-			baterieUart.OverallCurrent = Value;
+			if(Value>8095)
+				baterieUart.OverallCurrent = 0;
+			else
+				baterieUart.OverallCurrent = Value;
 			break;
 		case Uart_TSAC_IsAmsSafe:
 			baterieUart.AmsError = Value;
@@ -232,6 +236,7 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_TSAC_IsBms1Working:
 			baterieUart.Bms1Error = Value;
 			break;
+		//PEDALS
 		case Uart_PEDALS_AcceleratorSensor1Voltage:
 			pedaleUart.AcceleratorSensor1Voltage = Value;
 			break;
@@ -239,10 +244,16 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			pedaleUart.AcceleratorSensor2Voltage = Value;
 			break;
 		case Uart_PEDALS_AcceleratorSensor1TravelPercentage:
-			pedaleUart.AcceleratorSensor1TravelPercentage = Value;
+			if(Value>100)
+				pedaleUart.AcceleratorSensor1TravelPercentage = 0;
+			else
+				pedaleUart.AcceleratorSensor1TravelPercentage = Value;
 			break;
 		case Uart_PEDALS_AcceleratorSensor2TravelPercentage:
-			pedaleUart.AcceleratorSensor2TravelPercentage = Value;
+			if(Value>100)
+				pedaleUart.AcceleratorSensor2TravelPercentage = 0;
+			else
+				pedaleUart.AcceleratorSensor2TravelPercentage = Value;
 			break;
 		case Uart_PEDALS_BrakeSensor1Voltage:
 			pedaleUart.BrakeSensor1Voltage = Value;
@@ -251,13 +262,22 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			pedaleUart.BrakeSensor2Voltage = Value;
 			break;
 		case Uart_PEDALS_BrakeSensor1TravelPercentage:
-			pedaleUart.BrakeSensor1TravelPercentage = Value;
+			if(Value>100)
+				pedaleUart.BrakeSensor1TravelPercentage = 0;
+			else
+				pedaleUart.BrakeSensor1TravelPercentage = Value;
 			break;
 		case Uart_PEDALS_BrakeSensor2TravelPercentage:
-			pedaleUart.BrakeSensor2TravelPercentage = Value;
+			if(Value>100)
+				pedaleUart.BrakeSensor2TravelPercentage = 0;
+			else
+				pedaleUart.BrakeSensor2TravelPercentage = Value;
 			break;
 		case Uart_PEDALS_PressureSensorVoltage:
-			pedaleUart.PressureSensorVoltage = Value;
+			if(Value>500)
+				pedaleUart.PressureSensorVoltage = 0;
+			else
+				pedaleUart.PressureSensorVoltage = Value;
 			break;
 		case Uart_PEDALS_PressureSensorBars:
 			pedaleUart.PressureSensorBars = Value;
@@ -304,6 +324,7 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_PEDALS_Brake_Implausibility:
 			pedaleUart.Brake_Implausibility = Value;
 			break;
+		//INVERTERS
 		case Uart_INVERTERS_LeftInverterTemperature:
 			invertoareUart.LeftInverterTemperature = Value;
 			break;
@@ -311,22 +332,37 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			invertoareUart.LeftMotorTemperature = Value;
 			break;
 		case Uart_INVERTERS_LeftInverterInputVoltage:
-			invertoareUart.LeftInverterInputVoltage = Value;
+			if(Value>1800)
+				invertoareUart.LeftInverterInputVoltage = 0;
+			else
+				invertoareUart.LeftInverterInputVoltage = Value;
 			break;
 		case Uart_INVERTERS_LeftInverterCurrent:
-			invertoareUart.LeftInverterCurrent = Value;
+			if(Value>4000)
+				invertoareUart.LeftInverterCurrent = 0;
+			else
+				invertoareUart.LeftInverterCurrent = Value;
 			break;
 		case Uart_INVERTERS_LeftMotorRpm:
-			invertoareUart.LeftMotorRpm = Value;
+			if(Value>6000)
+				invertoareUart.LeftMotorRpm = 0;
+			else
+				invertoareUart.LeftMotorRpm = Value;
 			break;
 		case Uart_INVERTERS_LeftMotorSpeedKmh:
 			invertoareUart.LeftMotorSpeedKmh = Value;
 			break;
 		case Uart_INVERTERS_LeftInverterThrottle:
-			invertoareUart.LeftInverterThrottle = Value;
+			if(Value>250)
+				invertoareUart.LeftInverterThrottle = 0;
+			else
+				invertoareUart.LeftInverterThrottle = Value;
 			break;
 		case Uart_INVERTERS_LeftInverterThrottleFeedback:
-			invertoareUart.LeftInverterThrottleFeedback = Value;
+			if(Value>250)
+				invertoareUart.LeftInverterThrottleFeedback = 0;
+			else
+				invertoareUart.LeftInverterThrottleFeedback = Value;
 			break;
 		case Uart_INVERTERS_RightInverterTemperature:
 			invertoareUart.RightInverterTemperature = Value;
@@ -335,22 +371,37 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			invertoareUart.RightMotorTemperature = Value;
 			break;
 		case Uart_INVERTERS_RightInverterInputVoltage:
-			invertoareUart.RightInverterInputVoltage = Value;
+			if(Value>1800)
+				invertoareUart.RightInverterInputVoltage = 0;
+			else
+				invertoareUart.RightInverterInputVoltage = Value;
 			break;
 		case Uart_INVERTERS_RightInverterCurrent:
-			invertoareUart.RightInverterCurrent = Value;
+			if(Value>4000)
+				invertoareUart.RightInverterCurrent = 0;
+			else
+				invertoareUart.RightInverterCurrent = Value;
 			break;
 		case Uart_INVERTERS_RightMotorRpm:
-			invertoareUart.RightMotorRpm = Value;
+			if(Value>6000)
+				invertoareUart.RightMotorRpm = 0;
+			else
+				invertoareUart.RightMotorRpm = Value;
 			break;
 		case Uart_INVERTERS_RightMotorSpeedKmh:
 			invertoareUart.RightMotorSpeedKmh = Value;
 			break;
 		case Uart_INVERTERS_RightInverterSentThrottle:
-			invertoareUart.RightInverterSentThrottle = Value;
+			if(Value>250)
+				invertoareUart.RightInverterSentThrottle = 0;
+			else
+				invertoareUart.RightInverterSentThrottle = Value;
 			break;
 		case Uart_INVERTERS_RightInverterThrottleFeedback:
-			invertoareUart.RightInverterThrottleFeedback = Value;
+			if(Value>250)
+				invertoareUart.RightInverterThrottleFeedback = 0;
+			else
+				invertoareUart.RightInverterThrottleFeedback = Value;
 			break;
 		case Uart_INVERTERS_IsCarInReverse:
 			invertoareUart.IsCarInReverse = Value;
@@ -358,6 +409,7 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_INVERTERS_IsCarRunning:
 			invertoareUart.IsCarRunning = Value;
 			break;
+		//DASHBOARD
 		case Uart_DASHBOARD_ActivationButtonPressed:
 			bordUart.ActivationButtonPressed = Value;
 			break;
