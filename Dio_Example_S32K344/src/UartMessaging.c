@@ -556,7 +556,7 @@ void UartMessaging_CreateBuffer(idUart_t type){
 		case idUartInvertorStanga:
 			bufferUart[0] = idUartInvertorStanga;
 			bufferUart[1] = UartMessaging_ReadValue(Uart_INVERTERS_LeftMotorRpm) >> 5;
-			bufferUart[2] = ((UartMessaging_ReadValue(Uart_INVERTERS_LeftMotorRpm) & (0x00F8))) | ((UartMessaging_ReadValue(Uart_INVERTERS_LeftInverterInputVoltage) & (0x0700)) >> 8);
+			bufferUart[2] = (((UartMessaging_ReadValue(Uart_INVERTERS_LeftMotorRpm) & (0x001F) )) << 3) | ((UartMessaging_ReadValue(Uart_INVERTERS_LeftInverterInputVoltage) & (0x0700)) >> 8);
 			bufferUart[3] = ((uint8_t) UartMessaging_ReadValue(Uart_INVERTERS_LeftInverterInputVoltage) & (0x00FF));
 			bufferUart[4] = UartMessaging_ReadValue(Uart_INVERTERS_LeftInverterThrottleFeedback);
 			bufferUart[5] = UartMessaging_ReadValue(Uart_INVERTERS_LeftMotorSpeedKmh);
@@ -568,7 +568,7 @@ void UartMessaging_CreateBuffer(idUart_t type){
 		case idUartInvertorDreapta:
 			bufferUart[0] = idUartInvertorDreapta;
 			bufferUart[1] = UartMessaging_ReadValue(Uart_INVERTERS_RightMotorRpm) >> 5;
-			bufferUart[2] = ((UartMessaging_ReadValue(Uart_INVERTERS_RightMotorRpm) & (0x00F8))) | ((UartMessaging_ReadValue(Uart_INVERTERS_RightInverterInputVoltage) & (0x700)) >> 8);
+			bufferUart[2] = (((UartMessaging_ReadValue(Uart_INVERTERS_RightMotorRpm) & (0x001F) )) << 3) | ((UartMessaging_ReadValue(Uart_INVERTERS_RightInverterInputVoltage) & (0x0700)) >> 8);
 			bufferUart[3] = ((uint8_t) UartMessaging_ReadValue(Uart_INVERTERS_RightInverterInputVoltage) & (0x7FF));
 			bufferUart[4] = UartMessaging_ReadValue(Uart_INVERTERS_RightInverterThrottleFeedback);
 			bufferUart[5] = UartMessaging_ReadValue(Uart_INVERTERS_RightMotorSpeedKmh);
@@ -605,23 +605,23 @@ void UartMessaging_CreateBuffer(idUart_t type){
 			bufferUart[0] = idUartAcceleratie;
 			bufferUart[1] = (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor1_ShortToGnd) << 7) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor1_ShortToVcc) << 6) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor1_OutOfRangeOutput) << 5) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor2_ShortToGnd) << 4) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor2_ShortToVcc) << 3) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Sensor2_OutOfRangeOutput) << 2) | (UartMessaging_ReadValue(Uart_PEDALS_Accel_Implausibility) << 1);
 			bufferUart[2] = (UartMessaging_ReadValue(Uart_PEDALS_PressureSensorVoltage) & (0x01C0)) >> 6;
-			bufferUart[3] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage) & (0x0060)) >> 5) | ((UartMessaging_ReadValue(Uart_PEDALS_PressureSensorVoltage) & (0x003F)) << 2);
-			bufferUart[4] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage) & (0x001F)) << 3) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage) & (0x007)) >>4);
-			bufferUart[5] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2Voltage) & (0x3C00)) >> 10) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage) & (0x000F)) << 4);
+			bufferUart[3] = ((UartMessaging_ReadValue(Uart_PEDALS_PressureSensorVoltage) & (0x003F)) << 2) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage) & (0x60)) >> 5);
+			bufferUart[4] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage) & (0x1F)) << 3) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage) & (0x70)) >> 4);
+			bufferUart[5] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage) & (0x0F)) << 4) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2Voltage) & (0x3C00)) >> 10);
 			bufferUart[6] = (UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2Voltage) & (0x03FC)) >> 2;
-			bufferUart[7] = (UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2Voltage) & (0x0003) << 6) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1Voltage) & (0x3F00)) >> 8);
+			bufferUart[7] = ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1Voltage) & (0x3F00)) >>8) | ((UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor2Voltage) & (0x0003)) << 6);
 			bufferUart[8] = UartMessaging_ReadValue(Uart_PEDALS_AcceleratorSensor1Voltage) & (0x00FF);
 			bufferUart[9] = CRC_calculate(10);
 			break;
 		case idUartFrana:
 			bufferUart[0] = idUartFrana;
 			bufferUart[1] = (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor1_ShortToGnd) << 7) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor1_ShortToVcc) << 6) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor1_OutOfRangeOutput) << 5) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor2_ShortToGnd) << 4) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor2_ShortToVcc) << 3) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Sensor2_OutOfRangeOutput) << 2) | (UartMessaging_ReadValue(Uart_PEDALS_Brake_Implausibility) << 1);
-			bufferUart[2] = (UartMessaging_ReadValue(Uart_PEDALS_PressureSensorBars) & (0x00C0)) >> 6;
-			bufferUart[3] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2TravelPercentage) & (0x0060)) >> 5) | ((UartMessaging_ReadValue(Uart_PEDALS_PressureSensorBars) & (0x003F)) << 2);
-			bufferUart[4] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2TravelPercentage) & (0x001F)) << 3) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1TravelPercentage) & (0x007)) >>4);
-			bufferUart[5] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2Voltage) & (0x3C00)) >> 10) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1TravelPercentage) & (0x000F)) << 4);
+			bufferUart[2] = (UartMessaging_ReadValue(Uart_PEDALS_PressureSensorBars) & (0xC0)) >> 6;
+			bufferUart[3] = ((UartMessaging_ReadValue(Uart_PEDALS_PressureSensorBars) & (0x3F)) << 2) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2TravelPercentage) & (0x60)) >> 5);
+			bufferUart[4] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2TravelPercentage) & (0x1F)) << 3) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1TravelPercentage) & (0x70)) >> 4);
+			bufferUart[5] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1TravelPercentage) & (0x0F)) << 4) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2Voltage) & (0x3C00)) >> 10);
 			bufferUart[6] = (UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2Voltage) & (0x03FC)) >> 2;
-			bufferUart[7] = (UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2Voltage) & (0x0003) << 6) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1Voltage) & (0x3F00)) >> 8);
+			bufferUart[7] = ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1Voltage) & (0x3F00)) >>8) | ((UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor2Voltage) & (0x0003)) << 6);
 			bufferUart[8] = UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1Voltage) & (0x00FF);
 			bufferUart[9] = CRC_calculate(10);
 			break;
@@ -640,9 +640,9 @@ void UartMessaging_CreateBuffer(idUart_t type){
 	}
 }
 
-uint8 CRC_calculate(uint8 length){
-	uint8 crc=0, message[length];
-	uint16 divisor = 0x8D, dividend;
+uint8_t CRC_calculate(uint8_t length){
+	uint8_t crc=0, message[length];
+	uint16_t divisor = 0x8D, dividend;
 	int i, j;
 
 	for(i=0; i<length-1; i++)

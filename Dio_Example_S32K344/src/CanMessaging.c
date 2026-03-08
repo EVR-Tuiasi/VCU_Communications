@@ -587,7 +587,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
+			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
 			UartMessaging_SetValue(Uart_PEDALS_PressureSensorBars, ((uint8_t)(data[1]<<6)) | (data[2]>>2));
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Implausibility, (data[0] & (1<<1)) >> 1);
 			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
@@ -600,7 +600,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
 			CanMessaging_SetValue(Can_PEDALS_PressureSensorBars, ((uint8_t)(data[1]<<6)) | (data[2]>>2));
 			CanMessaging_SetValue(Can_PEDALS_Brake_Implausibility, (data[0] & (1<<1)) >> 1);
 			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
@@ -616,8 +616,8 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF));
+			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
+			UartMessaging_SetValue(Uart_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<6)) | (data[2]>>2)) & (0x01FF));
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Implausibility, (data[0] & (1<<1)) >> 1);
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
 			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
@@ -629,8 +629,8 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
 			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
 			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<6)) | (data[3]>>3)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<8)) | (data[2]>>2)) & (0x01FF));
+			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
+			CanMessaging_SetValue(Can_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<6)) | (data[2]>>2)) & (0x01FF));
 			CanMessaging_SetValue(Can_PEDALS_Accel_Implausibility, (data[0] & (1<<1)) >> 1);
 			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
 			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
@@ -647,7 +647,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, data[5]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorSpeedKmh, data[4]);
 			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, data[3]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
+			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x07FF));
 			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
 
 			CanMessaging_SetValue(Can_INVERTERS_LeftMotorTemperature, data[7]);
@@ -655,7 +655,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottle, data[5]);
 			CanMessaging_SetValue(Can_INVERTERS_LeftMotorSpeedKmh, data[4]);
 			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottleFeedback, data[3]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
+			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x07FF));
 			CanMessaging_SetValue(Can_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
 			break;
 
