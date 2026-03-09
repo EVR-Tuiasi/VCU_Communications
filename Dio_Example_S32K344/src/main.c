@@ -84,6 +84,9 @@ int main(void)
 	Mcl_Init(NULL_PTR);
 	Port_Init(NULL_PTR);
 	Platform_Init(NULL_PTR);
+	Can_43_FLEXCAN_Init(NULL_PTR);
+	CanIf_Init(NULL_PTR);
+
 	CanMessaging_Init();
 	UartMessaging_Init();
 	//UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
@@ -131,9 +134,14 @@ int main(void)
 	pduInfoTSAC.sdu=dataDeTrimisTSAC;
 	pduInfoTSAC.id=0x114 | 0x80000000U;
 
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoFrana);
+	volatile int j;
+	while(1){
+		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
+		j=100000;
+		while(j--);
+	}
 
-	volatile i;
+	volatile int i;
 	while(1){
 		UartMessaging_Update();
 		i=400000;

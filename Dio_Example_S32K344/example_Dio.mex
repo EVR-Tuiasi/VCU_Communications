@@ -47,31 +47,31 @@
                         <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="CAN3" signal="can3_tx" pin_num="P17" pin_signal="PTC28"/>
-                  <pin peripheral="CAN3" signal="can3_rx" pin_num="N16" pin_signal="PTC29"/>
-                  <pin peripheral="CAN2" signal="can2_tx" pin_num="A8" pin_signal="PTE24"/>
-                  <pin peripheral="CAN2" signal="can2_rx" pin_num="B8" pin_signal="PTE25"/>
-                  <pin peripheral="SIUL2" signal="gpio, 32" pin_num="P16" pin_signal="PTB0">
-                     <pin_features>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="SIUL2" signal="gpio, 33" pin_num="R17" pin_signal="PTB1">
-                     <pin_features>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="SIUL2" signal="gpio, 100" pin_num="G16" pin_signal="PTD4">
-                     <pin_features>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="SIUL2" signal="gpio, 118" pin_num="G17" pin_signal="PTD22">
-                     <pin_features>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
                   <pin peripheral="LPUART2" signal="lpuart2_rx" pin_num="A2" pin_signal="PTA8"/>
+                  <pin peripheral="CAN0" signal="can0_rx" pin_num="M15" pin_signal="PTA6"/>
+                  <pin peripheral="CAN0" signal="can0_tx" pin_num="M16" pin_signal="PTA7"/>
+                  <pin peripheral="SIUL2" signal="gpio, 88" pin_num="R15" pin_signal="PTC24">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="SIUL2" signal="gpio, 85" pin_num="R13" pin_signal="PTC21">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="CAN1" signal="can1_tx" pin_num="N15" pin_signal="PTC8"/>
+                  <pin peripheral="CAN1" signal="can1_rx" pin_num="N14" pin_signal="PTC9"/>
+                  <pin peripheral="SIUL2" signal="gpio, 98" pin_num="F16" pin_signal="PTD2">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="SIUL2" signal="gpio, 119" pin_num="E17" pin_signal="PTD23">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
          </functions_list>
@@ -463,11 +463,6 @@
             <dependency resourceType="SWComponent" resourceId="platform.driver.uart" description="An unsupported version of the Uart in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. The project might not compile correctly." problem_level="1" source="Peripherals">
                <feature name="version" evaluation="equivalent">
                   <data type="Version">1.0.0</data>
-               </feature>
-            </dependency>
-            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data>true</data>
                </feature>
             </dependency>
          </dependencies>
@@ -1971,7 +1966,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="1">
-                                       <setting name="Name" value="CAN3_EN"/>
+                                       <setting name="Name" value="CAN0_EN"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -1984,7 +1979,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="2"/>
-                                       <setting name="PortPinPcr" value="32"/>
+                                       <setting name="PortPinPcr" value="88"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -1993,7 +1988,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="2">
-                                       <setting name="Name" value="CAN3_STB_N"/>
+                                       <setting name="Name" value="CAN0_STB_N"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2006,7 +2001,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="3"/>
-                                       <setting name="PortPinPcr" value="33"/>
+                                       <setting name="PortPinPcr" value="85"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2015,7 +2010,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="3">
-                                       <setting name="Name" value="CAN3_TX"/>
+                                       <setting name="Name" value="CAN0_TX"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2028,7 +2023,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="4"/>
-                                       <setting name="PortPinPcr" value="92"/>
+                                       <setting name="PortPinPcr" value="7"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2037,7 +2032,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="4">
-                                       <setting name="Name" value="CAN3_RX"/>
+                                       <setting name="Name" value="CAN0_RX"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2050,7 +2045,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="5"/>
-                                       <setting name="PortPinPcr" value="93"/>
+                                       <setting name="PortPinPcr" value="6"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2059,7 +2054,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="5">
-                                       <setting name="Name" value="CAN2_EN"/>
+                                       <setting name="Name" value="CAN1_STB_N"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2072,7 +2067,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="6"/>
-                                       <setting name="PortPinPcr" value="100"/>
+                                       <setting name="PortPinPcr" value="98"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2081,7 +2076,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="6">
-                                       <setting name="Name" value="CAN2_STB_N"/>
+                                       <setting name="Name" value="CAN1_TX"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2094,7 +2089,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="7"/>
-                                       <setting name="PortPinPcr" value="118"/>
+                                       <setting name="PortPinPcr" value="72"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2103,7 +2098,7 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="7">
-                                       <setting name="Name" value="CAN2_TX"/>
+                                       <setting name="Name" value="CAN1_RX"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
                                        <setting name="PortPinSafeMode" value="false"/>
@@ -2116,7 +2111,7 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="8"/>
-                                       <setting name="PortPinPcr" value="152"/>
+                                       <setting name="PortPinPcr" value="73"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2125,28 +2120,6 @@
                                        <array name="PortPinEcucPartitionRef"/>
                                     </struct>
                                     <struct name="8">
-                                       <setting name="Name" value="CAN2_RX"/>
-                                       <setting name="PortPinPue" value="false"/>
-                                       <setting name="PortPinPus" value="false"/>
-                                       <setting name="PortPinSafeMode" value="false"/>
-                                       <setting name="PortPinDse" value="false"/>
-                                       <setting name="PortPinWithReadBack" value="false"/>
-                                       <setting name="PortPinPke" value="false"/>
-                                       <setting name="PortPinIfe" value="false"/>
-                                       <setting name="PortPinDirectionChangeable" value="true"/>
-                                       <setting name="PortPinModeChangeable" value="true"/>
-                                       <setting name="PortPinInvertControl" value="false"/>
-                                       <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
-                                       <setting name="PortPinId" value="9"/>
-                                       <setting name="PortPinPcr" value="153"/>
-                                       <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
-                                       <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
-                                       <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <setting name="ImcrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <array name="IGFSettings"/>
-                                       <array name="PortPinEcucPartitionRef"/>
-                                    </struct>
-                                    <struct name="9">
                                        <setting name="Name" value="LPUART2_RX"/>
                                        <setting name="PortPinPue" value="false"/>
                                        <setting name="PortPinPus" value="false"/>
@@ -2159,8 +2132,30 @@
                                        <setting name="PortPinModeChangeable" value="true"/>
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
-                                       <setting name="PortPinId" value="10"/>
+                                       <setting name="PortPinId" value="9"/>
                                        <setting name="PortPinPcr" value="8"/>
+                                       <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
+                                       <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
+                                       <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
+                                       <setting name="ImcrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
+                                       <array name="IGFSettings"/>
+                                       <array name="PortPinEcucPartitionRef"/>
+                                    </struct>
+                                    <struct name="9">
+                                       <setting name="Name" value="CAN1_EN"/>
+                                       <setting name="PortPinPue" value="false"/>
+                                       <setting name="PortPinPus" value="false"/>
+                                       <setting name="PortPinSafeMode" value="false"/>
+                                       <setting name="PortPinDse" value="false"/>
+                                       <setting name="PortPinWithReadBack" value="false"/>
+                                       <setting name="PortPinPke" value="false"/>
+                                       <setting name="PortPinIfe" value="false"/>
+                                       <setting name="PortPinDirectionChangeable" value="true"/>
+                                       <setting name="PortPinModeChangeable" value="true"/>
+                                       <setting name="PortPinInvertControl" value="false"/>
+                                       <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
+                                       <setting name="PortPinId" value="10"/>
+                                       <setting name="PortPinPcr" value="119"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
@@ -2654,24 +2649,24 @@
                               <array name="PlatformIsrConfig">
                                  <struct name="0">
                                     <setting name="Name" value="PlatformIsrConfig_3"/>
-                                    <setting name="IsrName" value="FlexCAN2_0_IRQn"/>
+                                    <setting name="IsrName" value="FlexCAN0_0_IRQn"/>
                                     <setting name="IsrEnabled" value="true"/>
                                     <setting name="IsrPriority" value="0"/>
-                                    <setting name="IsrHandler" value="CAN2_ORED_IRQHandler"/>
+                                    <setting name="IsrHandler" value="CAN0_ORED_IRQHandler"/>
                                  </struct>
                                  <struct name="1">
                                     <setting name="Name" value="PlatformIsrConfig_4"/>
-                                    <setting name="IsrName" value="FlexCAN2_1_IRQn"/>
+                                    <setting name="IsrName" value="FlexCAN0_1_IRQn"/>
                                     <setting name="IsrEnabled" value="true"/>
                                     <setting name="IsrPriority" value="0"/>
-                                    <setting name="IsrHandler" value="CAN2_ORED_0_31_MB_IRQHandler"/>
+                                    <setting name="IsrHandler" value="CAN0_ORED_0_31_MB_IRQHandler"/>
                                  </struct>
                                  <struct name="2">
                                     <setting name="Name" value="PlatformIsrConfig_5"/>
-                                    <setting name="IsrName" value="FlexCAN2_2_IRQn"/>
+                                    <setting name="IsrName" value="FlexCAN0_2_IRQn"/>
                                     <setting name="IsrEnabled" value="true"/>
                                     <setting name="IsrPriority" value="0"/>
-                                    <setting name="IsrHandler" value="CAN2_ORED_32_63_MB_IRQHandler"/>
+                                    <setting name="IsrHandler" value="CAN0_ORED_32_63_MB_IRQHandler"/>
                                  </struct>
                               </array>
                               <array name="PlatformNvicEcucPartitionRef"/>
@@ -3038,7 +3033,7 @@
                            <array name="CanController">
                               <struct name="0">
                                  <setting name="Name" value="CanController_0"/>
-                                 <setting name="CanHwChannel" value="FLEXCAN_2"/>
+                                 <setting name="CanHwChannel" value="FLEXCAN_0"/>
                                  <setting name="CanControllerActivation" value="true"/>
                                  <setting name="CanControllerBaseAddress" value="0"/>
                                  <setting name="CanControllerId" value="0"/>
@@ -3086,7 +3081,7 @@
                               </struct>
                               <struct name="1">
                                  <setting name="Name" value="CanController_1"/>
-                                 <setting name="CanHwChannel" value="FLEXCAN_3"/>
+                                 <setting name="CanHwChannel" value="FLEXCAN_1"/>
                                  <setting name="CanControllerActivation" value="true"/>
                                  <setting name="CanControllerBaseAddress" value="0"/>
                                  <setting name="CanControllerId" value="1"/>
@@ -3141,7 +3136,9 @@
                                  <setting name="CanIdType" value="EXTENDED"/>
                                  <setting name="CanObjectId" value="0"/>
                                  <setting name="CanObjectType" value="RECEIVE"/>
-                                 <array name="CanObjectPayloadLength"/>
+                                 <array name="CanObjectPayloadLength">
+                                    <setting name="0" value="CAN_OBJECT_PL_8"/>
+                                 </array>
                                  <array name="CanHardwareObjectUsesPolling"/>
                                  <array name="CanTriggerTransmitEnable"/>
                                  <setting name="CanControllerRef" value="/Can_43_FLEXCAN/Can/CanConfigSet/CanController_0"/>
