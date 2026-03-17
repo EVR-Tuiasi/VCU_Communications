@@ -19,7 +19,6 @@ extern "C"{
 #include "CanIf.h"
 #include "SchM_Can_43_FLEXCAN.h"
 #include "CDD_Uart.h"
-#include "check_example.h"
 #include "Dio.h"
 #include "Mcl.h"
 #include "UartMessaging.h"

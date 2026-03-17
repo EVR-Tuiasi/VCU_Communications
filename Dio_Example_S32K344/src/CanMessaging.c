@@ -19,7 +19,6 @@ extern "C"{
 #include "CanIf.h"
 #include "SchM_Can_43_FLEXCAN.h"
 #include "CDD_Uart.h"
-#include "check_example.h"
 #include "Dio.h"
 #include "Mcl.h"
 #include "CanMessaging.h"
@@ -77,24 +76,14 @@ uint8_t bufferCan[8];
 ==================================================================================================*/
 
 void CanMessaging_Init(void){
-	Can_43_FLEXCAN_Init(NULL_PTR);
-	CanIf_Init(NULL_PTR);
-
-	Dio_WriteChannel(32, STD_HIGH); //CAN3_EN
+	Dio_WriteChannel(88, STD_HIGH); //CAN0_EN
 	volatile uint64 i = 1000000;
 	while(i--);
-	Dio_WriteChannel(33, STD_HIGH); //CAN3_STB_N
-	i = 1000000;
-	while(i--);
-	Dio_WriteChannel(100, STD_HIGH); //CAN2_EN
-	i = 1000000;
-	while(i--);
-	Dio_WriteChannel(118, STD_HIGH); //CAN2_STB_N
+	Dio_WriteChannel(85, STD_HIGH); //CAN0_STB_N
 	i = 1000000;
 	while(i--);
 
 	Can_43_FLEXCAN_SetControllerMode(Can_43_FLEXCANConf_CanController_CanController_0, CAN_CS_STARTED);
-	Can_43_FLEXCAN_SetControllerMode(Can_43_FLEXCANConf_CanController_CanController_1, CAN_CS_STARTED);
 	Can_43_FLEXCAN_EnableControllerInterrupts(0);
 }
 

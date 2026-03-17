@@ -18,7 +18,6 @@ extern "C" {
 #include "CanIf.h"
 #include "SchM_Can_43_FLEXCAN.h"
 #include "CDD_Uart.h"
-#include "check_example.h"
 #include "Dio.h"
 #include "Mcl.h"
 #include "CanMessaging.h"
@@ -84,6 +83,9 @@ int main(void)
 	Mcl_Init(NULL_PTR);
 	Port_Init(NULL_PTR);
 	Platform_Init(NULL_PTR);
+	Can_43_FLEXCAN_Init(NULL_PTR);
+	CanIf_Init(NULL_PTR);
+
 	CanMessaging_Init();
 	UartMessaging_Init();
 	//UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
@@ -131,9 +133,30 @@ int main(void)
 	pduInfoTSAC.sdu=dataDeTrimisTSAC;
 	pduInfoTSAC.id=0x114 | 0x80000000U;
 
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoFrana);
+	volatile int i;
 
-	volatile i;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInv);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoBord);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoAcc);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoFrana);
+	i=400000;
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC);
+	i=400000;
+	while(i--);
+
 	while(1){
 		UartMessaging_Update();
 		i=400000;
