@@ -45,7 +45,6 @@ extern "C" {
 /*==================================================================================================
 *                                      GLOBAL CONSTANTS
 ==================================================================================================*/
-
 /*==================================================================================================
 *                                      GLOBAL VARIABLES
 ==================================================================================================*/
@@ -88,6 +87,8 @@ int main(void)
 
 	CanMessaging_Init();
 	UartMessaging_Init();
+	volatile int i = 1000000;
+	while(i--);
 	//UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
 	//Uart_SyncSend(UART_Channel, dataDeTrimis, 10, 10000000);
 	Can_PduType pduInfoInvSt;
@@ -133,12 +134,15 @@ int main(void)
 	pduInfoTSAC.sdu=dataDeTrimisTSAC;
 	pduInfoTSAC.id=0x114 | 0x80000000U;
 
-	volatile int i;
+	//UartMessaging_Test();
 
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
-	i=400000;
-	while(i--);
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
+	while(1){
+		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
+		UartMessaging_Update();
+		i=400000;
+		while(i--);
+	}
+	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
 	i=400000;
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInv);
@@ -161,7 +165,7 @@ int main(void)
 		UartMessaging_Update();
 		i=400000;
 		while(i--);
-	}
+	}*/
     return (0U);
 }
 
