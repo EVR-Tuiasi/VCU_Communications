@@ -134,7 +134,7 @@ int main(void)
 	pduInfoTSAC.sdu=dataDeTrimisTSAC;
 	pduInfoTSAC.id=0x114 | 0x80000000U;
 
-	//UartMessaging_Test();
+	UartMessaging_Test();
 
 	while(1){
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);

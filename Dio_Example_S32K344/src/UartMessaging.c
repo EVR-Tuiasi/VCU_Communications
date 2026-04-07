@@ -101,13 +101,13 @@ void UartMessaging_Test(void){
 
 		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1Voltage, cnt);
 		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2Voltage, cnt);
-		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage, cnt);
-		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, cnt);
+		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage, cnt%101);
+		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, cnt%101);
 		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, cnt);
 		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, cnt);
-		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, cnt);
-		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, cnt);
-		UartMessaging_SetValue(Uart_PEDALS_PressureSensorVoltage, cnt);
+		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, cnt%101);
+		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, cnt%101);
+		UartMessaging_SetValue(Uart_PEDALS_PressureSensorVoltage, cnt%501);
 		UartMessaging_SetValue(Uart_PEDALS_PressureSensorBars, cnt);
 		UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_ShortToGnd, cnt & 1);
 		UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_ShortToVcc, cnt & 1);
@@ -126,20 +126,20 @@ void UartMessaging_Test(void){
 
 		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterTemperature, cnt);
 		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorTemperature, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterCurrent, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, cnt);
+		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, cnt%1801);
+		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterCurrent, cnt%4001);
+		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, cnt%6001);
 		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorSpeedKmh, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, cnt);
+		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, cnt%251);
+		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, cnt%251);
 		UartMessaging_SetValue(Uart_INVERTERS_RightInverterTemperature, cnt);
 		UartMessaging_SetValue(Uart_INVERTERS_RightMotorTemperature, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_RightInverterInputVoltage, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_RightInverterCurrent, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_RightMotorRpm, cnt);
+		UartMessaging_SetValue(Uart_INVERTERS_RightInverterInputVoltage, cnt%1801);
+		UartMessaging_SetValue(Uart_INVERTERS_RightInverterCurrent, cnt%4001);
+		UartMessaging_SetValue(Uart_INVERTERS_RightMotorRpm, cnt%6001);
 		UartMessaging_SetValue(Uart_INVERTERS_RightMotorSpeedKmh, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_RightInverterSentThrottle, cnt);
-		UartMessaging_SetValue(Uart_INVERTERS_RightInverterThrottleFeedback, cnt);
+		UartMessaging_SetValue(Uart_INVERTERS_RightInverterSentThrottle, cnt%251);
+		UartMessaging_SetValue(Uart_INVERTERS_RightInverterThrottleFeedback, cnt%251);
 		UartMessaging_SetValue(Uart_INVERTERS_IsCarInReverse, cnt & 1);
 		UartMessaging_SetValue(Uart_INVERTERS_IsCarRunning, cnt & 1);
 
