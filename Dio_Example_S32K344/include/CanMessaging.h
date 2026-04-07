@@ -149,6 +149,7 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType);
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
 void CanMessaging_CreateBuffer(idCan_t type);
+void CanMessaging_AppTest(void);
 
 #ifdef __cplusplus
 }
