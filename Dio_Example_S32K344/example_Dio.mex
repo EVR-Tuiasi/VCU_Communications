@@ -465,11 +465,6 @@
                   <data type="Version">1.0.0</data>
                </feature>
             </dependency>
-            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data>true</data>
-               </feature>
-            </dependency>
          </dependencies>
          <generated_project_files>
             <file path="board/Siul2_Port_Ip_Cfg.c" update_enabled="true"/>
@@ -3166,6 +3161,11 @@
                                        <setting name="CanHwFilterCode" value="0x114"/>
                                        <setting name="CanHwFilterMask" value="0x114"/>
                                     </struct>
+                                    <struct name="7">
+                                       <setting name="Name" value="Can_aHwFilter_Object_7"/>
+                                       <setting name="CanHwFilterCode" value="0x1806e5f4"/>
+                                       <setting name="CanHwFilterMask" value="0x1806e5f4"/>
+                                    </struct>
                                  </array>
                                  <array name="CanTTHardwareObjectTrigger"/>
                               </struct>
@@ -3235,7 +3235,7 @@
                               <setting name="0" value="2"/>
                            </array>
                            <array name="CanIfMaxTxPduCfg">
-                              <setting name="0" value="7"/>
+                              <setting name="0" value="8"/>
                            </array>
                            <array name="CanIfTxPduCfg">
                               <struct name="0">
@@ -3325,6 +3325,19 @@
                                     <setting name="0" value="EXTENDED_CAN"/>
                                  </array>
                                  <setting name="CanIfTxPduId" value="6"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="7">
+                                 <setting name="Name" value="CanIfTxPduCfg_7"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x1806e5f4"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="7"/>
                                  <array name="CanIfTxPduUserTxConfirmationName"/>
                                  <array name="CanIfTxPduUserTxConfirmationUL"/>
                                  <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>

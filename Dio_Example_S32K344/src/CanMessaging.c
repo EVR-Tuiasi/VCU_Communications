@@ -774,8 +774,8 @@ void CanMessaging_AppTest(void){
 		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottle));
 		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorSpeedKmh, CanMessaging_ReadValue(Can_INVERTERS_LeftMotorSpeedKmh));
 		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottleFeedback));
-		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottleFeedback));
-		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottleFeedback));
+		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, CanMessaging_ReadValue(Uart_INVERTERS_LeftInverterInputVoltage));
+		UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, CanMessaging_ReadValue(Uart_INVERTERS_LeftMotorRpm));
 
 		//Right Inverters
 		UartMessaging_SetValue(Uart_INVERTERS_RightMotorTemperature, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottleFeedback));

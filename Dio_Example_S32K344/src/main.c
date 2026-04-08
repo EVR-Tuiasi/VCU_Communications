@@ -134,14 +134,11 @@ int main(void)
 	pduInfoTSAC.sdu=dataDeTrimisTSAC;
 	pduInfoTSAC.id=0x114 | 0x80000000U;
 
-	UartMessaging_Test();
+	//UartMessaging_Test();
 
-	while(1){
-		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
-		UartMessaging_Update();
-		i=400000;
-		while(i--);
-	}
+	//Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
+	CanMessaging_AppTest();
+
 	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
 	i=400000;
 	while(i--);
@@ -160,12 +157,7 @@ int main(void)
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC);
 	i=400000;
 	while(i--);
-
-	while(1){
-		UartMessaging_Update();
-		i=400000;
-		while(i--);
-	}*/
+*/
     return (0U);
 }
 
