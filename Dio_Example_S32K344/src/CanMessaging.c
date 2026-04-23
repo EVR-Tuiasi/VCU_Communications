@@ -173,7 +173,7 @@ void CanMessaging_Test(void){
 }
 
 void CanMessaging_Update(void){
-
+	volatile int i;
 	Can_PduType pduInfo;
 	pduInfo.swPduHandle=0;
 	pduInfo.length=8;
@@ -182,36 +182,50 @@ void CanMessaging_Update(void){
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanInvertorStanga | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanInvertorDreapta);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanInvertorDreapta | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanInvertoare);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanInvertoare | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanBord);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanBord | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanAcceleratie);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanAcceleratie | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanFrana);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanFrana | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 
 	CanMessaging_CreateBuffer(idCanBaterie);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=idCanBaterie | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 }
 
 void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value){
