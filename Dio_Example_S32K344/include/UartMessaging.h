@@ -14,6 +14,7 @@ extern "C"{
 ==================================================================================================*/
 
 #include "stdint.h"
+#include "stdarg.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
@@ -26,25 +27,36 @@ typedef enum{
 	idUartBord = 0x13,
 	idUartAcceleratie = 0x30,
 	idUartFrana = 0x31,
-	idUartBaterie = 0x14
+	idUartBaterie1 = 0x14,
+	idUartBaterie2 = 0x15,
+	idUartBaterie3 = 0x16,
+	idUartBaterie4 = 0x17,
 }idUart_t;
 
 typedef enum{
     /* TSAC */
-    Uart_TSAC_MedianCellTemperature,
-    Uart_TSAC_HighestCellTemperature,
-    Uart_TSAC_LowestCellTemperature,
-    Uart_TSAC_MedianCellVoltage,
-    Uart_TSAC_HighestCellVoltage,
-    Uart_TSAC_LowestCellVoltage,
-    Uart_TSAC_OverallVoltage,
-    Uart_TSAC_OverallCurrent,
-    Uart_TSAC_IsAmsSafe,
-    Uart_TSAC_IsImdSafe,
-    Uart_TSAC_IsTransceiverWorking,
-    Uart_TSAC_IsShuntWorking,
-    Uart_TSAC_IsBms0Working,
-    Uart_TSAC_IsBms1Working,
+	Uart_TSAC_OverallCellTermperature,
+	Uart_TSAC_MedianCellTemperature,
+	Uart_TSAC_HighestCellTemperature,
+	Uart_TSAC_LowestCellTemperature,
+	Uart_TSAC_OverallCellVoltage,
+	Uart_TSAC_MedianCellVoltage,
+	Uart_TSAC_HighestCellVoltage,
+	Uart_TSAC_LowestCellVoltage,
+	Uart_TSAC_OverallVoltage,
+	Uart_TSAC_OverallCurrent,
+	Uart_TSAC_CellVoltageIndex,
+	Uart_TSAC_CellVoltage,
+	Uart_TSAC_CellVoltageError,
+	Uart_TSAC_CellTemperatureIndex,
+	Uart_TSAC_CellTemperature,
+	Uart_TSAC_CellTemperatureError,
+	Uart_TSAC_IsAmsSafe,
+	Uart_TSAC_IsImdSafe,
+	Uart_TSAC_IsTransceiverWorking,
+	Uart_TSAC_IsShuntWorking,
+	Uart_TSAC_IsBms0Working,
+	Uart_TSAC_IsBms1Working,
     /* PEDALS */
     Uart_PEDALS_AcceleratorSensor1Voltage,
     Uart_PEDALS_AcceleratorSensor2Voltage,
@@ -140,7 +152,15 @@ void UartMessaging_Init(void);
 void UartMessaging_Test(void);
 void UartMessaging_Update(void);
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value);
+void UartMessaging_SetCellVoltage(uint16_t Value, uint16_t index);
+void UartMessaging_SetCellVoltageErrors(boolean Value, uint16_t index);
+void UartMessaging_SetCellTemperature(uint16_t Value, uint16_t index);
+void UartMessaging_SetCellTemperatureErrors(boolean Value, uint16_t index);
 uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType);
+uint16_t UartMessaging_ReadCellVoltage(uint16_t index);
+boolean UartMessaging_ReadCellVoltageErrors(uint16_t index);
+uint16_t UartMessaging_ReadCellTemperature(uint16_t index);
+boolean UartMessaging_ReadCellTemperatureErrors(uint16_t index);
 void UartMessaging_CreateBuffer(idUart_t type);
 uint8_t CRC_calculate(uint8_t length);
 

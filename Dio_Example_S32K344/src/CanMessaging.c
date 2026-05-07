@@ -11,6 +11,7 @@ extern "C"{
 ==================================================================================================*/
 
 #include "stdint.h"
+#include "stdarg.h"
 #include "Mcu.h"
 #include "Port.h"
 #include "Platform.h"
@@ -99,22 +100,41 @@ void CanMessaging_Test(void){
 	int cnt = 0;
 	volatile int i;
 	while(1){
-		CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, cnt);
+		CanMessaging_SetValue(Can_TSAC_OverallCurrent, cnt);
+		CanMessaging_SetValue(Can_TSAC_OverallVoltage, cnt);
 		CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, cnt);
-		CanMessaging_SetValue(Can_TSAC_LowestCellTemperature, cnt);
-		CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, cnt);
 		CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, cnt);
 		CanMessaging_SetValue(Can_TSAC_LowestCellVoltage, cnt);
-		CanMessaging_SetValue(Can_TSAC_OverallVoltage, cnt);
-		CanMessaging_SetValue(Can_TSAC_OverallCurrent, cnt);
-		//baterieCan.CellVoltage[CELLS_NUM];
-		//baterieCan.ThermistorTemperature[THERMISTOR_NUM];
-		CanMessaging_SetValue(Can_TSAC_IsAmsSafe, 1);
-		CanMessaging_SetValue(Can_TSAC_IsImdSafe, 1);
-		CanMessaging_SetValue(Can_TSAC_IsTransceiverWorking, 1);
-		CanMessaging_SetValue(Can_TSAC_IsShuntWorking, 1);
-		CanMessaging_SetValue(Can_TSAC_IsBms0Working, 1);
-		CanMessaging_SetValue(Can_TSAC_IsBms1Working, 1);
+		CanMessaging_SetValue(Can_TSAC_LowestCellTemperature, cnt);
+
+		uint16_t index = cnt % 27;
+		CanMessaging_SetValue(Can_TSAC_CellVoltageIndex, index);
+		CanMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 0);
+		CanMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 1);
+		CanMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 2);
+		CanMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 3);
+		CanMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 4);
+		CanMessaging_SetCellVoltage(cnt, index * 5 + 0);
+		CanMessaging_SetCellVoltage(cnt, index * 5 + 1);
+		CanMessaging_SetCellVoltage(cnt, index * 5 + 2);
+		CanMessaging_SetCellVoltage(cnt, index * 5 + 3);
+		CanMessaging_SetCellVoltage(cnt, index * 5 + 4);
+
+		index = cnt % 128;
+		CanMessaging_SetValue(Can_TSAC_CellTemperatureIndex, index);
+		CanMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 0);
+		CanMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 1);
+		CanMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 2);
+		CanMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 3);
+		CanMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 4);
+		CanMessaging_SetCellTemperature(cnt, index * 5 + 0);
+		CanMessaging_SetCellTemperature(cnt, index * 5 + 1);
+		CanMessaging_SetCellTemperature(cnt, index * 5 + 2);
+		CanMessaging_SetCellTemperature(cnt, index * 5 + 3);
+		CanMessaging_SetCellTemperature(cnt, index * 5 + 4);
+
+		CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, cnt);
+		CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, cnt);
 
 		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, cnt);
 		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, cnt);
@@ -220,9 +240,30 @@ void CanMessaging_Update(void){
 	i=500000;
 	while(i--);
 
-	CanMessaging_CreateBuffer(idCanBaterie);
+	CanMessaging_CreateBuffer(idCanBaterie1);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBaterie | 0x80000000U;
+	pduInfo.id=idCanBaterie1 | 0x80000000U;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
+
+	CanMessaging_CreateBuffer(idCanBaterie2);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=idCanBaterie2 | 0x80000000U;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
+
+	CanMessaging_CreateBuffer(idCanBaterie3);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=idCanBaterie3 | 0x80000000U;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
+
+	CanMessaging_CreateBuffer(idCanBaterie4);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=idCanBaterie4 | 0x80000000U;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
@@ -257,6 +298,18 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 				baterieCan.OverallCurrent = 0;
 			else
 				baterieCan.OverallCurrent = Value;
+			break;
+		case Can_TSAC_CellVoltageIndex:
+			if(Value>26)
+				baterieCan.CellVoltageIndex = 0;
+			else
+				baterieCan.CellVoltageIndex = Value;
+			break;
+		case Can_TSAC_CellTemperatureIndex:
+			if(Value>127)
+				baterieCan.ThermistorTemperatureIndex = 0;
+			else
+				baterieCan.ThermistorTemperatureIndex = Value;
 			break;
 		case Can_TSAC_IsAmsSafe:
 			baterieCan.AmsError = Value;
@@ -462,10 +515,30 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_DASHBOARD_IsSegmentsDriverWorking:
 			bordCan.IsSegmentsDriverWorking = Value;
 			break;
+		default:
+			break;
 	}
 }
 
+void CanMessaging_SetCellVoltage(uint16_t Value, uint16_t index){
+	if(index < CELLS_NUM)
+		baterieCan.CellVoltage[index] = Value;
+}
+void CanMessaging_SetCellVoltageErrors(boolean Value, uint16_t index){
+	if(index < CELLS_NUM)
+		baterieCan.CellVoltageErrors[index] = Value;
+}
+void CanMessaging_SetCellTemperature(uint16_t Value, uint16_t index){
+	if(index < THERMISTOR_NUM)
+		baterieCan.ThermistorTemperature[index] = Value;
+}
+void CanMessaging_SetCellTemperatureErrors(boolean Value, uint16_t index){
+	if(index < THERMISTOR_NUM)
+		baterieCan.ThermistorTemperatureErrors[index] = Value;
+}
+
 uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
+
 	switch(DesiredValueType){
 		case Can_TSAC_MedianCellTemperature:
 			return baterieCan.MedianCellTemperature;
@@ -483,6 +556,10 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 	    	return baterieCan.OverallVoltage;
 	    case Can_TSAC_OverallCurrent:
 	    	return baterieCan.OverallCurrent;
+	    case Can_TSAC_CellVoltageIndex:
+	    	return baterieCan.CellVoltageIndex;
+	    case Can_TSAC_CellTemperatureIndex:
+	    	return baterieCan.ThermistorTemperatureIndex;
 	    case Can_TSAC_IsAmsSafe:
 	    	return baterieCan.AmsError;
 	    case Can_TSAC_IsImdSafe:
@@ -587,8 +664,35 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 			return bordCan.IsDisplayWorking;
 		case Can_DASHBOARD_IsSegmentsDriverWorking:
 			return bordCan.IsSegmentsDriverWorking;
+		default:
+			return 0;
 	}
 	return 0;
+}
+
+uint16_t CanMessaging_ReadCellVoltage(uint16_t index){
+	if(index < CELLS_NUM)
+		return baterieCan.CellVoltage[index];
+	else
+		return 0;
+}
+boolean CanMessaging_ReadCellVoltageErrors(uint16_t index){
+	if(index < CELLS_NUM)
+		return baterieCan.CellVoltageErrors[index];
+	else
+		return 0;
+}
+uint16_t CanMessaging_ReadCellTemperature(uint16_t index){
+	if(index < THERMISTOR_NUM)
+		return baterieCan.ThermistorTemperature[index];
+	else
+		return 0;
+}
+boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index){
+	if(index < THERMISTOR_NUM)
+		return baterieCan.ThermistorTemperatureErrors[index];
+	else
+		return 0;
 }
 
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
@@ -654,14 +758,53 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			CanMessaging_SetValue(Can_INVERTERS_RightInverterCurrent, ((((uint16_t)data[5])<<8) | data[6]) >> 4);
 			break;
 
-		case idCanBaterie:
+		case idCanBaterie1:
 			//extragere date
-			CanMessaging_SetValue(Can_TSAC_OverallCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF));
-			CanMessaging_SetValue(Can_TSAC_OverallVoltage, ((((uint16_t)data[5])<<8) | data[6]) >> 5);
-			CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF));
-			CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_OverallCurrent, ((((uint16_t)data[6]) << 8) | data[7]) & (0x1FFF));
+			CanMessaging_SetValue(Can_TSAC_OverallVoltage, ((((uint16_t)data[5]) << 8) | data[6]) >> 5);
+			CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, ((((uint16_t)data[3]) << 8) | data[4]) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, (((((uint16_t)data[2]) << 8) | data[3]) >> 2) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_LowestCellVoltage, (((((uint16_t)data[1]) << 8) | data[2]) >> 4) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_LowestCellTemperature, (((((uint16_t)data[0]) << 8) | data[1]) >> 6) & (0x03FF));
+			break;
 
-			//More To Come:)
+		case idCanBaterie2:{
+			uint8_t index = (uint8_t)((data[0] << 2) | (data[1] >> 6)) & (0x1F);
+			CanMessaging_SetValue(Can_TSAC_CellVoltageIndex, index);
+			index = index * 5;
+			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<7)) >> 7), index + 0);
+			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<6)) >> 6), index + 1);
+			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<5)) >> 5), index + 2);
+			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<4)) >> 4), index + 3);
+			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<3)) >> 3), index + 4);
+			CanMessaging_SetCellVoltage((((((uint16_t)data[1]) << 8) | data[2]) & (0x03FF)), index + 0);
+			CanMessaging_SetCellVoltage(((((((uint16_t)data[3]) << 8) | data[4]) >> 6) & (0x03FF)), index + 1);
+			CanMessaging_SetCellVoltage(((((((uint16_t)data[4]) << 8) | data[5]) >> 4) & (0x03FF)), index + 2);
+			CanMessaging_SetCellVoltage(((((((uint16_t)data[5]) << 8) | data[6]) >> 2) & (0x03FF)), index + 3);
+			CanMessaging_SetCellVoltage((((((uint16_t)data[6]) << 8) | data[7]) & (0x03FF)), index + 4);
+			break;
+		}
+
+		case idCanBaterie3:{
+			uint16_t index = (uint16_t)((data[0] << 4) | (data[1] >> 4)) & (0x007F);
+			CanMessaging_SetValue(Can_TSAC_CellTemperatureIndex, index);
+			index = index * 5;
+			CanMessaging_SetCellTemperatureErrors(((data[0] & (1<<7)) >> 7), index + 0);
+			CanMessaging_SetCellTemperatureErrors(((data[0] & (1<<6)) >> 6), index + 1);
+			CanMessaging_SetCellTemperatureErrors(((data[0] & (1<<5)) >> 5), index + 2);
+			CanMessaging_SetCellTemperatureErrors(((data[0] & (1<<4)) >> 4), index + 3);
+			CanMessaging_SetCellTemperatureErrors(((data[0] & (1<<3)) >> 3), index + 4);
+			CanMessaging_SetCellTemperature((((((uint16_t)data[1]) << 8) | data[2]) & (0x03FF)), index + 0);
+			CanMessaging_SetCellTemperature(((((((uint16_t)data[3]) << 8) | data[4]) >> 6) & (0x03FF)), index + 1);
+			CanMessaging_SetCellTemperature(((((((uint16_t)data[4]) << 8) | data[5]) >> 4) & (0x03FF)), index + 2);
+			CanMessaging_SetCellTemperature(((((((uint16_t)data[5]) << 8) | data[6]) >> 2) & (0x03FF)), index + 3);
+			CanMessaging_SetCellTemperature((((((uint16_t)data[6]) << 8) | data[7]) & (0x03FF)), index + 4);
+			break;
+		}
+
+		case idCanBaterie4:
+			CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, (((((uint16_t)data[0]) << 8) | data[1]) >> 6) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, (((((uint16_t)data[1]) << 8) | data[2]) >> 4) & (0x03FF));
 			break;
 
 		case idCanBord:
@@ -739,15 +882,49 @@ void CanMessaging_CreateBuffer(idCan_t type){
 			bufferCan[6] = (CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2Voltage) & (0x0003) << 6) | ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1Voltage) & (0x3F00)) >> 8);
 			bufferCan[7] = CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1Voltage) & (0x00FF);
 			break;
-		case idCanBaterie:
-			bufferCan[0] = 0;
-			bufferCan[1] = 0;
-			bufferCan[2] = (CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage) & (0x03C0)) >> 6;
+		case idCanBaterie1:
+			bufferCan[0] = CanMessaging_ReadValue(Can_TSAC_LowestCellTemperature) >> 2;
+			bufferCan[1] = (CanMessaging_ReadValue(Can_TSAC_LowestCellVoltage) >> 4) | ((CanMessaging_ReadValue(Can_TSAC_LowestCellTemperature) & (0x0003)) << 6);
+			bufferCan[2] = (CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage) & (0x03C0)) >> 6 | ((CanMessaging_ReadValue(Can_TSAC_LowestCellVoltage) & (0x000F)) << 4);
 			bufferCan[3] = ((CanMessaging_ReadValue(Can_TSAC_HighestCellTemperature) & (0x0300)) >> 8) | ((CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage) & (0x003F)) << 2);
 			bufferCan[4] = CanMessaging_ReadValue(Can_TSAC_HighestCellTemperature) & (0x00FF);
 			bufferCan[5] = (CanMessaging_ReadValue(Can_TSAC_OverallVoltage) & (0x07F8)) >> 3;
 			bufferCan[6] = ((CanMessaging_ReadValue(Can_TSAC_OverallVoltage) & (0x0007)) << 5) | ((CanMessaging_ReadValue(Can_TSAC_OverallCurrent) & (0x1F00)) >> 8);
 			bufferCan[7] = CanMessaging_ReadValue(Can_TSAC_OverallCurrent) & (0x00FF);
+			break;
+		case idCanBaterie2:{
+			uint16_t index = CanMessaging_ReadValue(Can_TSAC_CellVoltageIndex);
+			bufferCan[0] = (index >> 2) | (CanMessaging_ReadCellVoltageErrors(index*5+0) << 7) | (CanMessaging_ReadCellVoltageErrors(index*5+1) << 6) | (CanMessaging_ReadCellVoltageErrors(index*5+2) << 5) | (CanMessaging_ReadCellVoltageErrors(index*5+3) << 4) | (CanMessaging_ReadCellVoltageErrors(index*5+4) << 3);
+			bufferCan[1] = ((index & (0x0003)) << 6) | (CanMessaging_ReadCellVoltage(index*5+0) >> 8);
+			bufferCan[2] = CanMessaging_ReadCellVoltage(index*5+0) & (0x00FF);
+			bufferCan[3] = CanMessaging_ReadCellVoltage(index*5+1) >> 2;
+			bufferCan[4] = ((CanMessaging_ReadCellVoltage(index*5+1) & (0x0003)) << 6) | (CanMessaging_ReadCellVoltage(index*5+2) >> 4);
+			bufferCan[5] = ((CanMessaging_ReadCellVoltage(index*5+2) & (0x000F)) << 4) | (CanMessaging_ReadCellVoltage(index*5+3) >> 6);
+			bufferCan[6] = ((CanMessaging_ReadCellVoltage(index*5+3) & (0x003F)) << 2) | (CanMessaging_ReadCellVoltage(index*5+4) >> 8);
+			bufferCan[7] = CanMessaging_ReadCellVoltage(index*5+4) & (0x00FF);
+			break;
+		}
+		case idCanBaterie3:{
+			uint16_t index = CanMessaging_ReadValue(Can_TSAC_CellTemperatureIndex);
+			bufferCan[0] = (index >> 4) | (CanMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (CanMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (CanMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (CanMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (CanMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
+			bufferCan[1] = ((index & (0x000F)) << 4) | (CanMessaging_ReadCellTemperature(index*5+0) >> 8);
+			bufferCan[2] = CanMessaging_ReadCellTemperature(index*5+0) & (0x00FF);
+			bufferCan[3] = CanMessaging_ReadCellTemperature(index*5+1) >> 2;
+			bufferCan[4] = ((CanMessaging_ReadCellTemperature(index*5+1) & (0x0003)) << 6) | (CanMessaging_ReadCellTemperature(index*5+2) >> 4);
+			bufferCan[5] = ((CanMessaging_ReadCellTemperature(index*5+2) & (0x000F)) << 4) | (CanMessaging_ReadCellTemperature(index*5+3) >> 6);
+			bufferCan[6] = ((CanMessaging_ReadCellTemperature(index*5+3) & (0x003F)) << 2) | (CanMessaging_ReadCellTemperature(index*5+4) >> 8);
+			bufferCan[7] = CanMessaging_ReadCellTemperature(index*5+4) & (0x00FF);
+			break;
+		}
+		case idCanBaterie4:
+			bufferCan[0] = CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature) >> 2;
+			bufferCan[1] = ((CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature) & (0x0003)) << 6) | (CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage) >> 4);
+			bufferCan[2] = ((CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage) & (0x000F)) << 4);
+			bufferCan[3] = 0;
+			bufferCan[4] = 0;
+			bufferCan[5] = 0;
+			bufferCan[6] = 0;
+			bufferCan[7] = 0;
 			break;
 	}
 }
@@ -806,11 +983,45 @@ void CanMessaging_AppTest(void){
 		UartMessaging_SetValue(Uart_INVERTERS_LeftInverterCurrent, CanMessaging_ReadValue(Can_INVERTERS_LeftInverterCurrent));
 		UartMessaging_SetValue(Uart_INVERTERS_RightInverterCurrent, CanMessaging_ReadValue(Can_INVERTERS_RightInverterCurrent));
 
-		//TSAC
+		//TSAC 1
 		UartMessaging_SetValue(Uart_TSAC_OverallCurrent, CanMessaging_ReadValue(Can_TSAC_OverallCurrent));
 		UartMessaging_SetValue(Uart_TSAC_OverallVoltage, CanMessaging_ReadValue(Can_TSAC_OverallVoltage));
 		UartMessaging_SetValue(Uart_TSAC_HighestCellTemperature, CanMessaging_ReadValue(Can_TSAC_HighestCellTemperature));
 		UartMessaging_SetValue(Uart_TSAC_HighestCellVoltage, CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage));
+		UartMessaging_SetValue(Uart_TSAC_LowestCellVoltage, CanMessaging_ReadValue(Can_TSAC_LowestCellVoltage));
+		UartMessaging_SetValue(Uart_TSAC_LowestCellTemperature, CanMessaging_ReadValue(Can_TSAC_LowestCellTemperature));
+
+		//TSAC 2
+		uint16_t index = CanMessaging_ReadValue(Can_TSAC_CellVoltageIndex);
+		UartMessaging_SetValue(Uart_TSAC_CellVoltageIndex, index);
+		UartMessaging_SetCellVoltageErrors(CanMessaging_ReadCellVoltageErrors(index*5+0), index*5 + 0);
+		UartMessaging_SetCellVoltageErrors(CanMessaging_ReadCellVoltageErrors(index*5+1), index*5 + 1);
+		UartMessaging_SetCellVoltageErrors(CanMessaging_ReadCellVoltageErrors(index*5+2), index*5 + 2);
+		UartMessaging_SetCellVoltageErrors(CanMessaging_ReadCellVoltageErrors(index*5+3), index*5 + 3);
+		UartMessaging_SetCellVoltageErrors(CanMessaging_ReadCellVoltageErrors(index*5+4), index*5 + 4);
+		UartMessaging_SetCellVoltage(CanMessaging_ReadCellVoltage(index*5+0), index*5 + 0);
+		UartMessaging_SetCellVoltage(CanMessaging_ReadCellVoltage(index*5+1), index*5 + 1);
+		UartMessaging_SetCellVoltage(CanMessaging_ReadCellVoltage(index*5+2), index*5 + 2);
+		UartMessaging_SetCellVoltage(CanMessaging_ReadCellVoltage(index*5+3), index*5 + 3);
+		UartMessaging_SetCellVoltage(CanMessaging_ReadCellVoltage(index*5+4), index*5 + 4);
+
+		//TSAC 3
+		index = CanMessaging_ReadValue(Can_TSAC_CellTemperatureIndex);
+		UartMessaging_SetValue(Uart_TSAC_CellTemperatureIndex, index);
+		UartMessaging_SetCellTemperatureErrors(CanMessaging_ReadCellTemperatureErrors(index*5+0), index*5 + 0);
+		UartMessaging_SetCellTemperatureErrors(CanMessaging_ReadCellTemperatureErrors(index*5+1), index*5 + 1);
+		UartMessaging_SetCellTemperatureErrors(CanMessaging_ReadCellTemperatureErrors(index*5+2), index*5 + 2);
+		UartMessaging_SetCellTemperatureErrors(CanMessaging_ReadCellTemperatureErrors(index*5+3), index*5 + 3);
+		UartMessaging_SetCellTemperatureErrors(CanMessaging_ReadCellTemperatureErrors(index*5+4), index*5 + 4);
+		UartMessaging_SetCellTemperature(CanMessaging_ReadCellTemperature(index*5+0), index*5 + 0);
+		UartMessaging_SetCellTemperature(CanMessaging_ReadCellTemperature(index*5+1), index*5 + 1);
+		UartMessaging_SetCellTemperature(CanMessaging_ReadCellTemperature(index*5+2), index*5 + 2);
+		UartMessaging_SetCellTemperature(CanMessaging_ReadCellTemperature(index*5+3), index*5 + 3);
+		UartMessaging_SetCellTemperature(CanMessaging_ReadCellTemperature(index*5+4), index*5 + 4);
+
+		//TSAC 4
+		UartMessaging_SetValue(Uart_TSAC_MedianCellTemperature, CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature));
+		UartMessaging_SetValue(Uart_TSAC_MedianCellVoltage, CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage));
 
 		//Dashboard
 		UartMessaging_SetValue(Uart_DASHBOARD_ActivationButtonPressed, CanMessaging_ReadValue(Can_DASHBOARD_ActivationButtonPressed));

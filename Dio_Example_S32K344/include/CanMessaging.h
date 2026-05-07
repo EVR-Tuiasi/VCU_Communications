@@ -14,6 +14,7 @@ extern "C"{
 ==================================================================================================*/
 
 #include "stdint.h"
+#include "stdarg.h"
 #include"Mcu.h"
 #include"Can_43_FLEXCAN.h"
 #include "CDD_Uart.h"
@@ -33,20 +34,31 @@ typedef enum{
 	idCanInvertorStanga = 0x00000110,
 	idCanInvertorDreapta = 0x00000111,
 	idCanInvertoare = 0x00000112,
-	idCanBaterie = 0x00000114,
+	idCanBaterie1 = 0x00000114,
+	idCanBaterie2 = 0x00000115,
+	idCanBaterie3 = 0x00000116,
+	idCanBaterie4 = 0x00000117,
 	idCanBord = 0x00000113
 }idCan_t;
 
 typedef enum{
     /* TSAC */
+	Can_TSAC_OverallCellTermperature,
     Can_TSAC_MedianCellTemperature,
     Can_TSAC_HighestCellTemperature,
     Can_TSAC_LowestCellTemperature,
+	Can_TSAC_OverallCellVoltage,
     Can_TSAC_MedianCellVoltage,
     Can_TSAC_HighestCellVoltage,
     Can_TSAC_LowestCellVoltage,
     Can_TSAC_OverallVoltage,
     Can_TSAC_OverallCurrent,
+	Can_TSAC_CellVoltageIndex,
+	Can_TSAC_CellVoltage,
+	Can_TSAC_CellVoltageError,
+	Can_TSAC_CellTemperatureIndex,
+	Can_TSAC_CellTemperature,
+	Can_TSAC_CellTemperatureError,
     Can_TSAC_IsAmsSafe,
     Can_TSAC_IsImdSafe,
     Can_TSAC_IsTransceiverWorking,
@@ -146,7 +158,15 @@ void CanMessaging_Init(void);
 void CanMessaging_Test(void);
 void CanMessaging_Update(void);
 void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value);
+void CanMessaging_SetCellVoltage(uint16_t Value, uint16_t index);
+void CanMessaging_SetCellVoltageErrors(boolean Value, uint16_t index);
+void CanMessaging_SetCellTemperature(uint16_t Value, uint16_t index);
+void CanMessaging_SetCellTemperatureErrors(boolean Value, uint16_t index);
 uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType);
+uint16_t CanMessaging_ReadCellVoltage(uint16_t index);
+boolean CanMessaging_ReadCellVoltageErrors(uint16_t index);
+uint16_t CanMessaging_ReadCellTemperature(uint16_t index);
+boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index);
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
 void CanMessaging_CreateBuffer(idCan_t type);
 void CanMessaging_AppTest(void);

@@ -32,8 +32,12 @@ typedef struct{
     uint16_t OverallVoltage;                            /* 11 bits, 0-2047, 0 to 204.7 Volts, 0.1 Volts per bit */
     uint16_t OverallCurrent;                            /* 13 bits, 0-8095, 0 to 809.5 Amps, 0.1 Amps per bit */
     /* Cell voltages and temperatures*/
-    uint32_t CellVoltage[CELLS_NUM];                    /* TODO */
+    uint8_t CellVoltageIndex;
+    uint16_t CellVoltage[CELLS_NUM];                    /* TODO */
+    bool CellVoltageErrors[CELLS_NUM];
+    uint8_t ThermistorTemperatureIndex;
     uint16_t ThermistorTemperature[THERMISTOR_NUM];     /* 10 bits, 0-1023, 0 to 102.3 degrees C, 0.1 degrees C per bit */
+    bool ThermistorTemperatureErrors[THERMISTOR_NUM];
     /* Status and errors */
     bool AmsError;                                      /* 1 bit, 0 means safe, 1 means errors */
     bool ImdError;                                      /* 1 bit, 0 means safe, 1 means errors */

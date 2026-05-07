@@ -11,6 +11,7 @@ extern "C"{
 ==================================================================================================*/
 
 #include "stdint.h"
+#include "stdarg.h"
 #include "Mcu.h"
 #include "Port.h"
 #include "Platform.h"
@@ -82,22 +83,41 @@ void UartMessaging_Test(void){
 	int cnt = 0;
 	volatile int i;
 	while(1){
-		UartMessaging_SetValue(Uart_TSAC_MedianCellTemperature, cnt);
+		UartMessaging_SetValue(Uart_TSAC_OverallCurrent, cnt);
+		UartMessaging_SetValue(Uart_TSAC_OverallVoltage, cnt);
 		UartMessaging_SetValue(Uart_TSAC_HighestCellTemperature, cnt);
-		UartMessaging_SetValue(Uart_TSAC_LowestCellTemperature, cnt);
-		UartMessaging_SetValue(Uart_TSAC_MedianCellVoltage, cnt);
 		UartMessaging_SetValue(Uart_TSAC_HighestCellVoltage, cnt);
 		UartMessaging_SetValue(Uart_TSAC_LowestCellVoltage, cnt);
-		UartMessaging_SetValue(Uart_TSAC_OverallVoltage, cnt);
-		UartMessaging_SetValue(Uart_TSAC_OverallCurrent, cnt);
-		//baterieUart.CellVoltage[CELLS_NUM];
-		//baterieUart.ThermistorTemperature[THERMISTOR_NUM];
-		UartMessaging_SetValue(Uart_TSAC_IsAmsSafe, 1);
-		UartMessaging_SetValue(Uart_TSAC_IsImdSafe, 1);
-		UartMessaging_SetValue(Uart_TSAC_IsTransceiverWorking, 1);
-		UartMessaging_SetValue(Uart_TSAC_IsShuntWorking, 1);
-		UartMessaging_SetValue(Uart_TSAC_IsBms0Working, 1);
-		UartMessaging_SetValue(Uart_TSAC_IsBms1Working, 1);
+		UartMessaging_SetValue(Uart_TSAC_LowestCellTemperature, cnt);
+
+		uint16_t index = cnt % 27;
+		UartMessaging_SetValue(Uart_TSAC_CellVoltageIndex, index);
+		UartMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 0);
+		UartMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 1);
+		UartMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 2);
+		UartMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 3);
+		UartMessaging_SetCellVoltageErrors(cnt & 1, index * 5 + 4);
+		UartMessaging_SetCellVoltage(cnt, index * 5 + 0);
+		UartMessaging_SetCellVoltage(cnt, index * 5 + 1);
+		UartMessaging_SetCellVoltage(cnt, index * 5 + 2);
+		UartMessaging_SetCellVoltage(cnt, index * 5 + 3);
+		UartMessaging_SetCellVoltage(cnt, index * 5 + 4);
+
+		index = cnt % 128;
+		UartMessaging_SetValue(Uart_TSAC_CellTemperatureIndex, index);
+		UartMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 0);
+		UartMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 1);
+		UartMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 2);
+		UartMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 3);
+		UartMessaging_SetCellTemperatureErrors(cnt & 1, index * 5 + 4);
+		UartMessaging_SetCellTemperature(cnt, index * 5 + 0);
+		UartMessaging_SetCellTemperature(cnt, index * 5 + 1);
+		UartMessaging_SetCellTemperature(cnt, index * 5 + 2);
+		UartMessaging_SetCellTemperature(cnt, index * 5 + 3);
+		UartMessaging_SetCellTemperature(cnt, index * 5 + 4);
+
+		UartMessaging_SetValue(Uart_TSAC_MedianCellTemperature, cnt);
+		UartMessaging_SetValue(Uart_TSAC_MedianCellVoltage, cnt);
 
 		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1Voltage, cnt);
 		UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2Voltage, cnt);
@@ -181,7 +201,19 @@ void UartMessaging_Update(void){
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
-	UartMessaging_CreateBuffer(idUartBaterie);
+	UartMessaging_CreateBuffer(idUartBaterie1);
+	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
+	i=100000;
+	while(i--);
+	UartMessaging_CreateBuffer(idUartBaterie2);
+	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
+	i=100000;
+	while(i--);
+	UartMessaging_CreateBuffer(idUartBaterie3);
+	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
+	i=100000;
+	while(i--);
+	UartMessaging_CreateBuffer(idUartBaterie4);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
@@ -216,6 +248,18 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 				baterieUart.OverallCurrent = 0;
 			else
 				baterieUart.OverallCurrent = Value;
+			break;
+		case Uart_TSAC_CellVoltageIndex:
+			if(Value>26)
+				baterieUart.CellVoltageIndex = 0;
+			else
+				baterieUart.CellVoltageIndex = Value;
+			break;
+		case Uart_TSAC_CellTemperatureIndex:
+			if(Value>127)
+				baterieUart.ThermistorTemperatureIndex = 0;
+			else
+				baterieUart.ThermistorTemperatureIndex = Value;
 			break;
 		case Uart_TSAC_IsAmsSafe:
 			baterieUart.AmsError = Value;
@@ -421,43 +465,67 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_DASHBOARD_IsSegmentsDriverWorking:
 			bordUart.IsSegmentsDriverWorking = Value;
 			break;
+		default:
+			break;
 	}
 }
 
+void UartMessaging_SetCellVoltage(uint16_t Value, uint16_t index){
+	if(index < CELLS_NUM)
+		baterieUart.CellVoltage[index] = Value;
+}
+void UartMessaging_SetCellVoltageErrors(boolean Value, uint16_t index){
+	if(index < CELLS_NUM)
+		baterieUart.CellVoltageErrors[index] = Value;
+}
+void UartMessaging_SetCellTemperature(uint16_t Value, uint16_t index){
+	if(index < THERMISTOR_NUM)
+		baterieUart.ThermistorTemperature[index] = Value;
+}
+void UartMessaging_SetCellTemperatureErrors(boolean Value, uint16_t index){
+	if(index < THERMISTOR_NUM)
+		baterieUart.ThermistorTemperatureErrors[index] = Value;
+}
+
 uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType){
+
 	switch(DesiredValueType){
 		case Uart_TSAC_MedianCellTemperature:
 			return baterieUart.MedianCellTemperature;
-		case Uart_TSAC_HighestCellTemperature:
-			return baterieUart.HighestCellTemperature;
-		case Uart_TSAC_LowestCellTemperature:
-			return baterieUart.LowestCellTemperature;
-		case Uart_TSAC_MedianCellVoltage:
-			return baterieUart.MedianCellVoltage;
-		case Uart_TSAC_HighestCellVoltage:
-			return baterieUart.HighestCellVoltage;
-		case Uart_TSAC_LowestCellVoltage:
-			return baterieUart.LowestCellVoltage;
-		case Uart_TSAC_OverallVoltage:
-			return baterieUart.OverallVoltage;
-		case Uart_TSAC_OverallCurrent:
-			return baterieUart.OverallCurrent;
-		case Uart_TSAC_IsAmsSafe:
-			return baterieUart.AmsError;
-		case Uart_TSAC_IsImdSafe:
-			return baterieUart.ImdError;
-		case Uart_TSAC_IsTransceiverWorking:
-			return baterieUart.TransceiverError;
-		case Uart_TSAC_IsShuntWorking:
-			return baterieUart.ShuntError;
-		case Uart_TSAC_IsBms0Working:
-			return baterieUart.Bms0Error;
-		case Uart_TSAC_IsBms1Working:
-			return baterieUart.Bms1Error;
-		case Uart_PEDALS_AcceleratorSensor1Voltage:
-			return pedaleUart.AcceleratorSensor1Voltage;
-		case Uart_PEDALS_AcceleratorSensor2Voltage:
-			return pedaleUart.AcceleratorSensor2Voltage;
+	    case Uart_TSAC_HighestCellTemperature:
+	    	return baterieUart.HighestCellTemperature;
+	    case Uart_TSAC_LowestCellTemperature:
+	    	return baterieUart.LowestCellTemperature;
+	    case Uart_TSAC_MedianCellVoltage:
+	    	return baterieUart.MedianCellVoltage;
+	    case Uart_TSAC_HighestCellVoltage:
+	    	return baterieUart.HighestCellVoltage;
+	    case Uart_TSAC_LowestCellVoltage:
+	    	return baterieUart.LowestCellVoltage;
+	    case Uart_TSAC_OverallVoltage:
+	    	return baterieUart.OverallVoltage;
+	    case Uart_TSAC_OverallCurrent:
+	    	return baterieUart.OverallCurrent;
+	    case Uart_TSAC_CellVoltageIndex:
+	    	return baterieUart.CellVoltageIndex;
+	    case Uart_TSAC_CellTemperatureIndex:
+	    	return baterieUart.ThermistorTemperatureIndex;
+	    case Uart_TSAC_IsAmsSafe:
+	    	return baterieUart.AmsError;
+	    case Uart_TSAC_IsImdSafe:
+	    	return baterieUart.ImdError;
+	    case Uart_TSAC_IsTransceiverWorking:
+	    	return baterieUart.TransceiverError;
+	    case Uart_TSAC_IsShuntWorking:
+	    	return baterieUart.ShuntError;
+	    case Uart_TSAC_IsBms0Working:
+	    	return baterieUart.Bms0Error;
+	    case Uart_TSAC_IsBms1Working:
+	    	return baterieUart.Bms1Error;
+	    case Uart_PEDALS_AcceleratorSensor1Voltage:
+	    	return pedaleUart.AcceleratorSensor1Voltage;
+	    case Uart_PEDALS_AcceleratorSensor2Voltage:
+	    	return pedaleUart.AcceleratorSensor2Voltage;
 		case Uart_PEDALS_AcceleratorSensor1TravelPercentage:
 			return pedaleUart.AcceleratorSensor1TravelPercentage;
 		case Uart_PEDALS_AcceleratorSensor2TravelPercentage:
@@ -546,8 +614,35 @@ uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType){
 			return bordUart.IsDisplayWorking;
 		case Uart_DASHBOARD_IsSegmentsDriverWorking:
 			return bordUart.IsSegmentsDriverWorking;
+		default:
+			return 0;
 	}
 	return 0;
+}
+
+uint16_t UartMessaging_ReadCellVoltage(uint16_t index){
+	if(index < CELLS_NUM)
+		return baterieUart.CellVoltage[index];
+	else
+		return 0;
+}
+boolean UartMessaging_ReadCellVoltageErrors(uint16_t index){
+	if(index < CELLS_NUM)
+		return baterieUart.CellVoltageErrors[index];
+	else
+		return 0;
+}
+uint16_t UartMessaging_ReadCellTemperature(uint16_t index){
+	if(index < THERMISTOR_NUM)
+		return baterieUart.ThermistorTemperature[index];
+	else
+		return 0;
+}
+boolean UartMessaging_ReadCellTemperatureErrors(uint16_t index){
+	if(index < THERMISTOR_NUM)
+		return baterieUart.ThermistorTemperatureErrors[index];
+	else
+		return 0;
 }
 
 void UartMessaging_CreateBuffer(idUart_t type){
@@ -624,16 +719,56 @@ void UartMessaging_CreateBuffer(idUart_t type){
 			bufferUart[8] = UartMessaging_ReadValue(Uart_PEDALS_BrakeSensor1Voltage) & (0x00FF);
 			bufferUart[9] = CRC_calculate(10);
 			break;
-		case idUartBaterie:
-			bufferUart[0] = idUartBaterie;
-			bufferUart[1] = 0;
-			bufferUart[2] = 0;
-			bufferUart[3] = (UartMessaging_ReadValue(Uart_TSAC_HighestCellVoltage) & (0x03C0)) >> 6;
+		case idUartBaterie1:
+			bufferUart[0] = idUartBaterie1;
+			bufferUart[1] = UartMessaging_ReadValue(Uart_TSAC_LowestCellTemperature) >> 2;
+			bufferUart[2] = (UartMessaging_ReadValue(Uart_TSAC_LowestCellVoltage) >> 4) | ((UartMessaging_ReadValue(Uart_TSAC_LowestCellTemperature) & (0x0003)) << 6);
+			bufferUart[3] = (UartMessaging_ReadValue(Uart_TSAC_HighestCellVoltage) & (0x03C0)) >> 6 | ((UartMessaging_ReadValue(Uart_TSAC_LowestCellVoltage) & (0x000F)) << 4);
 			bufferUart[4] = ((UartMessaging_ReadValue(Uart_TSAC_HighestCellTemperature) & (0x0300)) >> 8) | ((UartMessaging_ReadValue(Uart_TSAC_HighestCellVoltage) & (0x003F)) << 2);
 			bufferUart[5] = UartMessaging_ReadValue(Uart_TSAC_HighestCellTemperature) & (0x00FF);
 			bufferUart[6] = (UartMessaging_ReadValue(Uart_TSAC_OverallVoltage) & (0x07F8)) >> 3;
 			bufferUart[7] = ((UartMessaging_ReadValue(Uart_TSAC_OverallVoltage) & (0x0007)) << 5) | ((UartMessaging_ReadValue(Uart_TSAC_OverallCurrent) & (0x1F00)) >> 8);
 			bufferUart[8] = UartMessaging_ReadValue(Uart_TSAC_OverallCurrent) & (0x00FF);
+			bufferUart[9] = CRC_calculate(10);
+			break;
+		case idUartBaterie2:{
+			uint16_t index = UartMessaging_ReadValue(Uart_TSAC_CellVoltageIndex);
+			bufferUart[0] = idUartBaterie2;
+			bufferUart[1] = (index >> 2) | (UartMessaging_ReadCellVoltageErrors(index*5+0) << 7) | (UartMessaging_ReadCellVoltageErrors(index*5+1) << 6) | (UartMessaging_ReadCellVoltageErrors(index*5+2) << 5) | (UartMessaging_ReadCellVoltageErrors(index*5+3) << 4) | (UartMessaging_ReadCellVoltageErrors(index*5+4) << 3);
+			bufferUart[2] = ((index & (0x0003)) << 6) | (UartMessaging_ReadCellVoltage(index*5+0) >> 8);
+			bufferUart[3] = UartMessaging_ReadCellVoltage(index*5+0) & (0x00FF);
+			bufferUart[4] = UartMessaging_ReadCellVoltage(index*5+1) >> 2;
+			bufferUart[5] = ((UartMessaging_ReadCellVoltage(index*5+1) & (0x0003)) << 6) | (UartMessaging_ReadCellVoltage(index*5+2) >> 4);
+			bufferUart[6] = ((UartMessaging_ReadCellVoltage(index*5+2) & (0x000F)) << 4) | (UartMessaging_ReadCellVoltage(index*5+3) >> 6);
+			bufferUart[7] = ((UartMessaging_ReadCellVoltage(index*5+3) & (0x003F)) << 2) | (UartMessaging_ReadCellVoltage(index*5+4) >> 8);
+			bufferUart[8] = UartMessaging_ReadCellVoltage(index*5+4) & (0x00FF);
+			bufferUart[9] = CRC_calculate(10);
+			break;
+		}
+		case idUartBaterie3:{
+			uint16_t index = UartMessaging_ReadValue(Uart_TSAC_CellTemperatureIndex);
+			bufferUart[0] = idUartBaterie3;
+			bufferUart[1] = (index >> 4) | (UartMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (UartMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (UartMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (UartMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (UartMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
+			bufferUart[2] = ((index & (0x000F)) << 4) | (UartMessaging_ReadCellTemperature(index*5+0) >> 8);
+			bufferUart[3] = UartMessaging_ReadCellTemperature(index*5+0) & (0x00FF);
+			bufferUart[4] = UartMessaging_ReadCellTemperature(index*5+1) >> 2;
+			bufferUart[5] = ((UartMessaging_ReadCellTemperature(index*5+1) & (0x0003)) << 6) | (UartMessaging_ReadCellTemperature(index*5+2) >> 4);
+			bufferUart[6] = ((UartMessaging_ReadCellTemperature(index*5+2) & (0x000F)) << 4) | (UartMessaging_ReadCellTemperature(index*5+3) >> 6);
+			bufferUart[7] = ((UartMessaging_ReadCellTemperature(index*5+3) & (0x003F)) << 2) | (UartMessaging_ReadCellTemperature(index*5+4) >> 8);
+			bufferUart[8] = UartMessaging_ReadCellTemperature(index*5+4) & (0x00FF);
+			bufferUart[9] = CRC_calculate(10);
+			break;
+		}
+		case idUartBaterie4:
+			bufferUart[0] = idUartBaterie4;
+			bufferUart[1] = UartMessaging_ReadValue(Uart_TSAC_MedianCellTemperature) >> 2;
+			bufferUart[2] = ((UartMessaging_ReadValue(Uart_TSAC_MedianCellTemperature) & (0x0003)) << 6) | (UartMessaging_ReadValue(Uart_TSAC_MedianCellVoltage) >> 4);
+			bufferUart[3] = ((UartMessaging_ReadValue(Uart_TSAC_MedianCellVoltage) & (0x000F)) << 4);
+			bufferUart[4] = 0;
+			bufferUart[5] = 0;
+			bufferUart[6] = 0;
+			bufferUart[7] = 0;
+			bufferUart[8] = 0;
 			bufferUart[9] = CRC_calculate(10);
 			break;
 	}
