@@ -35,11 +35,9 @@ typedef enum{
 
 typedef enum{
     /* TSAC */
-	Uart_TSAC_OverallCellTermperature,
 	Uart_TSAC_MedianCellTemperature,
 	Uart_TSAC_HighestCellTemperature,
 	Uart_TSAC_LowestCellTemperature,
-	Uart_TSAC_OverallCellVoltage,
 	Uart_TSAC_MedianCellVoltage,
 	Uart_TSAC_HighestCellVoltage,
 	Uart_TSAC_LowestCellVoltage,
@@ -52,11 +50,14 @@ typedef enum{
 	Uart_TSAC_CellTemperature,
 	Uart_TSAC_CellTemperatureError,
 	Uart_TSAC_IsAmsSafe,
-	Uart_TSAC_IsImdSafe,
 	Uart_TSAC_IsTransceiverWorking,
 	Uart_TSAC_IsShuntWorking,
 	Uart_TSAC_IsBms0Working,
 	Uart_TSAC_IsBms1Working,
+	Uart_TSAC_IsCharging,
+	Uart_TSAC_AreThermistorsWorking,
+	Uart_TSAC_ReportedChargingCurrent,
+	Uart_TSAC_ReportedChargingVoltage,
     /* PEDALS */
     Uart_PEDALS_AcceleratorSensor1Voltage,
     Uart_PEDALS_AcceleratorSensor2Voltage,

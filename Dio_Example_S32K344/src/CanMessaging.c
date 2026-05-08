@@ -136,6 +136,16 @@ void CanMessaging_Test(void){
 		CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, cnt);
 		CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, cnt);
 
+		CanMessaging_SetValue(Can_TSAC_IsAmsSafe, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_IsTransceiverWorking, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_IsShuntWorking, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_IsBms0Working, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_IsBms1Working, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_IsCharging, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_AreThermistorsWorking, cnt & 1);
+		CanMessaging_SetValue(Can_TSAC_ReportedChargingCurrent, cnt);
+		CanMessaging_SetValue(Can_TSAC_ReportedChargingVoltage, cnt);
+
 		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, cnt);
 		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, cnt);
 		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, cnt%101);
@@ -314,9 +324,6 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_TSAC_IsAmsSafe:
 			baterieCan.AmsError = Value;
 			break;
-		case Can_TSAC_IsImdSafe:
-			baterieCan.ImdError = Value;
-			break;
 		case Can_TSAC_IsTransceiverWorking:
 			baterieCan.TransceiverError = Value;
 			break;
@@ -328,6 +335,18 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 			break;
 		case Can_TSAC_IsBms1Working:
 			baterieCan.Bms1Error = Value;
+			break;
+		case Can_TSAC_IsCharging:
+			baterieCan.ChargerStatus = Value;
+			break;
+		 case Can_TSAC_AreThermistorsWorking:
+			baterieCan.ThermistorsError = Value;
+			break;
+		 case Can_TSAC_ReportedChargingCurrent:
+			baterieCan.ReportedChargingCurrent = Value;
+			break;
+		 case Can_TSAC_ReportedChargingVoltage:
+			baterieCan.ReportedChargingVoltage = Value;
 			break;
 		//PEDALS
 		case Can_PEDALS_AcceleratorSensor1Voltage:
@@ -562,8 +581,6 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 	    	return baterieCan.ThermistorTemperatureIndex;
 	    case Can_TSAC_IsAmsSafe:
 	    	return baterieCan.AmsError;
-	    case Can_TSAC_IsImdSafe:
-	    	return baterieCan.ImdError;
 	    case Can_TSAC_IsTransceiverWorking:
 	    	return baterieCan.TransceiverError;
 	    case Can_TSAC_IsShuntWorking:
@@ -572,6 +589,14 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 	    	return baterieCan.Bms0Error;
 	    case Can_TSAC_IsBms1Working:
 	    	return baterieCan.Bms1Error;
+	    case Can_TSAC_IsCharging:
+	    	return baterieCan.ChargerStatus;
+	    case Can_TSAC_AreThermistorsWorking:
+	    	return baterieCan.ThermistorsError;
+	    case Can_TSAC_ReportedChargingCurrent:
+	    	return baterieCan.ReportedChargingCurrent;
+	    case Can_TSAC_ReportedChargingVoltage:
+	    	return baterieCan.ReportedChargingVoltage;
 	    case Can_PEDALS_AcceleratorSensor1Voltage:
 	    	return pedaleCan.AcceleratorSensor1Voltage;
 	    case Can_PEDALS_AcceleratorSensor2Voltage:
@@ -805,6 +830,15 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 		case idCanBaterie4:
 			CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, (((((uint16_t)data[0]) << 8) | data[1]) >> 6) & (0x03FF));
 			CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, (((((uint16_t)data[1]) << 8) | data[2]) >> 4) & (0x03FF));
+			CanMessaging_SetValue(Can_TSAC_IsShuntWorking, (data[2] & (1<<3)) >> 3);
+			CanMessaging_SetValue(Can_TSAC_IsTransceiverWorking, (data[2] & (1<<2)) >> 2);
+			CanMessaging_SetValue(Can_TSAC_IsBms0Working, (data[2] & (1<<1)) >> 1);
+			CanMessaging_SetValue(Can_TSAC_IsBms1Working, (data[2] & (1<<0)) >> 0);
+			CanMessaging_SetValue(Can_TSAC_AreThermistorsWorking, (data[3] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_TSAC_IsAmsSafe, (data[3] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_TSAC_IsCharging, (data[3] & (1<<0)) >> 0);
+			CanMessaging_SetValue(Can_TSAC_ReportedChargingCurrent, (((uint16_t)data[4]) << 8) | data[5]);
+			CanMessaging_SetValue(Can_TSAC_ReportedChargingVoltage, (((uint16_t)data[6]) << 8) | data[7]);
 			break;
 
 		case idCanBord:
@@ -919,12 +953,12 @@ void CanMessaging_CreateBuffer(idCan_t type){
 		case idCanBaterie4:
 			bufferCan[0] = CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature) >> 2;
 			bufferCan[1] = ((CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature) & (0x0003)) << 6) | (CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage) >> 4);
-			bufferCan[2] = ((CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage) & (0x000F)) << 4);
-			bufferCan[3] = 0;
-			bufferCan[4] = 0;
-			bufferCan[5] = 0;
-			bufferCan[6] = 0;
-			bufferCan[7] = 0;
+			bufferCan[2] = ((CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage) & (0x000F)) << 4) | (CanMessaging_ReadValue(Can_TSAC_IsShuntWorking) << 3) | (CanMessaging_ReadValue(Can_TSAC_IsTransceiverWorking) << 2) | (CanMessaging_ReadValue(Can_TSAC_IsBms0Working) << 1) | (CanMessaging_ReadValue(Can_TSAC_IsBms1Working) << 0);
+			bufferCan[3] = (CanMessaging_ReadValue(Can_TSAC_AreThermistorsWorking) << 7) | (CanMessaging_ReadValue(Can_TSAC_IsAmsSafe) << 6) | (CanMessaging_ReadValue(Can_TSAC_IsCharging) << 0);
+			bufferCan[4] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingCurrent) >> 8;
+			bufferCan[5] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingCurrent) & (0x00FF);
+			bufferCan[6] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingVoltage) >> 8;
+			bufferCan[7] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingVoltage) & (0x00FF);
 			break;
 	}
 }
@@ -1022,6 +1056,15 @@ void CanMessaging_AppTest(void){
 		//TSAC 4
 		UartMessaging_SetValue(Uart_TSAC_MedianCellTemperature, CanMessaging_ReadValue(Can_TSAC_MedianCellTemperature));
 		UartMessaging_SetValue(Uart_TSAC_MedianCellVoltage, CanMessaging_ReadValue(Can_TSAC_MedianCellVoltage));
+		UartMessaging_SetValue(Uart_TSAC_IsShuntWorking,  CanMessaging_ReadValue(Can_TSAC_IsShuntWorking));
+		UartMessaging_SetValue(Uart_TSAC_IsTransceiverWorking, CanMessaging_ReadValue(Can_TSAC_IsTransceiverWorking));
+		UartMessaging_SetValue(Uart_TSAC_IsBms0Working, CanMessaging_ReadValue(Can_TSAC_IsBms0Working));
+		UartMessaging_SetValue(Uart_TSAC_IsBms1Working, CanMessaging_ReadValue(Can_TSAC_IsBms1Working));
+		UartMessaging_SetValue(Uart_TSAC_AreThermistorsWorking, CanMessaging_ReadValue(Can_TSAC_AreThermistorsWorking));
+		UartMessaging_SetValue(Uart_TSAC_IsAmsSafe, CanMessaging_ReadValue(Can_TSAC_IsAmsSafe));
+		UartMessaging_SetValue(Uart_TSAC_IsCharging, CanMessaging_ReadValue(Can_TSAC_IsCharging));
+		UartMessaging_SetValue(Uart_TSAC_ReportedChargingCurrent, CanMessaging_ReadValue(Can_TSAC_ReportedChargingCurrent));
+		UartMessaging_SetValue(Uart_TSAC_ReportedChargingVoltage, CanMessaging_ReadValue(Can_TSAC_ReportedChargingVoltage));
 
 		//Dashboard
 		UartMessaging_SetValue(Uart_DASHBOARD_ActivationButtonPressed, CanMessaging_ReadValue(Can_DASHBOARD_ActivationButtonPressed));

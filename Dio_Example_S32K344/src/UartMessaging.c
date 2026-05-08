@@ -264,9 +264,6 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_TSAC_IsAmsSafe:
 			baterieUart.AmsError = Value;
 			break;
-		case Uart_TSAC_IsImdSafe:
-			baterieUart.ImdError = Value;
-			break;
 		case Uart_TSAC_IsTransceiverWorking:
 			baterieUart.TransceiverError = Value;
 			break;
@@ -278,6 +275,18 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 			break;
 		case Uart_TSAC_IsBms1Working:
 			baterieUart.Bms1Error = Value;
+			break;
+		case Uart_TSAC_IsCharging:
+			baterieUart.ChargerStatus = Value;
+			break;
+		 case Uart_TSAC_AreThermistorsWorking:
+			baterieUart.ThermistorsError = Value;
+			break;
+		 case Uart_TSAC_ReportedChargingCurrent:
+			baterieUart.ReportedChargingCurrent = Value;
+			break;
+		 case Uart_TSAC_ReportedChargingVoltage:
+			baterieUart.ReportedChargingVoltage = Value;
 			break;
 		//PEDALS
 		case Uart_PEDALS_AcceleratorSensor1Voltage:
@@ -512,8 +521,6 @@ uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType){
 	    	return baterieUart.ThermistorTemperatureIndex;
 	    case Uart_TSAC_IsAmsSafe:
 	    	return baterieUart.AmsError;
-	    case Uart_TSAC_IsImdSafe:
-	    	return baterieUart.ImdError;
 	    case Uart_TSAC_IsTransceiverWorking:
 	    	return baterieUart.TransceiverError;
 	    case Uart_TSAC_IsShuntWorking:
@@ -522,6 +529,14 @@ uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType){
 	    	return baterieUart.Bms0Error;
 	    case Uart_TSAC_IsBms1Working:
 	    	return baterieUart.Bms1Error;
+	    case Uart_TSAC_IsCharging:
+	    	return baterieUart.ChargerStatus;
+	    case Uart_TSAC_AreThermistorsWorking:
+	    	return baterieUart.ThermistorsError;
+	    case Uart_TSAC_ReportedChargingCurrent:
+	    	return baterieUart.ReportedChargingCurrent;
+	    case Uart_TSAC_ReportedChargingVoltage:
+	    	return baterieUart.ReportedChargingVoltage;
 	    case Uart_PEDALS_AcceleratorSensor1Voltage:
 	    	return pedaleUart.AcceleratorSensor1Voltage;
 	    case Uart_PEDALS_AcceleratorSensor2Voltage:
@@ -763,12 +778,12 @@ void UartMessaging_CreateBuffer(idUart_t type){
 			bufferUart[0] = idUartBaterie4;
 			bufferUart[1] = UartMessaging_ReadValue(Uart_TSAC_MedianCellTemperature) >> 2;
 			bufferUart[2] = ((UartMessaging_ReadValue(Uart_TSAC_MedianCellTemperature) & (0x0003)) << 6) | (UartMessaging_ReadValue(Uart_TSAC_MedianCellVoltage) >> 4);
-			bufferUart[3] = ((UartMessaging_ReadValue(Uart_TSAC_MedianCellVoltage) & (0x000F)) << 4);
-			bufferUart[4] = 0;
-			bufferUart[5] = 0;
-			bufferUart[6] = 0;
-			bufferUart[7] = 0;
-			bufferUart[8] = 0;
+			bufferUart[3] = ((UartMessaging_ReadValue(Uart_TSAC_MedianCellVoltage) & (0x000F)) << 4) | (UartMessaging_ReadValue(Uart_TSAC_IsShuntWorking) << 3) | (UartMessaging_ReadValue(Uart_TSAC_IsTransceiverWorking) << 2) | (UartMessaging_ReadValue(Uart_TSAC_IsBms0Working) << 1) | (UartMessaging_ReadValue(Uart_TSAC_IsBms1Working) << 0);
+			bufferUart[4] = (UartMessaging_ReadValue(Uart_TSAC_AreThermistorsWorking) << 7) | (UartMessaging_ReadValue(Uart_TSAC_IsAmsSafe) << 6) | (UartMessaging_ReadValue(Uart_TSAC_IsCharging) << 0);
+			bufferUart[5] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingCurrent) >> 8;
+			bufferUart[6] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingCurrent) & (0x00FF);
+			bufferUart[7] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingVoltage) >> 8;
+			bufferUart[8] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingVoltage) & (0x00FF);
 			bufferUart[9] = CRC_calculate(10);
 			break;
 	}

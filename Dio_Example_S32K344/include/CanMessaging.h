@@ -43,11 +43,9 @@ typedef enum{
 
 typedef enum{
     /* TSAC */
-	Can_TSAC_OverallCellTermperature,
     Can_TSAC_MedianCellTemperature,
     Can_TSAC_HighestCellTemperature,
     Can_TSAC_LowestCellTemperature,
-	Can_TSAC_OverallCellVoltage,
     Can_TSAC_MedianCellVoltage,
     Can_TSAC_HighestCellVoltage,
     Can_TSAC_LowestCellVoltage,
@@ -60,11 +58,14 @@ typedef enum{
 	Can_TSAC_CellTemperature,
 	Can_TSAC_CellTemperatureError,
     Can_TSAC_IsAmsSafe,
-    Can_TSAC_IsImdSafe,
     Can_TSAC_IsTransceiverWorking,
     Can_TSAC_IsShuntWorking,
     Can_TSAC_IsBms0Working,
     Can_TSAC_IsBms1Working,
+	Can_TSAC_IsCharging,
+	Can_TSAC_AreThermistorsWorking,
+	Can_TSAC_ReportedChargingCurrent,
+	Can_TSAC_ReportedChargingVoltage,
     /* PEDALS */
     Can_PEDALS_AcceleratorSensor1Voltage,
     Can_PEDALS_AcceleratorSensor2Voltage,
