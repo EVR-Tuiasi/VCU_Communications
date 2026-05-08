@@ -58,6 +58,7 @@ InvertersMonitoredValues_t invertoareUart;
 PedalsMonitoredValues_t pedaleUart;
 TsacMonitoredValues_t baterieUart;
 DashboardMonitoredValues_t bordUart;
+CommunicationsMonitoredValues_t comunicatiiUart;
 
 uint8_t bufferUart[10];
 
@@ -167,6 +168,15 @@ void UartMessaging_Test(void){
 		UartMessaging_SetValue(Uart_DASHBOARD_CarReverseCommandPressed, cnt & 1);
 		UartMessaging_SetValue(Uart_DASHBOARD_IsDisplayWorking, cnt & 1);
 		UartMessaging_SetValue(Uart_DASHBOARD_IsSegmentsDriverWorking, cnt & 1);
+
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsInverterVcuSimulated, cnt & 1);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsTsacVcuSimulated, cnt & 1);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsDashboardVcuSimulated, cnt & 1);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsPedalsVcuSimulated, cnt & 1);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_ChargerCommand, cnt & 1);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_DesiredChargingCurrent, cnt % 321);
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_DesiredChargingVoltage, cnt % 1009);
+
 
 		cnt++;
 		UartMessaging_Update();
@@ -474,6 +484,34 @@ void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Valu
 		case Uart_DASHBOARD_IsSegmentsDriverWorking:
 			bordUart.IsSegmentsDriverWorking = Value;
 			break;
+		//COMMUNICATIONS
+		case Uart_COMMUNICATIONS_IsInverterVcuSimulated:
+			comunicatiiUart.IsInverterVcuSimulated = Value;
+			break;
+		case Uart_COMMUNICATIONS_IsTsacVcuSimulated:
+			comunicatiiUart.IsTsacVcuSimulated = Value;
+			break;
+		case Uart_COMMUNICATIONS_IsDashboardVcuSimulated:
+			comunicatiiUart.IsDashboardVcuSimulated = Value;
+			break;
+		case Uart_COMMUNICATIONS_IsPedalsVcuSimulated:
+			comunicatiiUart.IsPedalsVcuSimulated = Value;
+			break;
+		case Uart_COMMUNICATIONS_ChargerCommand:
+			comunicatiiUart.ChargerCommand = Value;
+			break;
+		case Uart_COMMUNICATIONS_DesiredChargingCurrent:
+			if(Value > 320)
+				comunicatiiUart.DesiredChargingCurrent = 0;
+			else
+				comunicatiiUart.DesiredChargingCurrent = Value;
+			break;
+		case Uart_COMMUNICATIONS_DesiredChargingVoltage:
+			if(Value > 1008)
+				comunicatiiUart.DesiredChargingVoltage = 0;
+			else
+				comunicatiiUart.DesiredChargingVoltage = Value;
+			break;
 		default:
 			break;
 	}
@@ -629,6 +667,21 @@ uint32_t UartMessaging_ReadValue(UartMonitoredValue_t DesiredValueType){
 			return bordUart.IsDisplayWorking;
 		case Uart_DASHBOARD_IsSegmentsDriverWorking:
 			return bordUart.IsSegmentsDriverWorking;
+		//COMMUNICATIONS
+		case Uart_COMMUNICATIONS_IsInverterVcuSimulated:
+			return comunicatiiUart.IsInverterVcuSimulated;
+		case Uart_COMMUNICATIONS_IsTsacVcuSimulated:
+			return comunicatiiUart.IsTsacVcuSimulated;
+		case Uart_COMMUNICATIONS_IsDashboardVcuSimulated:
+			return comunicatiiUart.IsDashboardVcuSimulated;
+		case Uart_COMMUNICATIONS_IsPedalsVcuSimulated:
+			return comunicatiiUart.IsPedalsVcuSimulated;
+		case Uart_COMMUNICATIONS_ChargerCommand:
+			return comunicatiiUart.ChargerCommand;
+		case Uart_COMMUNICATIONS_DesiredChargingCurrent:
+			return comunicatiiUart.DesiredChargingCurrent;
+		case Uart_COMMUNICATIONS_DesiredChargingVoltage:
+			return comunicatiiUart.DesiredChargingVoltage;
 		default:
 			return 0;
 	}
@@ -784,6 +837,18 @@ void UartMessaging_CreateBuffer(idUart_t type){
 			bufferUart[6] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingCurrent) & (0x00FF);
 			bufferUart[7] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingVoltage) >> 8;
 			bufferUart[8] = UartMessaging_ReadValue(Uart_TSAC_ReportedChargingVoltage) & (0x00FF);
+			bufferUart[9] = CRC_calculate(10);
+			break;
+		case idUartComunicatii:
+			bufferUart[0] = idUartComunicatii;
+			bufferUart[1] = (UartMessaging_ReadValue(Uart_COMMUNICATIONS_IsInverterVcuSimulated) << 7) | (UartMessaging_ReadValue(Uart_COMMUNICATIONS_IsTsacVcuSimulated) << 6) | (UartMessaging_ReadValue(Uart_COMMUNICATIONS_IsDashboardVcuSimulated) << 5) | (UartMessaging_ReadValue(Uart_COMMUNICATIONS_IsPedalsVcuSimulated) << 4);
+			bufferUart[2] = 0;
+			bufferUart[3] = 0;
+			bufferUart[4] = 0;
+			bufferUart[5] = 0;
+			bufferUart[6] = (UartMessaging_ReadValue(Uart_COMMUNICATIONS_ChargerCommand) << 3) | (UartMessaging_ReadValue(Uart_COMMUNICATIONS_DesiredChargingCurrent) >> 6);
+			bufferUart[7] = ((UartMessaging_ReadValue(Uart_COMMUNICATIONS_DesiredChargingCurrent) << 2) & (0x003F)) | (UartMessaging_ReadValue(Uart_COMMUNICATIONS_DesiredChargingVoltage) >> 8);
+			bufferUart[8] = UartMessaging_ReadValue(Uart_COMMUNICATIONS_DesiredChargingVoltage) & (0x00FF);
 			bufferUart[9] = CRC_calculate(10);
 			break;
 	}

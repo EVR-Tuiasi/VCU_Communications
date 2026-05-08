@@ -112,6 +112,16 @@ typedef struct{
     bool IsSegmentsDriverWorking;                       /* 1 bit, 0 means segments driver is WORKING, 1 means segments driver is NOT WORKING */
 }DashboardMonitoredValues_t;
 
+typedef struct{
+	uint16_t DesiredChargingCurrent;
+	uint16_t DesiredChargingVoltage;
+	bool IsInverterVcuSimulated;
+	bool IsTsacVcuSimulated;
+	bool IsDashboardVcuSimulated;
+	bool IsPedalsVcuSimulated;
+	bool ChargerCommand;
+}CommunicationsMonitoredValues_t;
+
 /*==================================================================================================
 *                                       LOCAL MACROS
 ==================================================================================================*/

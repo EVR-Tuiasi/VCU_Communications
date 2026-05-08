@@ -58,6 +58,7 @@ InvertersMonitoredValues_t invertoareCan;
 PedalsMonitoredValues_t pedaleCan;
 TsacMonitoredValues_t baterieCan;
 DashboardMonitoredValues_t bordCan;
+CommunicationsMonitoredValues_t comunicatiiCan;
 
 uint8_t bufferCan[8];
 
@@ -194,6 +195,14 @@ void CanMessaging_Test(void){
 		CanMessaging_SetValue(Can_DASHBOARD_CarReverseCommandPressed, cnt & 1);
 		CanMessaging_SetValue(Can_DASHBOARD_IsDisplayWorking, cnt & 1);
 		CanMessaging_SetValue(Can_DASHBOARD_IsSegmentsDriverWorking, cnt & 1);
+
+		CanMessaging_SetValue(Can_COMMUNICATIONS_IsInverterVcuSimulated, cnt & 1);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_IsTsacVcuSimulated, cnt & 1);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_IsDashboardVcuSimulated, cnt & 1);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_IsPedalsVcuSimulated, cnt & 1);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_ChargerCommand, cnt & 1);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_DesiredChargingCurrent, cnt % 321);
+		CanMessaging_SetValue(Can_COMMUNICATIONS_DesiredChargingVoltage, cnt % 1009);
 
 		cnt++;
 		CanMessaging_Update();
@@ -534,6 +543,34 @@ void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value)
 		case Can_DASHBOARD_IsSegmentsDriverWorking:
 			bordCan.IsSegmentsDriverWorking = Value;
 			break;
+		//COMMUNICATIONS
+		case Can_COMMUNICATIONS_IsInverterVcuSimulated:
+			comunicatiiCan.IsInverterVcuSimulated = Value;
+			break;
+		case Can_COMMUNICATIONS_IsTsacVcuSimulated:
+			comunicatiiCan.IsTsacVcuSimulated = Value;
+			break;
+		case Can_COMMUNICATIONS_IsDashboardVcuSimulated:
+			comunicatiiCan.IsDashboardVcuSimulated = Value;
+			break;
+		case Can_COMMUNICATIONS_IsPedalsVcuSimulated:
+			comunicatiiCan.IsPedalsVcuSimulated = Value;
+			break;
+		case Can_COMMUNICATIONS_ChargerCommand:
+			comunicatiiCan.ChargerCommand = Value;
+			break;
+		case Can_COMMUNICATIONS_DesiredChargingCurrent:
+			if(Value > 320)
+				comunicatiiCan.DesiredChargingCurrent = 0;
+			else
+				comunicatiiCan.DesiredChargingCurrent = Value;
+			break;
+		case Can_COMMUNICATIONS_DesiredChargingVoltage:
+			if(Value > 1008)
+				comunicatiiCan.DesiredChargingVoltage = 0;
+			else
+				comunicatiiCan.DesiredChargingVoltage = Value;
+			break;
 		default:
 			break;
 	}
@@ -689,6 +726,21 @@ uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
 			return bordCan.IsDisplayWorking;
 		case Can_DASHBOARD_IsSegmentsDriverWorking:
 			return bordCan.IsSegmentsDriverWorking;
+		//COMMUNICATIONS
+		case Can_COMMUNICATIONS_IsInverterVcuSimulated:
+			return comunicatiiCan.IsInverterVcuSimulated;
+		case Can_COMMUNICATIONS_IsTsacVcuSimulated:
+			return comunicatiiCan.IsTsacVcuSimulated;
+		case Can_COMMUNICATIONS_IsDashboardVcuSimulated:
+			return comunicatiiCan.IsDashboardVcuSimulated;
+		case Can_COMMUNICATIONS_IsPedalsVcuSimulated:
+			return comunicatiiCan.IsPedalsVcuSimulated;
+		case Can_COMMUNICATIONS_ChargerCommand:
+			return comunicatiiCan.ChargerCommand;
+		case Can_COMMUNICATIONS_DesiredChargingCurrent:
+			return comunicatiiCan.DesiredChargingCurrent;
+		case Can_COMMUNICATIONS_DesiredChargingVoltage:
+			return comunicatiiCan.DesiredChargingVoltage;
 		default:
 			return 0;
 	}
@@ -848,6 +900,15 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			CanMessaging_SetValue(Can_DASHBOARD_IsDisplayWorking, (data[0] & (1<<5)) >> 5);
 			CanMessaging_SetValue(Can_DASHBOARD_IsSegmentsDriverWorking, (data[0] & (1<<4)) >> 4);
 			break;
+		case idCanComunicatii:
+			CanMessaging_SetValue(Can_COMMUNICATIONS_IsInverterVcuSimulated, (data[0] & (1<<7)) >> 7);
+			CanMessaging_SetValue(Can_COMMUNICATIONS_IsTsacVcuSimulated, (data[0] & (1<<6)) >> 6);
+			CanMessaging_SetValue(Can_COMMUNICATIONS_IsDashboardVcuSimulated, (data[0] & (1<<5)) >> 5);
+			CanMessaging_SetValue(Can_COMMUNICATIONS_IsPedalsVcuSimulated, (data[0] & (1<<4)) >> 4);
+			CanMessaging_SetValue(Can_COMMUNICATIONS_ChargerCommand, (data[5] & (1<<3)) >> 3);
+			CanMessaging_SetValue(Can_COMMUNICATIONS_DesiredChargingCurrent, (((((uint16_t)data[5]) << 8) | data[6]) >> 2) & (0x01FF));
+			CanMessaging_SetValue(Can_COMMUNICATIONS_DesiredChargingVoltage, ((((uint16_t)data[6]) << 8) | data[7]) & (0x03FF));
+			break;
 		default:
 			return FALSE;
 	}
@@ -959,6 +1020,16 @@ void CanMessaging_CreateBuffer(idCan_t type){
 			bufferCan[5] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingCurrent) & (0x00FF);
 			bufferCan[6] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingVoltage) >> 8;
 			bufferCan[7] = CanMessaging_ReadValue(Can_TSAC_ReportedChargingVoltage) & (0x00FF);
+			break;
+		case idCanComunicatii:
+			bufferCan[0] = (CanMessaging_ReadValue(Can_COMMUNICATIONS_IsInverterVcuSimulated) << 7) | (CanMessaging_ReadValue(Can_COMMUNICATIONS_IsTsacVcuSimulated) << 6) | (CanMessaging_ReadValue(Can_COMMUNICATIONS_IsDashboardVcuSimulated) << 5) | (CanMessaging_ReadValue(Can_COMMUNICATIONS_IsPedalsVcuSimulated) << 4);
+			bufferCan[1] = 0;
+			bufferCan[2] = 0;
+			bufferCan[3] = 0;
+			bufferCan[4] = 0;
+			bufferCan[5] = (CanMessaging_ReadValue(Can_COMMUNICATIONS_ChargerCommand) << 3) | (CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingCurrent) >> 6);
+			bufferCan[6] = ((CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingCurrent) << 2) & (0x003F)) | (CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingVoltage) >> 8);
+			bufferCan[7] = CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingVoltage) & (0x00FF);
 			break;
 	}
 }
@@ -1072,6 +1143,14 @@ void CanMessaging_AppTest(void){
 		UartMessaging_SetValue(Uart_DASHBOARD_IsDisplayWorking, CanMessaging_ReadValue(Can_DASHBOARD_IsDisplayWorking));
 		UartMessaging_SetValue(Uart_DASHBOARD_IsSegmentsDriverWorking, CanMessaging_ReadValue(Can_DASHBOARD_IsSegmentsDriverWorking));
 
+		//Communications
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsInverterVcuSimulated, CanMessaging_ReadValue(Can_COMMUNICATIONS_IsInverterVcuSimulated));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsTsacVcuSimulated, CanMessaging_ReadValue(Can_COMMUNICATIONS_IsTsacVcuSimulated));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsDashboardVcuSimulated, CanMessaging_ReadValue(Can_COMMUNICATIONS_IsDashboardVcuSimulated));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsPedalsVcuSimulated, CanMessaging_ReadValue(Can_COMMUNICATIONS_IsPedalsVcuSimulated));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_ChargerCommand, CanMessaging_ReadValue(Can_COMMUNICATIONS_ChargerCommand));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_DesiredChargingCurrent, CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingCurrent));
+		UartMessaging_SetValue(Uart_COMMUNICATIONS_DesiredChargingVoltage, CanMessaging_ReadValue(Can_COMMUNICATIONS_DesiredChargingVoltage));
 		//Send data
 		UartMessaging_Update();
 	}

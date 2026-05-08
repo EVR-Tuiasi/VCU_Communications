@@ -31,6 +31,7 @@ typedef enum{
 	idUartBaterie2 = 0x15,
 	idUartBaterie3 = 0x16,
 	idUartBaterie4 = 0x17,
+	idUartComunicatii = 0x18,
 }idUart_t;
 
 typedef enum{
@@ -106,7 +107,15 @@ typedef enum{
     Uart_DASHBOARD_ActivationButtonPressed,
     Uart_DASHBOARD_CarReverseCommandPressed,
     Uart_DASHBOARD_IsDisplayWorking,
-    Uart_DASHBOARD_IsSegmentsDriverWorking
+    Uart_DASHBOARD_IsSegmentsDriverWorking,
+	/* COMMUNICATIONS */
+	Uart_COMMUNICATIONS_IsInverterVcuSimulated,
+	Uart_COMMUNICATIONS_IsTsacVcuSimulated,
+	Uart_COMMUNICATIONS_IsDashboardVcuSimulated,
+	Uart_COMMUNICATIONS_IsPedalsVcuSimulated,
+	Uart_COMMUNICATIONS_ChargerCommand,
+	Uart_COMMUNICATIONS_DesiredChargingCurrent,
+	Uart_COMMUNICATIONS_DesiredChargingVoltage,
 }UartMonitoredValue_t;
 
 #define UART_Channel 0x00000000

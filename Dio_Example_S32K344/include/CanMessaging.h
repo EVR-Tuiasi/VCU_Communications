@@ -38,7 +38,8 @@ typedef enum{
 	idCanBaterie2 = 0x00000115,
 	idCanBaterie3 = 0x00000116,
 	idCanBaterie4 = 0x00000117,
-	idCanBord = 0x00000113
+	idCanBord = 0x00000113,
+	idCanComunicatii = 0x00000118,
 }idCan_t;
 
 typedef enum{
@@ -114,7 +115,15 @@ typedef enum{
     Can_DASHBOARD_ActivationButtonPressed,
     Can_DASHBOARD_CarReverseCommandPressed,
     Can_DASHBOARD_IsDisplayWorking,
-    Can_DASHBOARD_IsSegmentsDriverWorking
+    Can_DASHBOARD_IsSegmentsDriverWorking,
+	/* COMMUNICATIONS */
+	Can_COMMUNICATIONS_IsInverterVcuSimulated,
+	Can_COMMUNICATIONS_IsTsacVcuSimulated,
+	Can_COMMUNICATIONS_IsDashboardVcuSimulated,
+	Can_COMMUNICATIONS_IsPedalsVcuSimulated,
+	Can_COMMUNICATIONS_ChargerCommand,
+	Can_COMMUNICATIONS_DesiredChargingCurrent,
+	Can_COMMUNICATIONS_DesiredChargingVoltage,
 }CanMonitoredValue_t;
 
 /*==================================================================================================
