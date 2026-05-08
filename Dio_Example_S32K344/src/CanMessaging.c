@@ -286,6 +286,13 @@ void CanMessaging_Update(void){
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
+
+	CanMessaging_CreateBuffer(idCanComunicatii);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=idCanComunicatii | 0x80000000U;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	i=500000;
+	while(i--);
 }
 
 void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value){

@@ -227,6 +227,10 @@ void UartMessaging_Update(void){
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
+	UartMessaging_CreateBuffer(idUartComunicatii);
+	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
+	i=100000;
+	while(i--);
 }
 
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value){

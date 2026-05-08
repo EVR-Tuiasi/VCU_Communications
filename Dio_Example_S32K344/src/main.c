@@ -70,7 +70,8 @@ uint8_t dataDeTrimisFrana[8]={0x54, 0x03, 0x2B, 0x23, 0x2F, 0x23, 0x3E, 0x80}; /
 uint8_t dataDeTrimisTSAC1[8]={0xFF, 0x3F, 0xBF, 0x67, 0x40, 0xBB, 0xBD, 0xE8}; //TSAC1
 uint8_t dataDeTrimisTSAC2[8]={0xF8, 0x43, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC2
 uint8_t dataDeTrimisTSAC3[8]={0xF8, 0x13, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC3
-uint8_t dataDeTrimisTSAC4[8]={0x8A, 0xE2, 0xB0, 0x00, 0x00, 0x00, 0x00, 0x00}; //TSAC4
+uint8_t dataDeTrimisTSAC4[8]={0x8A, 0xE2, 0xBF, 0xC1, 0xF8, 0x2F, 0xF8, 0x2F}; //TSAC4
+uint8_t dataDeTrimisComm[8]={0xF0, 0x00, 0x00, 0x00, 0x00, 0x0C, 0xFF, 0xE8}; //comunicatii
 
 int main(void)
 {
@@ -155,6 +156,12 @@ int main(void)
 	pduInfoTSAC4.sdu=dataDeTrimisTSAC4;
 	pduInfoTSAC4.id=idCanBaterie4 | 0x80000000U;
 
+	Can_PduType pduInfoComm;
+	pduInfoComm.swPduHandle=0;
+	pduInfoComm.length=8;
+	pduInfoComm.sdu=dataDeTrimisComm;
+	pduInfoComm.id=idCanComunicatii | 0x80000000U;
+
 
 	//CanMessaging_Test();
 	//UartMessaging_Test();
@@ -176,16 +183,16 @@ int main(void)
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoFrana);
 	i=400000;
 	while(i--);*/
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC1);
+	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC1);
 	i=400000;
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2);
 	i=400000;
-	while(i--);
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC3);
+	while(i--);*/
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC4);
 	i=400000;
 	while(i--);
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC4);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoComm);
 	i=400000;
 	while(i--);
 	CanMessaging_AppTest();
