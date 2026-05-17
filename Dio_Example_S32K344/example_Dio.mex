@@ -465,11 +465,6 @@
                   <data type="Version">1.0.0</data>
                </feature>
             </dependency>
-            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data>true</data>
-               </feature>
-            </dependency>
          </dependencies>
          <generated_project_files>
             <file path="board/Siul2_Port_Ip_Cfg.c" update_enabled="true"/>
@@ -3076,7 +3071,7 @@
                                  <setting name="CanWakeupFunctionalityAPI" value="false"/>
                                  <setting name="CanWakeupProcessing" value="INTERRUPT"/>
                                  <setting name="CanWakeupSupport" value="false"/>
-                                 <setting name="CanLoopBackMode" value="false"/>
+                                 <setting name="CanLoopBackMode" value="true"/>
                                  <setting name="CanAutoBusOffRecovery" value="false"/>
                                  <setting name="CanTrippleSamplingEnable" value="false"/>
                                  <setting name="CanControllerPrExcEn" value="false"/>
@@ -3186,6 +3181,11 @@
                                        <setting name="CanHwFilterCode" value="0x117"/>
                                        <setting name="CanHwFilterMask" value="0x117"/>
                                     </struct>
+                                    <struct name="11">
+                                       <setting name="Name" value="Can_aHwFilter_Object_11"/>
+                                       <setting name="CanHwFilterCode" value="0x119"/>
+                                       <setting name="CanHwFilterMask" value="0x119"/>
+                                    </struct>
                                  </array>
                                  <array name="CanTTHardwareObjectTrigger"/>
                               </struct>
@@ -3255,7 +3255,7 @@
                               <setting name="0" value="2"/>
                            </array>
                            <array name="CanIfMaxTxPduCfg">
-                              <setting name="0" value="11"/>
+                              <setting name="0" value="12"/>
                            </array>
                            <array name="CanIfTxPduCfg">
                               <struct name="0">
@@ -3397,6 +3397,19 @@
                                     <setting name="0" value="EXTENDED_CAN"/>
                                  </array>
                                  <setting name="CanIfTxPduId" value="10"/>
+                                 <array name="CanIfTxPduUserTxConfirmationName"/>
+                                 <array name="CanIfTxPduUserTxConfirmationUL"/>
+                                 <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>
+                              </struct>
+                              <struct name="11">
+                                 <setting name="Name" value="CanIfTxPduCfg_11"/>
+                                 <array name="CanIfTxPduCanId">
+                                    <setting name="0" value="0x119"/>
+                                 </array>
+                                 <array name="CanIfTxPduCanIdType">
+                                    <setting name="0" value="EXTENDED_CAN"/>
+                                 </array>
+                                 <setting name="CanIfTxPduId" value="11"/>
                                  <array name="CanIfTxPduUserTxConfirmationName"/>
                                  <array name="CanIfTxPduUserTxConfirmationUL"/>
                                  <setting name="CanIfTxPduBufferRef" value="/CanIf/CanIf/CanIfInitCfg/CanIfBufferCfg_0"/>

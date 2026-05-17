@@ -38,6 +38,7 @@ typedef enum{
 	idCanBaterie2 = 0x00000115,
 	idCanBaterie3 = 0x00000116,
 	idCanBaterie4 = 0x00000117,
+	idCanBaterie5 = 0x00000119,
 	idCanBord = 0x00000113,
 	idCanComunicatii = 0x00000118,
 }idCan_t;
@@ -52,10 +53,8 @@ typedef enum{
     Can_TSAC_LowestCellVoltage,
     Can_TSAC_OverallVoltage,
     Can_TSAC_OverallCurrent,
-	Can_TSAC_CellVoltageIndex,
 	Can_TSAC_CellVoltage,
 	Can_TSAC_CellVoltageError,
-	Can_TSAC_CellTemperatureIndex,
 	Can_TSAC_CellTemperature,
 	Can_TSAC_CellTemperatureError,
     Can_TSAC_IsAmsSafe,
@@ -67,6 +66,9 @@ typedef enum{
 	Can_TSAC_AreThermistorsWorking,
 	Can_TSAC_ReportedChargingCurrent,
 	Can_TSAC_ReportedChargingVoltage,
+	Can_TSAC_ChargerCommand,
+	Can_TSAC_DesiredChargingCurrent,
+	Can_TSAC_DesiredChargingVoltage,
     /* PEDALS */
     Can_PEDALS_AcceleratorSensor1Voltage,
     Can_PEDALS_AcceleratorSensor2Voltage,
@@ -121,9 +123,6 @@ typedef enum{
 	Can_COMMUNICATIONS_IsTsacVcuSimulated,
 	Can_COMMUNICATIONS_IsDashboardVcuSimulated,
 	Can_COMMUNICATIONS_IsPedalsVcuSimulated,
-	Can_COMMUNICATIONS_ChargerCommand,
-	Can_COMMUNICATIONS_DesiredChargingCurrent,
-	Can_COMMUNICATIONS_DesiredChargingVoltage,
 }CanMonitoredValue_t;
 
 /*==================================================================================================
@@ -179,6 +178,8 @@ uint16_t CanMessaging_ReadCellTemperature(uint16_t index);
 boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index);
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data);
 void CanMessaging_CreateBuffer(idCan_t type);
+void CanMessaging_CreateCellVoltageBuffer(uint16_t index);
+void CanMessaging_CreateCellTemperatureBuffer(uint16_t index);
 void CanMessaging_AppTest(void);
 
 #ifdef __cplusplus

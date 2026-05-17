@@ -20,6 +20,8 @@ extern "C"{
 ==================================================================================================*/
 #define CELLS_NUM 400
 #define THERMISTOR_NUM 100
+#define CELLS_LINES 5
+#define THERMISTOR_LINES 26
 
 typedef struct{
     /* General values */
@@ -33,11 +35,11 @@ typedef struct{
     uint16_t OverallCurrent;                            /* 13 bits, 0-8095, 0 to 809.5 Amps, 0.1 Amps per bit */
     uint16_t ReportedChargingCurrent;
     uint16_t ReportedChargingVoltage;
+    uint16_t DesiredChargingCurrent;
+    uint16_t DesiredChargingVoltage;
     /* Cell voltages and temperatures*/
-    uint8_t CellVoltageIndex;
-    uint16_t CellVoltage[CELLS_NUM];                    /* TODO */
+    uint16_t CellVoltage[CELLS_NUM];
     bool CellVoltageErrors[CELLS_NUM];
-    uint8_t ThermistorTemperatureIndex;
     uint16_t ThermistorTemperature[THERMISTOR_NUM];     /* 10 bits, 0-1023, 0 to 102.3 degrees C, 0.1 degrees C per bit */
     bool ThermistorTemperatureErrors[THERMISTOR_NUM];
     /* Status and errors */
@@ -48,6 +50,7 @@ typedef struct{
     bool Bms1Error;                                     /* 1 bit, 0 means safe, 1 means errors */
     bool ChargerStatus;
     bool ThermistorsError;
+    bool ChargerCommand;
 }TsacMonitoredValues_t;
 
 typedef struct{
@@ -113,13 +116,10 @@ typedef struct{
 }DashboardMonitoredValues_t;
 
 typedef struct{
-	uint16_t DesiredChargingCurrent;
-	uint16_t DesiredChargingVoltage;
 	bool IsInverterVcuSimulated;
 	bool IsTsacVcuSimulated;
 	bool IsDashboardVcuSimulated;
 	bool IsPedalsVcuSimulated;
-	bool ChargerCommand;
 }CommunicationsMonitoredValues_t;
 
 /*==================================================================================================

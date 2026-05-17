@@ -68,7 +68,8 @@ uint8_t dataDeTrimisBord[8]={0xD0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; //
 uint8_t dataDeTrimisAcc[8]={0x54, 0x07, 0x2B, 0x23, 0x2F, 0x23, 0x3E, 0x80}; //acceleratie
 uint8_t dataDeTrimisFrana[8]={0x54, 0x03, 0x2B, 0x23, 0x2F, 0x23, 0x3E, 0x80}; //frana
 uint8_t dataDeTrimisTSAC1[8]={0xFF, 0x3F, 0xBF, 0x67, 0x40, 0xBB, 0xBD, 0xE8}; //TSAC1
-uint8_t dataDeTrimisTSAC2[8]={0xF8, 0x43, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC2
+uint8_t dataDeTrimisTSAC2_0[8]={0xF8, 0x43, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC2 index 0
+uint8_t dataDeTrimisTSAC2_1[8]={0xF9, 0x43, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC2 index 1
 uint8_t dataDeTrimisTSAC3[8]={0xF8, 0x13, 0xE7, 0xF9, 0xFE, 0x7F, 0x9F, 0xE7}; //TSAC3
 uint8_t dataDeTrimisTSAC4[8]={0x8A, 0xE2, 0xBF, 0xC1, 0xF8, 0x2F, 0xF8, 0x2F}; //TSAC4
 uint8_t dataDeTrimisComm[8]={0xF0, 0x00, 0x00, 0x00, 0x00, 0x0C, 0xFF, 0xE8}; //comunicatii
@@ -138,11 +139,17 @@ int main(void)
 	pduInfoTSAC1.sdu=dataDeTrimisTSAC1;
 	pduInfoTSAC1.id=idCanBaterie1 | 0x80000000U;
 
-	Can_PduType pduInfoTSAC2;
-	pduInfoTSAC2.swPduHandle=0;
-	pduInfoTSAC2.length=8;
-	pduInfoTSAC2.sdu=dataDeTrimisTSAC2;
-	pduInfoTSAC2.id=idCanBaterie2 | 0x80000000U;
+	Can_PduType pduInfoTSAC2_0;
+	pduInfoTSAC2_0.swPduHandle=0;
+	pduInfoTSAC2_0.length=8;
+	pduInfoTSAC2_0.sdu=dataDeTrimisTSAC2_0;
+	pduInfoTSAC2_0.id=idCanBaterie2 | 0x80000000U;
+
+	Can_PduType pduInfoTSAC2_1;
+	pduInfoTSAC2_1.swPduHandle=0;
+	pduInfoTSAC2_1.length=8;
+	pduInfoTSAC2_1.sdu=dataDeTrimisTSAC2_1;
+	pduInfoTSAC2_1.id=idCanBaterie2 | 0x80000000U;
 
 	Can_PduType pduInfoTSAC3;
 	pduInfoTSAC3.swPduHandle=0;
@@ -189,10 +196,10 @@ int main(void)
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2);
 	i=400000;
 	while(i--);*/
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC4);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
 	i=400000;
 	while(i--);
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoComm);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_1);
 	i=400000;
 	while(i--);
 	CanMessaging_AppTest();

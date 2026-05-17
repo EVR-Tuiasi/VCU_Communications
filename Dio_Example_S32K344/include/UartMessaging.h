@@ -31,6 +31,7 @@ typedef enum{
 	idUartBaterie2 = 0x15,
 	idUartBaterie3 = 0x16,
 	idUartBaterie4 = 0x17,
+	idUartBaterie5 = 0x19,
 	idUartComunicatii = 0x18,
 }idUart_t;
 
@@ -44,10 +45,8 @@ typedef enum{
 	Uart_TSAC_LowestCellVoltage,
 	Uart_TSAC_OverallVoltage,
 	Uart_TSAC_OverallCurrent,
-	Uart_TSAC_CellVoltageIndex,
 	Uart_TSAC_CellVoltage,
 	Uart_TSAC_CellVoltageError,
-	Uart_TSAC_CellTemperatureIndex,
 	Uart_TSAC_CellTemperature,
 	Uart_TSAC_CellTemperatureError,
 	Uart_TSAC_IsAmsSafe,
@@ -59,6 +58,9 @@ typedef enum{
 	Uart_TSAC_AreThermistorsWorking,
 	Uart_TSAC_ReportedChargingCurrent,
 	Uart_TSAC_ReportedChargingVoltage,
+	Uart_TSAC_ChargerCommand,
+	Uart_TSAC_DesiredChargingCurrent,
+	Uart_TSAC_DesiredChargingVoltage,
     /* PEDALS */
     Uart_PEDALS_AcceleratorSensor1Voltage,
     Uart_PEDALS_AcceleratorSensor2Voltage,
@@ -113,9 +115,6 @@ typedef enum{
 	Uart_COMMUNICATIONS_IsTsacVcuSimulated,
 	Uart_COMMUNICATIONS_IsDashboardVcuSimulated,
 	Uart_COMMUNICATIONS_IsPedalsVcuSimulated,
-	Uart_COMMUNICATIONS_ChargerCommand,
-	Uart_COMMUNICATIONS_DesiredChargingCurrent,
-	Uart_COMMUNICATIONS_DesiredChargingVoltage,
 }UartMonitoredValue_t;
 
 #define UART_Channel 0x00000000
@@ -172,6 +171,8 @@ boolean UartMessaging_ReadCellVoltageErrors(uint16_t index);
 uint16_t UartMessaging_ReadCellTemperature(uint16_t index);
 boolean UartMessaging_ReadCellTemperatureErrors(uint16_t index);
 void UartMessaging_CreateBuffer(idUart_t type);
+void UartMessaging_CreateCellVoltageBuffer(uint16_t index);
+void UartMessaging_CreateCellTemperatureBuffer(uint16_t index);
 uint8_t CRC_calculate(uint8_t length);
 
 #ifdef __cplusplus
