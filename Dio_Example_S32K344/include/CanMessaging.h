@@ -20,13 +20,14 @@ extern "C"{
 #include "CDD_Uart.h"
 #include "Messaging_Types.h"
 #include "UartMessaging.h"
+#include "CanConfig.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
 ==================================================================================================*/
 
-#define MASK 0x3FFFFFFF
-#define CAN_HTH_HANDLE 0x00000001
+#define INTERRUPT_MASK 0x3FFFFFFF
+#define ID_MASK 0x80000000U
 
 typedef enum{
 	idCanFrana = 0x00000331,

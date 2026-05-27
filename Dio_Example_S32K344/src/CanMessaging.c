@@ -1,3 +1,4 @@
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -24,6 +25,7 @@ extern "C"{
 #include "Mcl.h"
 #include "CanMessaging.h"
 #include "Messaging_Types.h"
+#include "CanConfig.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
@@ -78,16 +80,16 @@ uint8_t bufferCan[8];
 ==================================================================================================*/
 
 void CanMessaging_Init(void){
-	Dio_WriteChannel(88, STD_HIGH); //CAN0_EN
+	Dio_WriteChannel(CAN_Channel1_En, STD_HIGH); //CAN0_EN
 	volatile uint64 i = 1000000;
 	while(i--);
-	Dio_WriteChannel(85, STD_HIGH); //CAN0_STB_N
+	Dio_WriteChannel(CAN_Channel1_Stb_N, STD_HIGH); //CAN0_STB_N
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(119, STD_HIGH); //CAN1_EN
+	Dio_WriteChannel(CAN_Channel2_En, STD_HIGH); //CAN1_EN
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(98, STD_HIGH); //CAN1_STB_N
+	Dio_WriteChannel(CAN_Channel2_Stb_N, STD_HIGH); //CAN1_STB_N
 	i = 1000000;
 	while(i--);
 
@@ -204,49 +206,49 @@ void CanMessaging_Update(void){
 
 	CanMessaging_CreateBuffer(idCanInvertorStanga);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertorStanga | 0x80000000U;
+	pduInfo.id=idCanInvertorStanga | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanInvertorDreapta);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertorDreapta | 0x80000000U;
+	pduInfo.id=idCanInvertorDreapta | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanInvertoare);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertoare | 0x80000000U;
+	pduInfo.id=idCanInvertoare | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanBord);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBord | 0x80000000U;
+	pduInfo.id=idCanBord | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanAcceleratie);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanAcceleratie | 0x80000000U;
+	pduInfo.id=idCanAcceleratie | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanFrana);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanFrana | 0x80000000U;
+	pduInfo.id=idCanFrana | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanBaterie1);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBaterie1 | 0x80000000U;
+	pduInfo.id=idCanBaterie1 | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
@@ -254,7 +256,7 @@ void CanMessaging_Update(void){
 	for(uint16_t index = 0; index <= CELLS_LINES; index++){
 		CanMessaging_CreateCellVoltageBuffer(index);
 		pduInfo.sdu=bufferCan;
-		pduInfo.id=idCanBaterie2 | 0x80000000U;
+		pduInfo.id=idCanBaterie2 | ID_MASK;
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 		i=500000;
 		while(i--);
@@ -263,7 +265,7 @@ void CanMessaging_Update(void){
 	for(uint16_t index = 0; index <= THERMISTOR_LINES; index++){
 		CanMessaging_CreateCellTemperatureBuffer(index);
 		pduInfo.sdu=bufferCan;
-		pduInfo.id=idCanBaterie3 | 0x80000000U;
+		pduInfo.id=idCanBaterie3 | ID_MASK;
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 		i=500000;
 		while(i--);
@@ -271,21 +273,21 @@ void CanMessaging_Update(void){
 
 	CanMessaging_CreateBuffer(idCanBaterie4);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBaterie4 | 0x80000000U;
+	pduInfo.id=idCanBaterie4 | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanBaterie5);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBaterie5 | 0x80000000U;
+	pduInfo.id=idCanBaterie5 | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
 
 	CanMessaging_CreateBuffer(idCanComunicatii);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanComunicatii | 0x80000000U;
+	pduInfo.id=idCanComunicatii | ID_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	i=500000;
 	while(i--);
@@ -768,7 +770,7 @@ boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index){
 }
 
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
-	switch((id&MASK)){
+	switch((id&INTERRUPT_MASK)){
 		case idCanFrana:
 			//extragere date
 			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));

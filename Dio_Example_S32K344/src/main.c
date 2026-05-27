@@ -100,74 +100,74 @@ int main(void)
 	pduInfoInvSt.swPduHandle=0;
 	pduInfoInvSt.length=8;
 	pduInfoInvSt.sdu=dataDeTrimisInvStDr;
-	pduInfoInvSt.id=idCanInvertorStanga | 0x80000000U;
+	pduInfoInvSt.id=idCanInvertorStanga | ID_MASK;
 
 	Can_PduType pduInfoInvDr;
 	pduInfoInvDr.swPduHandle=0;
 	pduInfoInvDr.length=8;
 	pduInfoInvDr.sdu=dataDeTrimisInvStDr;
-	pduInfoInvDr.id=idCanInvertorDreapta | 0x80000000U;
+	pduInfoInvDr.id=idCanInvertorDreapta | ID_MASK;
 
 	Can_PduType pduInfoInv;
 	pduInfoInv.swPduHandle=0;
 	pduInfoInv.length=8;
 	pduInfoInv.sdu=dataDeTrimisInv;
-	pduInfoInv.id=idCanInvertoare | 0x80000000U;
+	pduInfoInv.id=idCanInvertoare | ID_MASK;
 
 
 	Can_PduType pduInfoBord;
 	pduInfoBord.swPduHandle=0;
 	pduInfoBord.length=8;
 	pduInfoBord.sdu=dataDeTrimisBord;
-	pduInfoBord.id=idCanBord | 0x80000000U;
+	pduInfoBord.id=idCanBord | ID_MASK;
 
 	Can_PduType pduInfoAcc;
 	pduInfoAcc.swPduHandle=0;
 	pduInfoAcc.length=8;
 	pduInfoAcc.sdu=dataDeTrimisAcc;
-	pduInfoAcc.id=idCanAcceleratie | 0x80000000U;
+	pduInfoAcc.id=idCanAcceleratie | ID_MASK;
 
 	Can_PduType pduInfoFrana;
 	pduInfoFrana.swPduHandle=0;
 	pduInfoFrana.length=8;
 	pduInfoFrana.sdu=dataDeTrimisFrana;
-	pduInfoFrana.id=idCanFrana | 0x80000000U;
+	pduInfoFrana.id=idCanFrana | ID_MASK;
 
 	Can_PduType pduInfoTSAC1;
 	pduInfoTSAC1.swPduHandle=0;
 	pduInfoTSAC1.length=8;
 	pduInfoTSAC1.sdu=dataDeTrimisTSAC1;
-	pduInfoTSAC1.id=idCanBaterie1 | 0x80000000U;
+	pduInfoTSAC1.id=idCanBaterie1 | ID_MASK;
 
 	Can_PduType pduInfoTSAC2_0;
 	pduInfoTSAC2_0.swPduHandle=0;
 	pduInfoTSAC2_0.length=8;
 	pduInfoTSAC2_0.sdu=dataDeTrimisTSAC2_0;
-	pduInfoTSAC2_0.id=idCanBaterie2 | 0x80000000U;
+	pduInfoTSAC2_0.id=idCanBaterie2 | ID_MASK;
 
 	Can_PduType pduInfoTSAC2_1;
 	pduInfoTSAC2_1.swPduHandle=0;
 	pduInfoTSAC2_1.length=8;
 	pduInfoTSAC2_1.sdu=dataDeTrimisTSAC2_1;
-	pduInfoTSAC2_1.id=idCanBaterie2 | 0x80000000U;
+	pduInfoTSAC2_1.id=idCanBaterie2 | ID_MASK;
 
 	Can_PduType pduInfoTSAC3;
 	pduInfoTSAC3.swPduHandle=0;
 	pduInfoTSAC3.length=8;
 	pduInfoTSAC3.sdu=dataDeTrimisTSAC3;
-	pduInfoTSAC3.id=idCanBaterie3 | 0x80000000U;
+	pduInfoTSAC3.id=idCanBaterie3 | ID_MASK;
 
 	Can_PduType pduInfoTSAC4;
 	pduInfoTSAC4.swPduHandle=0;
 	pduInfoTSAC4.length=8;
 	pduInfoTSAC4.sdu=dataDeTrimisTSAC4;
-	pduInfoTSAC4.id=idCanBaterie4 | 0x80000000U;
+	pduInfoTSAC4.id=idCanBaterie4 | ID_MASK;
 
 	Can_PduType pduInfoComm;
 	pduInfoComm.swPduHandle=0;
 	pduInfoComm.length=8;
 	pduInfoComm.sdu=dataDeTrimisComm;
-	pduInfoComm.id=idCanComunicatii | 0x80000000U;
+	pduInfoComm.id=idCanComunicatii | ID_MASK;
 
 
 	//CanMessaging_Test();

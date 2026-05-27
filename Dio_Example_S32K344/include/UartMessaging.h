@@ -117,7 +117,6 @@ typedef enum{
 	Uart_COMMUNICATIONS_IsPedalsVcuSimulated,
 }UartMonitoredValue_t;
 
-#define UART_Channel 0x00000000
 
 /*==================================================================================================
 *                                       LOCAL MACROS

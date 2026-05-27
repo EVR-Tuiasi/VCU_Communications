@@ -1,3 +1,4 @@
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -24,6 +25,7 @@ extern "C"{
 #include "Mcl.h"
 #include "UartMessaging.h"
 #include "Messaging_Types.h"
+#include "UartConfig.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
@@ -78,6 +80,7 @@ uint8_t bufferUart[10];
 
 void UartMessaging_Init(void){
 	Uart_Init(NULL_PTR);
+	Uart_SetBaudrate(UART_Channel, UART_BaudRate);
 }
 
 void UartMessaging_Test(void){
