@@ -65,6 +65,7 @@ CommunicationsMonitoredValues_t comunicatiiCan;
 uint8_t bufferCan[8];
 
 
+
 /*==================================================================================================
 *                                   LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
@@ -914,7 +915,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 }
 
 void CanMessaging_CreateCellVoltageBuffer(uint16_t index){
-	bufferCan[0] = (index >> 2) | (CanMessaging_ReadCellVoltageErrors(index*5+0) << 7) | (CanMessaging_ReadCellVoltageErrors(index*5+1) << 6) | (CanMessaging_ReadCellVoltageErrors(index*5+2) << 5) | (CanMessaging_ReadCellVoltageErrors(index*5+3) << 4) | (CanMessaging_ReadCellVoltageErrors(index*5+4) << 3);
+	bufferCan[0] = index | (CanMessaging_ReadCellVoltageErrors(index*5+0) << 7) | (CanMessaging_ReadCellVoltageErrors(index*5+1) << 6) | (CanMessaging_ReadCellVoltageErrors(index*5+2) << 5) | (CanMessaging_ReadCellVoltageErrors(index*5+3) << 4) | (CanMessaging_ReadCellVoltageErrors(index*5+4) << 3);
 	bufferCan[1] = (CanMessaging_ReadCellVoltage(index*5+0) >> 8);
 	bufferCan[2] = CanMessaging_ReadCellVoltage(index*5+0) & (0x00FF);
 	bufferCan[3] = CanMessaging_ReadCellVoltage(index*5+1) >> 2;
@@ -925,7 +926,7 @@ void CanMessaging_CreateCellVoltageBuffer(uint16_t index){
 }
 
 void CanMessaging_CreateCellTemperatureBuffer(uint16_t index){
-	bufferCan[0] = (index >> 4) | (CanMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (CanMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (CanMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (CanMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (CanMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
+	bufferCan[0] = (index >> 2) | (CanMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (CanMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (CanMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (CanMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (CanMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
 	bufferCan[1] = ((index & (0x0003)) << 6) | (CanMessaging_ReadCellTemperature(index*5+0) >> 8);
 	bufferCan[2] = CanMessaging_ReadCellTemperature(index*5+0) & (0x00FF);
 	bufferCan[3] = CanMessaging_ReadCellTemperature(index*5+1) >> 2;
