@@ -196,12 +196,12 @@ int main(void)
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2);
 	i=400000;
 	while(i--);*/
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
+	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
 	i=400000;
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_1);
 	i=400000;
-	while(i--);
+	while(i--);*/
 	CanMessaging_AppTest();
     return (0U);
 }

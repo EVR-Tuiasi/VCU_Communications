@@ -981,7 +981,7 @@ void CanMessaging_CreateBuffer(idCan_t type){
 			bufferCan[0] = (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_ShortToGnd) << 7) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_ShortToVcc) << 6) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput) << 5) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_ShortToGnd) << 4) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_ShortToVcc) << 3) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput) << 2) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Implausibility) << 1);
 			bufferCan[1] = (CanMessaging_ReadValue(Can_PEDALS_PressureSensorVoltage) & (0x01C0)) >> 6;
 			bufferCan[2] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2TravelPercentage) & (0x0060)) >> 5) | ((CanMessaging_ReadValue(Can_PEDALS_PressureSensorVoltage) & (0x003F)) << 2);
-			bufferCan[3] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2TravelPercentage) & (0x001F)) << 3) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1TravelPercentage) & (0x007)) >>4);
+			bufferCan[3] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2TravelPercentage) & (0x001F)) << 3) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1TravelPercentage) & (0x0070)) >>4);
 			bufferCan[4] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x3C00)) >> 10) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1TravelPercentage) & (0x000F)) << 4);
 			bufferCan[5] = (CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x03FC)) >> 2;
 			bufferCan[6] = (CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x0003) << 6) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1Voltage) & (0x3F00)) >> 8);

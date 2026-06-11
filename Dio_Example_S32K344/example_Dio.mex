@@ -3076,7 +3076,7 @@
                                  <setting name="CanWakeupFunctionalityAPI" value="false"/>
                                  <setting name="CanWakeupProcessing" value="INTERRUPT"/>
                                  <setting name="CanWakeupSupport" value="false"/>
-                                 <setting name="CanLoopBackMode" value="true"/>
+                                 <setting name="CanLoopBackMode" value="false"/>
                                  <setting name="CanAutoBusOffRecovery" value="false"/>
                                  <setting name="CanTrippleSamplingEnable" value="false"/>
                                  <setting name="CanControllerPrExcEn" value="false"/>
