@@ -1,3 +1,4 @@
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -22,17 +23,29 @@ extern "C"{
 #include "Dio.h"
 #include "Mcl.h"
 #include "CanMessaging.h"
-#include "Messaging_Types.h"
+#include "Messaging.h"
 
 /*==================================================================================================
 *                          LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
 ==================================================================================================*/
 
-
 /*==================================================================================================
 *                                       LOCAL MACROS
 ==================================================================================================*/
+#define ID_MASK 			0x3FFFFFFF
+#define SEND_MASK 			0x80000000
+#define CAN_HTH_HANDLE  	0x00000001
+#define CAN_CONTROLLER_ID_1	0U
+#define CAN_CONTROLLER_ID_2	1U
 
+#define CAN_CHANNEL_1_EN 	88U
+#define CAN_CHANNEL_1_STB_N 85U
+#define CAN_CHANNEL_2_EN 	119U
+#define CAN_CHANNEL_2_STB_N 98U
+
+/*Takes a uint64_t argument and any xMonitoredValue_t type of argument.*/
+#define ReadDataFromAddressAndWriteInRawBufferCan(rawBufferU64, xMonitoredValue_t_Address) \
+		(rawBufferU64) |= (((xMonitoredValue_t_Address)->valueCan & (~(0xFFFFFFFFFFFFFFFF << (xMonitoredValue_t_Address)->nrOfBits))) << (xMonitoredValue_t_Address)->shift)
 /*==================================================================================================
 *                                      LOCAL CONSTANTS
 ==================================================================================================*/
@@ -41,7 +54,7 @@ extern "C"{
 /*==================================================================================================
 *                                      LOCAL VARIABLES
 ==================================================================================================*/
-
+static uint8_t bufferCan[8];
 
 /*==================================================================================================
 *                                      GLOBAL CONSTANTS
@@ -51,15 +64,7 @@ extern "C"{
 /*==================================================================================================
 *                                      GLOBAL VARIABLES
 ==================================================================================================*/
-
-
-InvertersMonitoredValues_t invertoareCan;
-PedalsMonitoredValues_t pedaleCan;
-TsacMonitoredValues_t baterieCan;
-DashboardMonitoredValues_t bordCan;
-
-uint8_t bufferCan[8];
-
+extern MonitoredValues_t MonitoredValues;
 
 /*==================================================================================================
 *                                   LOCAL FUNCTION PROTOTYPES
@@ -69,8 +74,238 @@ uint8_t bufferCan[8];
 /*==================================================================================================
 *                                       LOCAL FUNCTIONS
 ==================================================================================================*/
+boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
+	(void)(handle);	/*This is here to suppress warnings about unused parameter*/
+	(void)(length);	/*This is here to suppress warnings about unused parameter*/
+	uint64_t data_merged;
+	data_merged = (((uint64_t)data[0]) << 56) + (((uint64_t)data[1]) << 48) + (((uint64_t)data[2]) << 40) + (((uint64_t)data[3]) << 32) + (((uint64_t)data[4]) << 24) + (((uint64_t)data[5]) << 16) + (((uint64_t)data[6]) << 8) + (uint64_t)data[7];
+	switch((id&ID_MASK)){
+		case ID_CAN_FRANA:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
+			break;
 
+		case ID_CAN_ACCELERATIE:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
+			break;
 
+		case ID_CAN_INVERTOR_STANGA:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
+			break;
+
+		case ID_CAN_INVERTOR_DREAPTA:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
+			break;
+
+		case ID_CAN_INVERTOARE:
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
+			break;
+
+		case ID_CAN_BATERIE:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.OverallCurrent);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.OverallVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
+			break;
+		case ID_CAN_BATERIE_2:
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ShuntError);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.TransceiverError);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.Bms0Error);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.Bms1Error);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ThermistorsError);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.AmsError);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage);
+			break;
+		case ID_CAN_BORD:
+			//extragere date
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
+			break;
+		case ID_CAN_COMUNICATII:
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsInvertersVCUSimulated);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsTsacVCUSimulated);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsDashboardVCUSimulated);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsPedalsVCUSimulated);
+			break;
+		case ID_CAN_BATERIE_CHARGER:
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
+			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ChargerCommand);
+			break;
+		default:
+			return FALSE;
+	}
+	return TRUE;
+}
+
+static void CanMessaging_CreateBuffer(MessageId_t type, uint8_t *buffer){
+	uint64_t buffer_merged = 0;
+	switch(type){
+		case ID_CAN_INVERTOR_STANGA:
+		case ID_UART_INVERTOR_STANGA:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
+			break;
+		case ID_CAN_INVERTOR_DREAPTA:
+		case ID_UART_INVERTOR_DREAPTA:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
+			break;
+		case ID_CAN_INVERTOARE:
+		case ID_UART_INVERTOARE:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
+			break;
+		case ID_CAN_BORD:
+		case ID_UART_BORD:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
+			break;
+		case ID_CAN_ACCELERATIE:
+		case ID_UART_ACCELERATIE:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
+			break;
+		case ID_CAN_FRANA:
+		case ID_UART_FRANA:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
+			break;
+		case ID_CAN_BATERIE:
+		case ID_UART_BATERIE:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.OverallCurrent);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.OverallVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
+			break;
+		case ID_CAN_BATERIE_2:
+		case ID_UART_BATERIE_2:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.ShuntError);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.TransceiverError);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.Bms0Error);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.Bms1Error);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.ThermistorsError);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.AmsError);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage);
+			break;
+		case ID_CAN_BATERIE_CHARGER:
+		case ID_UART_BATERIE_CHARGER:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.TsacMonitoredValues.ChargerCommand);
+			break;
+		case ID_CAN_COMUNICATII:
+		case ID_UART_COMUNICATII:
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.CommunicationsMonitoredValues.IsDashboardVCUSimulated);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.CommunicationsMonitoredValues.IsInvertersVCUSimulated);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.CommunicationsMonitoredValues.IsPedalsVCUSimulated);
+			ReadDataFromAddressAndWriteInRawBufferCan(buffer_merged, &MonitoredValues.CommunicationsMonitoredValues.IsTsacVCUSimulated);
+			break;
+		case ID_CAN_BATERIE_TENSIUNI_CELULE:
+		case ID_UART_BATERIE_TENSIUNI_CELULE:
+		case ID_CAN_BATERIE_TEMPERATURI_CELULE:
+		case ID_UART_BATERIE_TEMPERATURI_CELULE:
+		default:
+			break;
+	}
+	buffer[0] = (uint8_t)(buffer_merged << 56U);
+	buffer[1] = (uint8_t)(buffer_merged << 48U);
+	buffer[2] = (uint8_t)(buffer_merged << 40U);
+	buffer[3] = (uint8_t)(buffer_merged << 32U);
+	buffer[4] = (uint8_t)(buffer_merged << 24U);
+	buffer[5] = (uint8_t)(buffer_merged << 16U);
+	buffer[6] = (uint8_t)(buffer_merged << 8U);
+	buffer[7] = (uint8_t)buffer_merged;
+}
 /*==================================================================================================
 *                                       GLOBAL FUNCTIONS
 ==================================================================================================*/
@@ -82,80 +317,86 @@ void CanMessaging_Init(void){
 	Dio_WriteChannel(85, STD_HIGH); //CAN0_STB_N
 	i = 1000000;
 	while(i--);
+	Dio_WriteChannel(119, STD_HIGH); //CAN1_EN
+	i = 1000000;
+	while(i--);
+	Dio_WriteChannel(98, STD_HIGH); //CAN1_STB_N
+	i = 1000000;
+	while(i--);
 
-	Can_43_FLEXCAN_SetControllerMode(Can_43_FLEXCANConf_CanController_CanController_0, CAN_CS_STARTED);
-	Can_43_FLEXCAN_EnableControllerInterrupts(0);
+	Can_43_FLEXCAN_SetControllerMode(CAN_CONTROLLER_ID_1, CAN_CS_STARTED);
+	//Can_43_FLEXCAN_SetControllerMode(CAN_CONTROLLER_ID_2, CAN_CS_STARTED);
+	Can_43_FLEXCAN_EnableControllerInterrupts(CAN_CONTROLLER_ID_1);
+	//Can_43_FLEXCAN_EnableControllerInterrupts(CAN_CONTROLLER_ID_2);
 }
 
 void CanMessaging_Test(void){
-	int cnt = 0;
+	uint64_t cnt = 0;
 	volatile int i;
 	while(1){
-		CanMessaging_SetValue(Can_TSAC_MedianCellTemperature, Can_TSAC_MedianCellTemperature + cnt);
-		CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, Can_TSAC_HighestCellTemperature + cnt);
-		CanMessaging_SetValue(Can_TSAC_LowestCellTemperature, Can_TSAC_LowestCellTemperature + cnt);
-		CanMessaging_SetValue(Can_TSAC_MedianCellVoltage, Can_TSAC_MedianCellVoltage + cnt);
-		CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, Can_TSAC_HighestCellVoltage + cnt);
-		CanMessaging_SetValue(Can_TSAC_LowestCellVoltage, Can_TSAC_LowestCellVoltage + cnt);
-		CanMessaging_SetValue(Can_TSAC_OverallVoltage, Can_TSAC_OverallVoltage + cnt);
-		CanMessaging_SetValue(Can_TSAC_OverallCurrent, Can_TSAC_OverallCurrent + cnt);
-		//baterieCan.CellVoltage[CELLS_NUM];
-		//baterieCan.ThermistorTemperature[THERMISTOR_NUM];
-		CanMessaging_SetValue(Can_TSAC_IsAmsSafe, 1);
-		CanMessaging_SetValue(Can_TSAC_IsImdSafe, 1);
-		CanMessaging_SetValue(Can_TSAC_IsTransceiverWorking, 1);
-		CanMessaging_SetValue(Can_TSAC_IsShuntWorking, 1);
-		CanMessaging_SetValue(Can_TSAC_IsBms0Working, 1);
-		CanMessaging_SetValue(Can_TSAC_IsBms1Working, 1);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.OverallVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.OverallCurrent);
 
-		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, Can_PEDALS_AcceleratorSensor1Voltage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, Can_PEDALS_AcceleratorSensor2Voltage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, Can_PEDALS_AcceleratorSensor1TravelPercentage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, Can_PEDALS_AcceleratorSensor2TravelPercentage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, Can_PEDALS_BrakeSensor1Voltage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_BrakeSensor2Voltage, Can_PEDALS_BrakeSensor2Voltage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_BrakeSensor1TravelPercentage, Can_PEDALS_BrakeSensor1TravelPercentage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_BrakeSensor2TravelPercentage, Can_PEDALS_BrakeSensor2TravelPercentage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_PressureSensorVoltage, Can_PEDALS_PressureSensorVoltage + cnt);
-		CanMessaging_SetValue(Can_PEDALS_PressureSensorBars, Can_PEDALS_PressureSensorBars + cnt);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToGnd, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToVcc, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToGnd, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToVcc, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Accel_Implausibility, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToGnd, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToVcc, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToGnd, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToVcc, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_OutOfRangeOutput, cnt & 1);
-		CanMessaging_SetValue(Can_PEDALS_Brake_Implausibility, cnt & 1);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.AmsError);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.TransceiverError);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.ShuntError);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.Bms0Error);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.TsacMonitoredValues.Bms1Error);
 
-		CanMessaging_SetValue(Can_INVERTERS_LeftInverterTemperature, Can_INVERTERS_LeftInverterTemperature + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftMotorTemperature, Can_INVERTERS_LeftMotorTemperature + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, Can_INVERTERS_LeftInverterInputVoltage + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftInverterCurrent, Can_INVERTERS_LeftInverterCurrent + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftMotorRpm, Can_INVERTERS_LeftMotorRpm + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftMotorSpeedKmh, Can_INVERTERS_LeftMotorSpeedKmh + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottle, Can_INVERTERS_LeftInverterThrottle + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottleFeedback, Can_INVERTERS_LeftInverterThrottleFeedback + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightInverterTemperature, Can_INVERTERS_RightInverterTemperature + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightMotorTemperature, Can_INVERTERS_RightMotorTemperature + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightInverterInputVoltage, Can_INVERTERS_RightInverterInputVoltage + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightInverterCurrent, Can_INVERTERS_RightInverterCurrent + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightMotorRpm, Can_INVERTERS_RightMotorRpm + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightMotorSpeedKmh, Can_INVERTERS_RightMotorSpeedKmh + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightInverterSentThrottle, Can_INVERTERS_RightInverterSentThrottle + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_RightInverterThrottleFeedback, Can_INVERTERS_RightInverterThrottleFeedback + cnt);
-		CanMessaging_SetValue(Can_INVERTERS_IsCarInReverse, cnt & 1);
-		CanMessaging_SetValue(Can_INVERTERS_IsCarRunning, cnt & 1);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
 
-		CanMessaging_SetValue(Can_DASHBOARD_ActivationButtonPressed, cnt & 1);
-		CanMessaging_SetValue(Can_DASHBOARD_CarReverseCommandPressed, cnt & 1);
-		CanMessaging_SetValue(Can_DASHBOARD_IsDisplayWorking, cnt & 1);
-		CanMessaging_SetValue(Can_DASHBOARD_IsSegmentsDriverWorking, cnt & 1);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
+
+		WriteCanDataAtAddress(cnt, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
+		WriteCanDataAtAddress(cnt, &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
 
 		cnt++;
 		CanMessaging_Update();
@@ -170,625 +411,113 @@ void CanMessaging_Update(void){
 	pduInfo.swPduHandle=0;
 	pduInfo.length=8;
 
-	CanMessaging_CreateBuffer(idCanInvertorStanga);
+	CanMessaging_CreateBuffer(ID_CAN_INVERTOR_STANGA, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertorStanga | 0x80000000U;
+	pduInfo.id=ID_CAN_INVERTOR_STANGA | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanInvertorDreapta);
+	CanMessaging_CreateBuffer(ID_CAN_INVERTOR_DREAPTA, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertorDreapta | 0x80000000U;
+	pduInfo.id=ID_CAN_INVERTOR_DREAPTA | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanInvertoare);
+	CanMessaging_CreateBuffer(ID_CAN_INVERTOARE, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanInvertoare | 0x80000000U;
+	pduInfo.id=ID_CAN_INVERTOARE | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanBord);
+	CanMessaging_CreateBuffer(ID_CAN_BORD, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBord | 0x80000000U;
+	pduInfo.id=ID_CAN_BORD | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanAcceleratie);
+	CanMessaging_CreateBuffer(ID_CAN_ACCELERATIE, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanAcceleratie | 0x80000000U;
+	pduInfo.id=ID_CAN_ACCELERATIE | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanFrana);
+	CanMessaging_CreateBuffer(ID_CAN_FRANA, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanFrana | 0x80000000U;
+	pduInfo.id=ID_CAN_FRANA | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 
-	CanMessaging_CreateBuffer(idCanBaterie);
+	CanMessaging_CreateBuffer(ID_CAN_BATERIE, bufferCan);
 	pduInfo.sdu=bufferCan;
-	pduInfo.id=idCanBaterie | 0x80000000U;
+	pduInfo.id=ID_CAN_BATERIE | SEND_MASK;
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 }
 
-void CanMessaging_SetValue(CanMonitoredValue_t DesiredValueType, uint32_t Value){
-	switch(DesiredValueType){
-		//TSAC
-		case Can_TSAC_MedianCellTemperature:
-			baterieCan.MedianCellTemperature = Value;
-			break;
-		case Can_TSAC_HighestCellTemperature:
-			baterieCan.HighestCellTemperature = Value;
-			break;
-		case Can_TSAC_LowestCellTemperature:
-			baterieCan.LowestCellTemperature = Value;
-			break;
-		case Can_TSAC_MedianCellVoltage:
-			baterieCan.MedianCellVoltage = Value;
-			break;
-		case Can_TSAC_HighestCellVoltage:
-			baterieCan.HighestCellVoltage = Value;
-			break;
-		case Can_TSAC_LowestCellVoltage:
-			baterieCan.LowestCellVoltage = Value;
-			break;
-		case Can_TSAC_OverallVoltage:
-			baterieCan.OverallVoltage = Value;
-			break;
-		case Can_TSAC_OverallCurrent:
-			if(Value>8095)
-				baterieCan.OverallCurrent = 0;
-			else
-				baterieCan.OverallCurrent = Value;
-			break;
-		case Can_TSAC_IsAmsSafe:
-			baterieCan.AmsError = Value;
-			break;
-		case Can_TSAC_IsImdSafe:
-			baterieCan.ImdError = Value;
-			break;
-		case Can_TSAC_IsTransceiverWorking:
-			baterieCan.TransceiverError = Value;
-			break;
-		case Can_TSAC_IsShuntWorking:
-			baterieCan.ShuntError = Value;
-			break;
-		case Can_TSAC_IsBms0Working:
-			baterieCan.Bms0Error = Value;
-			break;
-		case Can_TSAC_IsBms1Working:
-			baterieCan.Bms1Error = Value;
-			break;
-		//PEDALS
-		case Can_PEDALS_AcceleratorSensor1Voltage:
-			pedaleCan.AcceleratorSensor1Voltage = Value;
-			break;
-		case Can_PEDALS_AcceleratorSensor2Voltage:
-			pedaleCan.AcceleratorSensor2Voltage = Value;
-			break;
-		case Can_PEDALS_AcceleratorSensor1TravelPercentage:
-			if(Value>100)
-				pedaleCan.AcceleratorSensor1TravelPercentage = 0;
-			else
-				pedaleCan.AcceleratorSensor1TravelPercentage = Value;
-			break;
-		case Can_PEDALS_AcceleratorSensor2TravelPercentage:
-			if(Value>100)
-				pedaleCan.AcceleratorSensor2TravelPercentage = 0;
-			else
-				pedaleCan.AcceleratorSensor2TravelPercentage = Value;
-			break;
-		case Can_PEDALS_BrakeSensor1Voltage:
-			pedaleCan.BrakeSensor1Voltage = Value;
-			break;
-		case Can_PEDALS_BrakeSensor2Voltage:
-			pedaleCan.BrakeSensor2Voltage = Value;
-			break;
-		case Can_PEDALS_BrakeSensor1TravelPercentage:
-			if(Value>100)
-				pedaleCan.BrakeSensor1TravelPercentage = 0;
-			else
-				pedaleCan.BrakeSensor1TravelPercentage = Value;
-			break;
-		case Can_PEDALS_BrakeSensor2TravelPercentage:
-			if(Value>100)
-				pedaleCan.BrakeSensor2TravelPercentage = 0;
-			else
-				pedaleCan.BrakeSensor2TravelPercentage = Value;
-			break;
-		case Can_PEDALS_PressureSensorVoltage:
-			if(Value>500)
-				pedaleCan.PressureSensorVoltage = 0;
-			else
-				pedaleCan.PressureSensorVoltage = Value;
-			break;
-		case Can_PEDALS_PressureSensorBars:
-			pedaleCan.PressureSensorBars = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor1_ShortToGnd:
-			pedaleCan.Accel_Sensor1_ShortToGnd = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor1_ShortToVcc:
-			pedaleCan.Accel_Sensor1_ShortToVcc = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor1_OutOfRangeOutput:
-			pedaleCan.Accel_Sensor1_OutOfRangeOutput = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor2_ShortToGnd:
-			pedaleCan.Accel_Sensor2_ShortToGnd = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor2_ShortToVcc:
-			pedaleCan.Accel_Sensor2_ShortToVcc = Value;
-			break;
-		case Can_PEDALS_Accel_Sensor2_OutOfRangeOutput:
-			pedaleCan.Accel_Sensor2_OutOfRangeOutput = Value;
-			break;
-		case Can_PEDALS_Accel_Implausibility:
-			pedaleCan.Accel_Implausibility = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor1_ShortToGnd:
-			pedaleCan.Brake_Sensor1_ShortToGnd = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor1_ShortToVcc:
-			pedaleCan.Brake_Sensor1_ShortToVcc = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor1_OutOfRangeOutput:
-			pedaleCan.Brake_Sensor1_OutOfRangeOutput = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor2_ShortToGnd:
-			pedaleCan.Brake_Sensor2_ShortToGnd = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor2_ShortToVcc:
-			pedaleCan.Brake_Sensor2_ShortToVcc = Value;
-			break;
-		case Can_PEDALS_Brake_Sensor2_OutOfRangeOutput:
-			pedaleCan.Brake_Sensor2_OutOfRangeOutput = Value;
-			break;
-		case Can_PEDALS_Brake_Implausibility:
-			pedaleCan.Brake_Implausibility = Value;
-			break;
-		//INVERTERS
-		case Can_INVERTERS_LeftInverterTemperature:
-			invertoareCan.LeftInverterTemperature = Value;
-			break;
-		case Can_INVERTERS_LeftMotorTemperature:
-			invertoareCan.LeftMotorTemperature = Value;
-			break;
-		case Can_INVERTERS_LeftInverterInputVoltage:
-			if(Value>1800)
-				invertoareCan.LeftInverterInputVoltage = 0;
-			else
-				invertoareCan.LeftInverterInputVoltage = Value;
-			break;
-		case Can_INVERTERS_LeftInverterCurrent:
-			if(Value>4000)
-				invertoareCan.LeftInverterCurrent = 0;
-			else
-				invertoareCan.LeftInverterCurrent = Value;
-			break;
-		case Can_INVERTERS_LeftMotorRpm:
-			if(Value>6000)
-				invertoareCan.LeftMotorRpm = 0;
-			else
-				invertoareCan.LeftMotorRpm = Value;
-			break;
-		case Can_INVERTERS_LeftMotorSpeedKmh:
-			invertoareCan.LeftMotorSpeedKmh = Value;
-			break;
-		case Can_INVERTERS_LeftInverterThrottle:
-			if(Value>250)
-				invertoareCan.LeftInverterThrottle = 0;
-			else
-				invertoareCan.LeftInverterThrottle = Value;
-			break;
-		case Can_INVERTERS_LeftInverterThrottleFeedback:
-			if(Value>250)
-				invertoareCan.LeftInverterThrottleFeedback = 0;
-			else
-				invertoareCan.LeftInverterThrottleFeedback = Value;
-			break;
-		case Can_INVERTERS_RightInverterTemperature:
-			invertoareCan.RightInverterTemperature = Value;
-			break;
-		case Can_INVERTERS_RightMotorTemperature:
-			invertoareCan.RightMotorTemperature = Value;
-			break;
-		case Can_INVERTERS_RightInverterInputVoltage:
-			if(Value>1800)
-				invertoareCan.RightInverterInputVoltage = 0;
-			else
-				invertoareCan.RightInverterInputVoltage = Value;
-			break;
-		case Can_INVERTERS_RightInverterCurrent:
-			if(Value>4000)
-				invertoareCan.RightInverterCurrent = 0;
-			else
-				invertoareCan.RightInverterCurrent = Value;
-			break;
-		case Can_INVERTERS_RightMotorRpm:
-			if(Value>6000)
-				invertoareCan.RightMotorRpm = 0;
-			else
-				invertoareCan.RightMotorRpm = Value;
-			break;
-		case Can_INVERTERS_RightMotorSpeedKmh:
-			invertoareCan.RightMotorSpeedKmh = Value;
-			break;
-		case Can_INVERTERS_RightInverterSentThrottle:
-			if(Value>250)
-				invertoareCan.RightInverterSentThrottle = 0;
-			else
-				invertoareCan.RightInverterSentThrottle = Value;
-			break;
-		case Can_INVERTERS_RightInverterThrottleFeedback:
-			if(Value>250)
-				invertoareCan.RightInverterThrottleFeedback = 0;
-			else
-				invertoareCan.RightInverterThrottleFeedback = Value;
-			break;
-		case Can_INVERTERS_IsCarInReverse:
-			invertoareCan.IsCarInReverse = Value;
-			break;
-		case Can_INVERTERS_IsCarRunning:
-			invertoareCan.IsCarRunning = Value;
-			break;
-		//DASHBOARD
-		case Can_DASHBOARD_ActivationButtonPressed:
-			bordCan.ActivationButtonPressed = Value;
-			break;
-		case Can_DASHBOARD_CarReverseCommandPressed:
-			bordCan.CarReverseCommandPressed = Value;
-			break;
-		case Can_DASHBOARD_IsDisplayWorking:
-			bordCan.IsDisplayWorking = Value;
-			break;
-		case Can_DASHBOARD_IsSegmentsDriverWorking:
-			bordCan.IsSegmentsDriverWorking = Value;
-			break;
+
+void CanMessaging_AppTest(void){
+	while(1){
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.MedianCellTemperature), &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.HighestCellTemperature), &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.LowestCellTemperature), &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.MedianCellVoltage), &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.HighestCellVoltage), &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.LowestCellVoltage), &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.OverallVoltage), &MonitoredValues.TsacMonitoredValues.OverallVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.OverallCurrent), &MonitoredValues.TsacMonitoredValues.OverallCurrent);
+
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.AmsError), &MonitoredValues.TsacMonitoredValues.AmsError);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.TransceiverError), &MonitoredValues.TsacMonitoredValues.TransceiverError);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ShuntError), &MonitoredValues.TsacMonitoredValues.ShuntError);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.Bms0Error), &MonitoredValues.TsacMonitoredValues.Bms0Error);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.Bms1Error), &MonitoredValues.TsacMonitoredValues.Bms1Error);
+
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage), &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.PressureSensorBars), &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput), &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Accel_Implausibility), &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput), &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.PedalsMonitoredValues.Brake_Implausibility), &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
+
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature), &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature), &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage), &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent), &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftMotorRpm), &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh), &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback), &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightMotorTemperature), &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage), &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightInverterCurrent), &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightMotorRpm), &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh), &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightInverterThrottle), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.IsCarInReverse), &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.InvertersMonitoredValues.IsCarRunning), &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
+
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed), &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed), &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.IsDisplayWorking), &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking), &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
+
+		//Send data
+		UartMessaging_Update();
 	}
 }
-
-uint32_t CanMessaging_ReadValue(CanMonitoredValue_t DesiredValueType){
-	switch(DesiredValueType){
-		case Can_TSAC_MedianCellTemperature:
-			return baterieCan.MedianCellTemperature;
-	    case Can_TSAC_HighestCellTemperature:
-	    	return baterieCan.HighestCellTemperature;
-	    case Can_TSAC_LowestCellTemperature:
-	    	return baterieCan.LowestCellTemperature;
-	    case Can_TSAC_MedianCellVoltage:
-	    	return baterieCan.MedianCellVoltage;
-	    case Can_TSAC_HighestCellVoltage:
-	    	return baterieCan.HighestCellVoltage;
-	    case Can_TSAC_LowestCellVoltage:
-	    	return baterieCan.LowestCellVoltage;
-	    case Can_TSAC_OverallVoltage:
-	    	return baterieCan.OverallVoltage;
-	    case Can_TSAC_OverallCurrent:
-	    	return baterieCan.OverallCurrent;
-	    case Can_TSAC_IsAmsSafe:
-	    	return baterieCan.AmsError;
-	    case Can_TSAC_IsImdSafe:
-	    	return baterieCan.ImdError;
-	    case Can_TSAC_IsTransceiverWorking:
-	    	return baterieCan.TransceiverError;
-	    case Can_TSAC_IsShuntWorking:
-	    	return baterieCan.ShuntError;
-	    case Can_TSAC_IsBms0Working:
-	    	return baterieCan.Bms0Error;
-	    case Can_TSAC_IsBms1Working:
-	    	return baterieCan.Bms1Error;
-	    case Can_PEDALS_AcceleratorSensor1Voltage:
-	    	return pedaleCan.AcceleratorSensor1Voltage;
-	    case Can_PEDALS_AcceleratorSensor2Voltage:
-	    	return pedaleCan.AcceleratorSensor2Voltage;
-		case Can_PEDALS_AcceleratorSensor1TravelPercentage:
-			return pedaleCan.AcceleratorSensor1TravelPercentage;
-		case Can_PEDALS_AcceleratorSensor2TravelPercentage:
-			return pedaleCan.AcceleratorSensor2TravelPercentage;
-		case Can_PEDALS_BrakeSensor1Voltage:
-			return pedaleCan.BrakeSensor1Voltage;
-		case Can_PEDALS_BrakeSensor2Voltage:
-			return pedaleCan.BrakeSensor2Voltage;
-		case Can_PEDALS_BrakeSensor1TravelPercentage:
-			return pedaleCan.BrakeSensor1TravelPercentage;
-		case Can_PEDALS_BrakeSensor2TravelPercentage:
-			return pedaleCan.BrakeSensor2TravelPercentage;
-		case Can_PEDALS_PressureSensorVoltage:
-			return pedaleCan.PressureSensorVoltage;
-		case Can_PEDALS_PressureSensorBars:
-			return pedaleCan.PressureSensorBars;
-		case Can_PEDALS_Accel_Sensor1_ShortToGnd:
-			return pedaleCan.Accel_Sensor1_ShortToGnd;
-		case Can_PEDALS_Accel_Sensor1_ShortToVcc:
-			return pedaleCan.Accel_Sensor1_ShortToVcc;
-		case Can_PEDALS_Accel_Sensor1_OutOfRangeOutput:
-			return pedaleCan.Accel_Sensor1_OutOfRangeOutput;
-		case Can_PEDALS_Accel_Sensor2_ShortToGnd:
-			return pedaleCan.Accel_Sensor2_ShortToGnd;
-		case Can_PEDALS_Accel_Sensor2_ShortToVcc:
-			return pedaleCan.Accel_Sensor2_ShortToVcc;
-		case Can_PEDALS_Accel_Sensor2_OutOfRangeOutput:
-			return pedaleCan.Accel_Sensor2_OutOfRangeOutput;
-		case Can_PEDALS_Accel_Implausibility:
-			return pedaleCan.Accel_Implausibility;
-		case Can_PEDALS_Brake_Sensor1_ShortToGnd:
-			return pedaleCan.Brake_Sensor1_ShortToGnd;
-		case Can_PEDALS_Brake_Sensor1_ShortToVcc:
-			return pedaleCan.Brake_Sensor1_ShortToVcc;
-		case Can_PEDALS_Brake_Sensor1_OutOfRangeOutput:
-			return pedaleCan.Brake_Sensor1_OutOfRangeOutput;
-		case Can_PEDALS_Brake_Sensor2_ShortToGnd:
-			return pedaleCan.Brake_Sensor2_ShortToGnd;
-		case Can_PEDALS_Brake_Sensor2_ShortToVcc:
-			return pedaleCan.Brake_Sensor2_ShortToVcc;
-		case Can_PEDALS_Brake_Sensor2_OutOfRangeOutput:
-			return pedaleCan.Brake_Sensor2_OutOfRangeOutput;
-		case Can_PEDALS_Brake_Implausibility:
-			return pedaleCan.Brake_Implausibility;
-		case Can_INVERTERS_LeftInverterTemperature:
-			return invertoareCan.LeftInverterTemperature;
-		case Can_INVERTERS_LeftMotorTemperature:
-			return invertoareCan.LeftMotorTemperature;
-		case Can_INVERTERS_LeftInverterInputVoltage:
-			return invertoareCan.LeftInverterInputVoltage;
-		case Can_INVERTERS_LeftInverterCurrent:
-			return invertoareCan.LeftInverterCurrent;
-		case Can_INVERTERS_LeftMotorRpm:
-			return invertoareCan.LeftMotorRpm;
-		case Can_INVERTERS_LeftMotorSpeedKmh:
-			return invertoareCan.LeftMotorSpeedKmh;
-		case Can_INVERTERS_LeftInverterThrottle:
-			return invertoareCan.LeftInverterThrottle;
-		case Can_INVERTERS_LeftInverterThrottleFeedback:
-			return invertoareCan.LeftInverterThrottleFeedback;
-		case Can_INVERTERS_RightInverterTemperature:
-			return invertoareCan.RightInverterTemperature;
-		case Can_INVERTERS_RightMotorTemperature:
-			return invertoareCan.RightMotorTemperature;
-		case Can_INVERTERS_RightInverterInputVoltage:
-			return invertoareCan.RightInverterInputVoltage;
-		case Can_INVERTERS_RightInverterCurrent:
-			return invertoareCan.RightInverterCurrent;
-		case Can_INVERTERS_RightMotorRpm:
-			return invertoareCan.RightMotorRpm;
-		case Can_INVERTERS_RightMotorSpeedKmh:
-			return invertoareCan.RightMotorSpeedKmh;
-		case Can_INVERTERS_RightInverterSentThrottle:
-			return invertoareCan.RightInverterSentThrottle;
-		case Can_INVERTERS_RightInverterThrottleFeedback:
-			return invertoareCan.RightInverterThrottleFeedback;
-		case Can_INVERTERS_IsCarInReverse:
-			return invertoareCan.IsCarInReverse;
-		case Can_INVERTERS_IsCarRunning:
-			return invertoareCan.IsCarRunning;
-		case Can_DASHBOARD_ActivationButtonPressed:
-			return bordCan.ActivationButtonPressed;
-		case Can_DASHBOARD_CarReverseCommandPressed:
-			return bordCan.CarReverseCommandPressed;
-		case Can_DASHBOARD_IsDisplayWorking:
-			return bordCan.IsDisplayWorking;
-		case Can_DASHBOARD_IsSegmentsDriverWorking:
-			return bordCan.IsSegmentsDriverWorking;
-	}
-	return 0;
-}
-
-boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
-	switch((id&MASK)){
-		case idCanFrana:
-			//extragere date
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_PressureSensorBars, ((uint8_t)(data[1]<<6)) | (data[2]>>2));
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Implausibility, (data[0] & (1<<1)) >> 1);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
-			UartMessaging_SetValue(Uart_PEDALS_Brake_Sensor2_ShortToGnd, (data[0] & (1<<4)) >> 4);
-
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_BrakeSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_PressureSensorBars, ((uint8_t)(data[1]<<6)) | (data[2]>>2));
-			CanMessaging_SetValue(Can_PEDALS_Brake_Implausibility, (data[0] & (1<<1)) >> 1);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
-			CanMessaging_SetValue(Can_PEDALS_Brake_Sensor2_ShortToGnd, (data[0] & (1<<4)) >> 4);
-			break;
-
-		case idCanAcceleratie:
-			//extragere date
-			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
-			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
-			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
-			UartMessaging_SetValue(Uart_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<6)) | (data[2]>>2)) & (0x01FF));
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Implausibility, (data[0] & (1<<1)) >> 1);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
-			UartMessaging_SetValue(Uart_PEDALS_Accel_Sensor2_ShortToGnd, (data[0] & (1<<4)) >>4);
-
-			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1Voltage, ((((uint16_t)data[6])<<8) | data[7]) & (0x3FFF));
-			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2Voltage, ((((((uint16_t)data[4])<<8) | data[5]) & (0x0FFF)) << 2) | (data[6]>>6));
-			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor1TravelPercentage, (((uint8_t)(data[3]<<4)) | (data[4]>>4)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_AcceleratorSensor2TravelPercentage, (((uint8_t)(data[2]<<5)) | (data[3]>>3)) & (0x7F));
-			CanMessaging_SetValue(Can_PEDALS_PressureSensorVoltage, ((((uint16_t)data[1]<<6)) | (data[2]>>2)) & (0x01FF));
-			CanMessaging_SetValue(Can_PEDALS_Accel_Implausibility, (data[0] & (1<<1)) >> 1);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput, (data[0] & (1<<5)) >> 5);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToVcc, (data[0] & (1<<6)) >> 6);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor1_ShortToGnd, (data[0] & (1<<7)) >> 7);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput, (data[0] & (1<<2)) >> 2);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToVcc, (data[0] & (1<<3)) >> 3);
-			CanMessaging_SetValue(Can_PEDALS_Accel_Sensor2_ShortToGnd, (data[0] & (1<<4)) >>4);
-			break;
-
-		case idCanInvertorStanga:
-			//extragere date
-			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorTemperature, data[7]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterTemperature, data[6]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottle, data[5]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorSpeedKmh, data[4]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterThrottleFeedback, data[3]);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x07FF));
-			UartMessaging_SetValue(Uart_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
-
-			CanMessaging_SetValue(Can_INVERTERS_LeftMotorTemperature, data[7]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterTemperature, data[6]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottle, data[5]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftMotorSpeedKmh, data[4]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterThrottleFeedback, data[3]);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x07FF));
-			CanMessaging_SetValue(Can_INVERTERS_LeftMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
-			break;
-
-		case idCanInvertorDreapta:
-			//extragere date
-			UartMessaging_SetValue(Uart_INVERTERS_RightMotorTemperature, data[7]);
-			UartMessaging_SetValue(Uart_INVERTERS_RightInverterTemperature, data[6]);
-			UartMessaging_SetValue(Uart_INVERTERS_RightInverterSentThrottle, data[5]);
-			UartMessaging_SetValue(Uart_INVERTERS_RightMotorSpeedKmh, data[4]);
-			UartMessaging_SetValue(Uart_INVERTERS_RightInverterThrottleFeedback, data[3]);
-			UartMessaging_SetValue(Uart_INVERTERS_RightInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
-			UartMessaging_SetValue(Uart_INVERTERS_RightMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
-
-			CanMessaging_SetValue(Can_INVERTERS_RightMotorTemperature, data[7]);
-			CanMessaging_SetValue(Can_INVERTERS_RightInverterTemperature, data[6]);
-			CanMessaging_SetValue(Can_INVERTERS_RightInverterSentThrottle, data[5]);
-			CanMessaging_SetValue(Can_INVERTERS_RightMotorSpeedKmh, data[4]);
-			CanMessaging_SetValue(Can_INVERTERS_RightInverterThrottleFeedback, data[3]);
-			CanMessaging_SetValue(Can_INVERTERS_RightInverterInputVoltage, ((((uint16_t)data[1])<<8) | data[2]) & (0x7FF));
-			CanMessaging_SetValue(Can_INVERTERS_RightMotorRpm, ((((uint16_t)data[0])<<8) | data[1]) >> 3);
-			break;
-
-		case idCanInvertoare:
-			UartMessaging_SetValue(Uart_INVERTERS_IsCarRunning, (data[0] & (1<<7)) >> 7);
-			UartMessaging_SetValue(Uart_INVERTERS_IsCarInReverse, (data[0] & (1<<6)) >> 6);
-			UartMessaging_SetValue(Uart_INVERTERS_LeftInverterCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF));
-			UartMessaging_SetValue(Uart_INVERTERS_RightInverterCurrent, ((((uint16_t)data[5])<<8) | data[6]) >> 4);
-
-			CanMessaging_SetValue(Can_INVERTERS_IsCarRunning, (data[0] & (1<<7)) >> 7);
-			CanMessaging_SetValue(Can_INVERTERS_IsCarInReverse, (data[0] & (1<<6)) >> 6);
-			CanMessaging_SetValue(Can_INVERTERS_LeftInverterCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x0FFF));
-			CanMessaging_SetValue(Can_INVERTERS_RightInverterCurrent, ((((uint16_t)data[5])<<8) | data[6]) >> 4);
-			break;
-
-		case idCanBaterie:
-			//extragere date
-			UartMessaging_SetValue(Uart_TSAC_OverallCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF));
-			UartMessaging_SetValue(Uart_TSAC_OverallVoltage, ((((uint16_t)data[5])<<8) | data[6]) >> 5);
-			UartMessaging_SetValue(Uart_TSAC_HighestCellTemperature, ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF));
-			UartMessaging_SetValue(Uart_TSAC_HighestCellVoltage, (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF));
-
-			CanMessaging_SetValue(Can_TSAC_OverallCurrent, ((((uint16_t)data[6])<<8) | data[7]) & (0x1FFF));
-			CanMessaging_SetValue(Can_TSAC_OverallVoltage, ((((uint16_t)data[5])<<8) | data[6]) >> 5);
-			CanMessaging_SetValue(Can_TSAC_HighestCellTemperature, ((((uint16_t)data[3])<<8) | data[4]) & (0x03FF));
-			CanMessaging_SetValue(Can_TSAC_HighestCellVoltage, (((((uint16_t)data[2])<<8) | data[3]) >> 2) & (0x03FF));
-
-			//More To Come:)
-			break;
-
-		case idCanBord:
-			//extragere date
-			UartMessaging_SetValue(Uart_DASHBOARD_ActivationButtonPressed, (data[0] & (1<<7)) >> 7);
-			UartMessaging_SetValue(Uart_DASHBOARD_CarReverseCommandPressed, (data[0] & (1<<6)) >> 6);
-			UartMessaging_SetValue(Uart_DASHBOARD_IsDisplayWorking, (data[0] & (1<<5)) >> 5);
-			UartMessaging_SetValue(Uart_DASHBOARD_IsSegmentsDriverWorking, (data[0] & (1<<4)) >> 4);
-
-			CanMessaging_SetValue(Can_DASHBOARD_ActivationButtonPressed, (data[0] & (1<<7)) >> 7);
-			CanMessaging_SetValue(Can_DASHBOARD_CarReverseCommandPressed, (data[0] & (1<<6)) >> 6);
-			CanMessaging_SetValue(Can_DASHBOARD_IsDisplayWorking, (data[0] & (1<<5)) >> 5);
-			CanMessaging_SetValue(Can_DASHBOARD_IsSegmentsDriverWorking, (data[0] & (1<<4)) >> 4);
-			break;
-		default:
-			return FALSE;
-	}
-	return TRUE;
-}
-
-void CanMessaging_CreateBuffer(idCan_t type){
-	switch(type){
-		case idCanInvertorStanga:
-			bufferCan[0] = CanMessaging_ReadValue(Can_INVERTERS_LeftMotorRpm) >> 5;
-			bufferCan[1] = ((CanMessaging_ReadValue(Can_INVERTERS_LeftMotorRpm) & (0x00F8))) | ((CanMessaging_ReadValue(Can_INVERTERS_LeftInverterInputVoltage) & (0x0700)) >> 8);
-			bufferCan[2] = ((uint8_t) CanMessaging_ReadValue(Can_INVERTERS_LeftInverterInputVoltage) & (0x00FF));
-			bufferCan[3] = CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottleFeedback);
-			bufferCan[4] = CanMessaging_ReadValue(Can_INVERTERS_LeftMotorSpeedKmh);
-			bufferCan[5] = CanMessaging_ReadValue(Can_INVERTERS_LeftInverterThrottle);
-			bufferCan[6] = CanMessaging_ReadValue(Can_INVERTERS_LeftInverterTemperature);
-			bufferCan[7] = CanMessaging_ReadValue(Can_INVERTERS_LeftMotorTemperature);
-			break;
-		case idCanInvertorDreapta:
-			bufferCan[0] = CanMessaging_ReadValue(Can_INVERTERS_RightMotorRpm) >> 5;
-			bufferCan[1] = ((CanMessaging_ReadValue(Can_INVERTERS_RightMotorRpm) & (0x00F8))) | ((CanMessaging_ReadValue(Can_INVERTERS_RightInverterInputVoltage) & (0x700)) >> 8);
-			bufferCan[2] = ((uint8_t) CanMessaging_ReadValue(Can_INVERTERS_RightInverterInputVoltage) & (0x7FF));
-			bufferCan[3] = CanMessaging_ReadValue(Can_INVERTERS_RightInverterThrottleFeedback);
-			bufferCan[4] = CanMessaging_ReadValue(Can_INVERTERS_RightMotorSpeedKmh);
-			bufferCan[5] = CanMessaging_ReadValue(Can_INVERTERS_RightInverterSentThrottle);
-			bufferCan[6] = CanMessaging_ReadValue(Can_INVERTERS_RightInverterTemperature);
-			bufferCan[7] = CanMessaging_ReadValue(Can_INVERTERS_RightMotorTemperature);
-			break;
-		case idCanInvertoare:
-			bufferCan[0] = (CanMessaging_ReadValue(Can_INVERTERS_IsCarRunning) << 7) | (CanMessaging_ReadValue(Can_INVERTERS_IsCarInReverse) << 6);
-			bufferCan[1] = 0;
-			bufferCan[2] = 0;
-			bufferCan[3] = 0;
-			bufferCan[4] = 0;
-			bufferCan[5] = (CanMessaging_ReadValue(Can_INVERTERS_RightInverterCurrent) & (0x0FF0)) >> 4;
-			bufferCan[6] = ((CanMessaging_ReadValue(Can_INVERTERS_RightInverterCurrent) & (0x000F)) << 4) | ((CanMessaging_ReadValue(Can_INVERTERS_LeftInverterCurrent) & (0x0F00)) >> 8);
-			bufferCan[7] = CanMessaging_ReadValue(Can_INVERTERS_LeftInverterCurrent) & (0x00FF);
-			break;
-		case idCanBord:
-			bufferCan[0] = (CanMessaging_ReadValue(Can_DASHBOARD_ActivationButtonPressed) << 7) | (CanMessaging_ReadValue(Can_DASHBOARD_CarReverseCommandPressed) << 6) | (CanMessaging_ReadValue(Can_DASHBOARD_IsDisplayWorking) << 5) | (CanMessaging_ReadValue(Can_DASHBOARD_IsSegmentsDriverWorking) << 4);
-			bufferCan[1] = 0;
-			bufferCan[2] = 0;
-			bufferCan[3] = 0;
-			bufferCan[4] = 0;
-			bufferCan[5] = 0;
-			bufferCan[6] = 0;
-			bufferCan[7] = 0;
-			break;
-		case idCanAcceleratie:
-			bufferCan[0] = (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_ShortToGnd) << 7) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_ShortToVcc) << 6) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor1_OutOfRangeOutput) << 5) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_ShortToGnd) << 4) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_ShortToVcc) << 3) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Sensor2_OutOfRangeOutput) << 2) | (CanMessaging_ReadValue(Can_PEDALS_Accel_Implausibility) << 1);
-			bufferCan[1] = (CanMessaging_ReadValue(Can_PEDALS_PressureSensorVoltage) & (0x01C0)) >> 6;
-			bufferCan[2] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2TravelPercentage) & (0x0060)) >> 5) | ((CanMessaging_ReadValue(Can_PEDALS_PressureSensorVoltage) & (0x003F)) << 2);
-			bufferCan[3] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2TravelPercentage) & (0x001F)) << 3) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1TravelPercentage) & (0x007)) >>4);
-			bufferCan[4] = ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x3C00)) >> 10) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1TravelPercentage) & (0x000F)) << 4);
-			bufferCan[5] = (CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x03FC)) >> 2;
-			bufferCan[6] = (CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor2Voltage) & (0x0003) << 6) | ((CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1Voltage) & (0x3F00)) >> 8);
-			bufferCan[7] = CanMessaging_ReadValue(Can_PEDALS_AcceleratorSensor1Voltage) & (0x00FF);
-			break;
-		case idCanFrana:
-			bufferCan[0] = (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor1_ShortToGnd) << 7) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor1_ShortToVcc) << 6) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor1_OutOfRangeOutput) << 5) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor2_ShortToGnd) << 4) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor2_ShortToVcc) << 3) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Sensor2_OutOfRangeOutput) << 2) | (CanMessaging_ReadValue(Can_PEDALS_Brake_Implausibility) << 1);
-			bufferCan[1] = (CanMessaging_ReadValue(Can_PEDALS_PressureSensorBars) & (0x00C0)) >> 6;
-			bufferCan[2] = ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2TravelPercentage) & (0x0060)) >> 5) | ((CanMessaging_ReadValue(Can_PEDALS_PressureSensorBars) & (0x003F)) << 2);
-			bufferCan[3] = ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2TravelPercentage) & (0x001F)) << 3) | ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1TravelPercentage) & (0x007)) >>4);
-			bufferCan[4] = ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2Voltage) & (0x3C00)) >> 10) | ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1TravelPercentage) & (0x000F)) << 4);
-			bufferCan[5] = (CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2Voltage) & (0x03FC)) >> 2;
-			bufferCan[6] = (CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2Voltage) & (0x0003) << 6) | ((CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1Voltage) & (0x3F00)) >> 8);
-			bufferCan[7] = CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1Voltage) & (0x00FF);
-			break;
-		case idCanBaterie:
-			bufferCan[0] = 0;
-			bufferCan[1] = 0;
-			bufferCan[2] = (CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage) & (0x03C0)) >> 6;
-			bufferCan[3] = ((CanMessaging_ReadValue(Can_TSAC_HighestCellTemperature) & (0x0300)) >> 8) | ((CanMessaging_ReadValue(Can_TSAC_HighestCellVoltage) & (0x003F)) << 2);
-			bufferCan[4] = CanMessaging_ReadValue(Can_TSAC_HighestCellTemperature) & (0x00FF);
-			bufferCan[5] = (CanMessaging_ReadValue(Can_TSAC_OverallVoltage) & (0x07F8)) >> 3;
-			bufferCan[6] = ((CanMessaging_ReadValue(Can_TSAC_OverallVoltage) & (0x0007)) << 5) | ((CanMessaging_ReadValue(Can_TSAC_OverallCurrent) & (0x1F00)) >> 8);
-			bufferCan[7] = CanMessaging_ReadValue(Can_TSAC_OverallCurrent) & (0x00FF);
-			break;
-	}
-}
-
-
-
 
 #ifdef __cplusplus
 }
