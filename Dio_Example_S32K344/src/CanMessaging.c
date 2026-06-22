@@ -64,6 +64,8 @@ CommunicationsMonitoredValues_t comunicatiiCan;
 
 uint8_t bufferCan[8];
 
+volatile bool flag = false;
+
 
 
 /*==================================================================================================
@@ -111,12 +113,12 @@ void CanMessaging_Test(void){
 		CanMessaging_SetValue(Can_TSAC_LowestCellVoltage, cnt);
 		CanMessaging_SetValue(Can_TSAC_LowestCellTemperature, cnt);
 
-		for(uint16_t index = 0; index <= CELLS_NUM; index++){
+		for(uint16_t index = 0; index < CELLS_NUM; index++){
 			CanMessaging_SetCellVoltageErrors(cnt & 1, index);
 			CanMessaging_SetCellVoltage(cnt, index);
 		}
 
-		for(uint16_t index = 0; index <= THERMISTOR_NUM; index++){
+		for(uint16_t index = 0; index < THERMISTOR_NUM; index++){
 			CanMessaging_SetCellTemperatureErrors(cnt & 1, index);
 			CanMessaging_SetCellTemperature(cnt, index);
 		}
@@ -254,7 +256,7 @@ void CanMessaging_Update(void){
 	i=500000;
 	while(i--);
 
-	for(uint16_t index = 0; index <= CELLS_LINES; index++){
+	for(uint16_t index = 0; index < CELLS_LINES; index++){
 		CanMessaging_CreateCellVoltageBuffer(index);
 		pduInfo.sdu=bufferCan;
 		pduInfo.id=idCanBaterie2 | ID_MASK;
@@ -263,7 +265,7 @@ void CanMessaging_Update(void){
 		while(i--);
 	}
 
-	for(uint16_t index = 0; index <= THERMISTOR_LINES; index++){
+	for(uint16_t index = 0; index < THERMISTOR_LINES; index++){
 		CanMessaging_CreateCellTemperatureBuffer(index);
 		pduInfo.sdu=bufferCan;
 		pduInfo.id=idCanBaterie3 | ID_MASK;
@@ -771,6 +773,7 @@ boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index){
 }
 
 boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLengthType length, uint8_t* data){
+	flag = true;
 	switch((id&INTERRUPT_MASK)){
 		case idCanFrana:
 			//extragere date
@@ -844,7 +847,7 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			break;
 
 		case idCanBaterie2:{
-			uint8_t index = (uint8_t)((data[0])) & (0x03);
+			uint8_t index = ((uint8_t)(data[0])) & (0x07);
 			index = index * 5;
 			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<7)) >> 7), index + 0);
 			CanMessaging_SetCellVoltageErrors(((data[0] & (1<<6)) >> 6), index + 1);
@@ -1051,6 +1054,7 @@ void CanMessaging_CreateBuffer(idCan_t type){
 
 void CanMessaging_AppTest(void){
 	while(1){
+		if(flag){
 		//Brake
 		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor1Voltage, CanMessaging_ReadValue(Can_PEDALS_BrakeSensor1Voltage));
 		UartMessaging_SetValue(Uart_PEDALS_BrakeSensor2Voltage, CanMessaging_ReadValue(Can_PEDALS_BrakeSensor2Voltage));
@@ -1154,6 +1158,8 @@ void CanMessaging_AppTest(void){
 		UartMessaging_SetValue(Uart_COMMUNICATIONS_IsPedalsVcuSimulated, CanMessaging_ReadValue(Can_COMMUNICATIONS_IsPedalsVcuSimulated));
 		//Send data
 		UartMessaging_Update();
+		flag = false;
+		}
 	}
 }
 

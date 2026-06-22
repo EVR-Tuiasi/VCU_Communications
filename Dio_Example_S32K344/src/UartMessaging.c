@@ -174,7 +174,7 @@ void UartMessaging_Test(void){
 
 void UartMessaging_Update(void){
 	volatile int i;
-	UartMessaging_CreateBuffer(idUartInvertorStanga);
+	/*UartMessaging_CreateBuffer(idUartInvertorStanga);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
@@ -197,7 +197,8 @@ void UartMessaging_Update(void){
 	UartMessaging_CreateBuffer(idUartFrana);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
-	while(i--);
+	while(i--);*/
+
 	UartMessaging_CreateBuffer(idUartBaterie1);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
@@ -208,7 +209,7 @@ void UartMessaging_Update(void){
 		i=100000;
 		while(i--);
 	}
-	for(uint16_t index = 0; index < CELLS_LINES; index++){
+	for(uint16_t index = 0; index < THERMISTOR_LINES; index++){
 		UartMessaging_CreateCellTemperatureBuffer(index);
 		Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 		i=100000;
@@ -222,10 +223,10 @@ void UartMessaging_Update(void){
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
-	UartMessaging_CreateBuffer(idUartComunicatii);
+	/*UartMessaging_CreateBuffer(idUartComunicatii);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
-	while(i--);
+	while(i--);*/
 }
 
 void UartMessaging_SetValue(UartMonitoredValue_t DesiredValueType, uint32_t Value){
@@ -719,14 +720,14 @@ void UartMessaging_CreateCellVoltageBuffer(uint16_t index){
 
 void UartMessaging_CreateCellTemperatureBuffer(uint16_t index){
 	bufferUart[0] = idUartBaterie3;
-	bufferUart[0] = (index >> 2) | (UartMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (UartMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (UartMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (UartMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (UartMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
-	bufferUart[1] = ((index & (0x0003)) << 6) | (UartMessaging_ReadCellTemperature(index*5+0) >> 8);
-	bufferUart[2] = UartMessaging_ReadCellTemperature(index*5+0) & (0x00FF);
-	bufferUart[3] = UartMessaging_ReadCellTemperature(index*5+1) >> 2;
-	bufferUart[4] = ((UartMessaging_ReadCellTemperature(index*5+1) & (0x0003)) << 6) | (UartMessaging_ReadCellTemperature(index*5+2) >> 4);
-	bufferUart[5] = ((UartMessaging_ReadCellTemperature(index*5+2) & (0x000F)) << 4) | (UartMessaging_ReadCellTemperature(index*5+3) >> 6);
-	bufferUart[6] = ((UartMessaging_ReadCellTemperature(index*5+3) & (0x003F)) << 2) | (UartMessaging_ReadCellTemperature(index*5+4) >> 8);
-	bufferUart[7] = UartMessaging_ReadCellTemperature(index*5+4) & (0x00FF); //PENTRU URMATORUL NEFERICIT, DACA APAR PROBLEME INSEAMNA CA AI MODIFICAT FUNCTIA DE READ VALUE SI AI SCORS SIGURANTA (god have mercy on your soul)
+	bufferUart[1] = (index >> 2) | (UartMessaging_ReadCellTemperatureErrors(index*5+0) << 7) | (UartMessaging_ReadCellTemperatureErrors(index*5+1) << 6) | (UartMessaging_ReadCellTemperatureErrors(index*5+2) << 5) | (UartMessaging_ReadCellTemperatureErrors(index*5+3) << 4) | (UartMessaging_ReadCellTemperatureErrors(index*5+4) << 3);
+	bufferUart[2] = ((index & (0x0003)) << 6) | (UartMessaging_ReadCellTemperature(index*5+0) >> 8);
+	bufferUart[3] = UartMessaging_ReadCellTemperature(index*5+0) & (0x00FF);
+	bufferUart[4] = UartMessaging_ReadCellTemperature(index*5+1) >> 2;
+	bufferUart[5] = ((UartMessaging_ReadCellTemperature(index*5+1) & (0x0003)) << 6) | (UartMessaging_ReadCellTemperature(index*5+2) >> 4);
+	bufferUart[6] = ((UartMessaging_ReadCellTemperature(index*5+2) & (0x000F)) << 4) | (UartMessaging_ReadCellTemperature(index*5+3) >> 6);
+	bufferUart[7] = ((UartMessaging_ReadCellTemperature(index*5+3) & (0x003F)) << 2) | (UartMessaging_ReadCellTemperature(index*5+4) >> 8);
+	bufferUart[8] = UartMessaging_ReadCellTemperature(index*5+4) & (0x00FF); //PENTRU URMATORUL NEFERICIT, DACA APAR PROBLEME INSEAMNA CA AI MODIFICAT FUNCTIA DE READ VALUE SI AI SCORS SIGURANTA (god have mercy on your soul)
 	bufferUart[9] = CRC_calculate(10);
 }
 
