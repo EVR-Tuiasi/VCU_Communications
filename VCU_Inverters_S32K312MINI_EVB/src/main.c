@@ -31,6 +31,7 @@ extern "C" {
 *                                       LOCAL MACROS
 ==================================================================================================*/
 
+#define SEND_MASK 			0x80000000
 
 /*==================================================================================================
 *                                      LOCAL CONSTANTS
@@ -96,78 +97,67 @@ int main(void)
 	while(i--);
 	//UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
 	//Uart_SyncSend(UART_Channel, dataDeTrimis, 10, 10000000);
-	Can_PduType pduInfoInvSt;
+	/*Can_PduType pduInfoInvSt;
 	pduInfoInvSt.swPduHandle=0;
 	pduInfoInvSt.length=8;
 	pduInfoInvSt.sdu=dataDeTrimisInvStDr;
-	pduInfoInvSt.id=idCanInvertorStanga | ID_MASK;
+	pduInfoInvSt.id=ID_CAN_INVERTOR_STANGA | SEND_MASK;
 
 	Can_PduType pduInfoInvDr;
 	pduInfoInvDr.swPduHandle=0;
 	pduInfoInvDr.length=8;
 	pduInfoInvDr.sdu=dataDeTrimisInvStDr;
-	pduInfoInvDr.id=idCanInvertorDreapta | ID_MASK;
+	pduInfoInvDr.id=ID_CAN_INVERTOR_DREAPTA | SEND_MASK;
 
 	Can_PduType pduInfoInv;
 	pduInfoInv.swPduHandle=0;
 	pduInfoInv.length=8;
 	pduInfoInv.sdu=dataDeTrimisInv;
-	pduInfoInv.id=idCanInvertoare | ID_MASK;
+	pduInfoInv.id=ID_CAN_INVERTOARE | SEND_MASK;
 
 
 	Can_PduType pduInfoBord;
 	pduInfoBord.swPduHandle=0;
 	pduInfoBord.length=8;
 	pduInfoBord.sdu=dataDeTrimisBord;
-	pduInfoBord.id=idCanBord | ID_MASK;
+	pduInfoBord.id=ID_CAN_BORD | SEND_MASK;
 
 	Can_PduType pduInfoAcc;
 	pduInfoAcc.swPduHandle=0;
 	pduInfoAcc.length=8;
 	pduInfoAcc.sdu=dataDeTrimisAcc;
-	pduInfoAcc.id=idCanAcceleratie | ID_MASK;
+	pduInfoAcc.id=ID_CAN_ACCELERATIE | SEND_MASK;
 
 	Can_PduType pduInfoFrana;
 	pduInfoFrana.swPduHandle=0;
 	pduInfoFrana.length=8;
 	pduInfoFrana.sdu=dataDeTrimisFrana;
-	pduInfoFrana.id=idCanFrana | ID_MASK;
+	pduInfoFrana.id=ID_CAN_FRANA | SEND_MASK;
 
 	Can_PduType pduInfoTSAC1;
 	pduInfoTSAC1.swPduHandle=0;
 	pduInfoTSAC1.length=8;
 	pduInfoTSAC1.sdu=dataDeTrimisTSAC1;
-	pduInfoTSAC1.id=idCanBaterie1 | ID_MASK;
+	pduInfoTSAC1.id=ID_CAN_BATERIE | SEND_MASK;
 
 	Can_PduType pduInfoTSAC2_0;
 	pduInfoTSAC2_0.swPduHandle=0;
 	pduInfoTSAC2_0.length=8;
 	pduInfoTSAC2_0.sdu=dataDeTrimisTSAC2_0;
-	pduInfoTSAC2_0.id=idCanBaterie2 | ID_MASK;
-
-	Can_PduType pduInfoTSAC2_1;
-	pduInfoTSAC2_1.swPduHandle=0;
-	pduInfoTSAC2_1.length=8;
-	pduInfoTSAC2_1.sdu=dataDeTrimisTSAC2_1;
-	pduInfoTSAC2_1.id=idCanBaterie2 | ID_MASK;
+	pduInfoTSAC2_0.id=ID_CAN_BATERIE_TENSIUNI_CELULE | SEND_MASK;
 
 	Can_PduType pduInfoTSAC3;
 	pduInfoTSAC3.swPduHandle=0;
 	pduInfoTSAC3.length=8;
 	pduInfoTSAC3.sdu=dataDeTrimisTSAC3;
-	pduInfoTSAC3.id=idCanBaterie3 | ID_MASK;
+	pduInfoTSAC3.id=ID_CAN_BATERIE_TEMPERATURI_CELULE | SEND_MASK;
 
 	Can_PduType pduInfoTSAC4;
 	pduInfoTSAC4.swPduHandle=0;
 	pduInfoTSAC4.length=8;
 	pduInfoTSAC4.sdu=dataDeTrimisTSAC4;
-	pduInfoTSAC4.id=idCanBaterie4 | ID_MASK;
+	pduInfoTSAC4.id=ID_CAN_BATERIE_2 | SEND_MASK;*/
 
-	Can_PduType pduInfoComm;
-	pduInfoComm.swPduHandle=0;
-	pduInfoComm.length=8;
-	pduInfoComm.sdu=dataDeTrimisComm;
-	pduInfoComm.id=idCanComunicatii | ID_MASK;
 
 
 	//CanMessaging_Test();
