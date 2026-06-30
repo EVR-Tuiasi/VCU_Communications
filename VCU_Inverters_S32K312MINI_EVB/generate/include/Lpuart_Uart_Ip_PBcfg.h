@@ -94,8 +94,8 @@ extern "C"{
 * @api
 */
 
-#ifndef LPUART_UART_IP_INSTANCE_USING_0
-    #define LPUART_UART_IP_INSTANCE_USING_0   0U
+#ifndef LPUART_UART_IP_INSTANCE_USING_6
+    #define LPUART_UART_IP_INSTANCE_USING_6   6U
 #endif
 
 /*==================================================================================================

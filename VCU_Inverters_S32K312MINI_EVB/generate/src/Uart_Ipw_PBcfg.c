@@ -183,7 +183,7 @@ static const Uart_Ipw_IpConfigType Uart_Ipw_IpChnConfigPB_0 =
 const Uart_Ipw_HwConfigType Uart_Ipw_xHwConfigPB_0 =
 {
     /* Uart Hardware Channel.*/
-    0U,
+    6U,
     /* Type of Hardware interface configured.*/
     LPUART_IP,
     /* User Callback */
