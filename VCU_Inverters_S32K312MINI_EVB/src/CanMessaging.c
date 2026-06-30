@@ -38,8 +38,8 @@ extern "C"{
 #define CAN_CONTROLLER_ID_1	0U
 #define CAN_CONTROLLER_ID_2	1U
 
-#define CAN_CHANNEL_1_EN 	88U
-#define CAN_CHANNEL_1_STB_N 85U
+#define CAN_CHANNEL_1_EN 	85U
+#define CAN_CHANNEL_1_STB_N 84U
 #define CAN_CHANNEL_2_EN 	119U
 #define CAN_CHANNEL_2_STB_N 98U
 
@@ -365,16 +365,16 @@ static void CanMessaging_CreateBuffer(MessageId_t type, uint8_t *buffer){
 ==================================================================================================*/
 
 void CanMessaging_Init(void){
-	Dio_WriteChannel(88, STD_HIGH); //CAN0_EN
+	Dio_WriteChannel(CAN_CHANNEL_1_EN, STD_HIGH); //CAN0_EN
 	volatile uint64 i = 1000000;
 	while(i--);
-	Dio_WriteChannel(85, STD_HIGH); //CAN0_STB_N
+	Dio_WriteChannel(CAN_CHANNEL_1_STB_N, STD_HIGH); //CAN0_STB_N
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(119, STD_HIGH); //CAN1_EN
+	Dio_WriteChannel(CAN_CHANNEL_1_EN, STD_HIGH); //CAN1_EN
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(98, STD_HIGH); //CAN1_STB_N
+	Dio_WriteChannel(CAN_CHANNEL_1_STB_N, STD_HIGH); //CAN1_STB_N
 	i = 1000000;
 	while(i--);
 
@@ -595,7 +595,7 @@ void CanMessaging_AppTest(void){
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ThermistorsError), &MonitoredValues.TsacMonitoredValues.ThermistorsError);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ChargerStatus), &MonitoredValues.TsacMonitoredValues.ChargerStatus);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent), &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
-		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ReportedChargingVoltage), &MonitoredValues.TsacMonitoredValues.ReportedChargingVoltage);
+		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ReportedChargingVolts), &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.ChargerCommand), &MonitoredValues.TsacMonitoredValues.ChargerCommand);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent), &MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage), &MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage);
