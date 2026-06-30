@@ -377,7 +377,7 @@ static const Can_43_FLEXCAN_BaudrateConfigType Can_aBaudrateConfig_Ctrl0[1U]=
             (uint8)4U,
             (uint8)4U,
             /* BaudratePrescaler -Can_u16Prescaler  */
-            (uint16)29U,
+            (uint16)11U,
         #if (CAN_43_FLEXCAN_DUAL_CLOCK_MODE == STD_ON)
             /* Alternative Baudrate Prescaler  Can_u16PrescalerAlternate*/
             (uint16)9U,

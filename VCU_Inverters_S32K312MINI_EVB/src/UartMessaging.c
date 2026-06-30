@@ -174,11 +174,11 @@ void UartMessaging_Test(void){
 
 void UartMessaging_Update(void){
 	volatile int i;
-	/*UartMessaging_CreateBuffer(idUartInvertorStanga);
+	UartMessaging_CreateBuffer(idUartInvertorStanga);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
-	UartMessaging_CreateBuffer(idUartInvertorDreapta);
+	/*UartMessaging_CreateBuffer(idUartInvertorDreapta);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
 	while(i--);
@@ -197,7 +197,7 @@ void UartMessaging_Update(void){
 	UartMessaging_CreateBuffer(idUartFrana);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
-	while(i--);*/
+	while(i--);
 
 	UartMessaging_CreateBuffer(idUartBaterie1);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);

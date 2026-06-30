@@ -516,11 +516,6 @@
                   <data type="Version">1.0.0</data>
                </feature>
             </dependency>
-            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data>true</data>
-               </feature>
-            </dependency>
          </dependencies>
          <generated_project_files>
             <file path="board/Siul2_Port_Ip_Cfg.c" update_enabled="true"/>
@@ -1967,6 +1962,26 @@
                                        <setting name="Name" value="McuClockReferencePoint_0"/>
                                        <setting name="McuClockFrequencySelect" value="CORE_CLK"/>
                                     </struct>
+                                    <struct name="1">
+                                       <setting name="Name" value="LPI2C_0"/>
+                                       <setting name="McuClockFrequencySelect" value="AIPS_SLOW_CLK"/>
+                                    </struct>
+                                    <struct name="2">
+                                       <setting name="Name" value="SPI"/>
+                                       <setting name="McuClockFrequencySelect" value="AIPS_SLOW_CLK"/>
+                                    </struct>
+                                    <struct name="3">
+                                       <setting name="Name" value="Adc2ClockReferencePoint"/>
+                                       <setting name="McuClockFrequencySelect" value="CORE_CLK"/>
+                                    </struct>
+                                    <struct name="4">
+                                       <setting name="Name" value="Flexcan0"/>
+                                       <setting name="McuClockFrequencySelect" value="FIRC_CLK"/>
+                                    </struct>
+                                    <struct name="5">
+                                       <setting name="Name" value="LPUART_2"/>
+                                       <setting name="McuClockFrequencySelect" value="AIPS_SLOW_CLK"/>
+                                    </struct>
                                  </array>
                               </struct>
                            </array>
@@ -2962,7 +2977,7 @@
                                  <setting name="CanLowestBufferTransmittedFirst" value="false"/>
                                  <setting name="CanControllerDefaultBaudrate" value="/Can_43_FLEXCAN/Can/CanConfigSet/CanController_0/CanControllerBaudrateConfig_0"/>
                                  <array name="CanControllerEcucPartitionRef"/>
-                                 <setting name="CanCpuClockRef" value="/Mcu/Mcu/McuModuleConfiguration/McuClockSettingConfig_0/McuClockReferencePoint_0"/>
+                                 <setting name="CanCpuClockRef" value="/Mcu/Mcu/McuModuleConfiguration/McuClockSettingConfig_0/Flexcan0"/>
                                  <setting name="CanCpuClockRefAlternate" value="/Mcu/Mcu/McuModuleConfiguration/McuClockSettingConfig_0/McuClockReferencePoint_0"/>
                                  <array name="CanControllerBaudrateConfig">
                                     <struct name="0">
@@ -2972,7 +2987,7 @@
                                        <setting name="CanBusLength" value="40"/>
                                        <setting name="CanPropDelayTranceiver" value="150"/>
                                        <setting name="CanTxArbitrationStartDelay" value="12"/>
-                                       <setting name="CanControllerPrescaller" value="30"/>
+                                       <setting name="CanControllerPrescaller" value="12"/>
                                        <setting name="CanControllerPrescallerAlternate" value="10"/>
                                        <setting name="CanControllerBaudRateConfigID" value="0"/>
                                        <setting name="CanControllerBaudRate" value="250"/>
@@ -3095,7 +3110,74 @@
                                  <array name="CanMainFunctionRWPeriodRef"/>
                                  <array name="CanHwObjectUsesBlock"/>
                                  <setting name="CanHwObjectCount" value="1"/>
-                                 <array name="CanHwFilter"/>
+                                 <array name="CanHwFilter">
+                                    <struct name="0">
+                                       <setting name="Name" value="Can_aHwFilter_Object_0"/>
+                                       <setting name="CanHwFilterCode" value="0x110"/>
+                                       <setting name="CanHwFilterMask" value="0x110"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="1">
+                                       <setting name="Name" value="Can_aHwFilter_Object_1"/>
+                                       <setting name="CanHwFilterCode" value="0x111"/>
+                                       <setting name="CanHwFilterMask" value="0x111"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="2">
+                                       <setting name="Name" value="Can_aHwFilter_Object_2"/>
+                                       <setting name="CanHwFilterCode" value="0x112"/>
+                                       <setting name="CanHwFilterMask" value="0x112"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="3">
+                                       <setting name="Name" value="Can_aHwFilter_Object_3"/>
+                                       <setting name="CanHwFilterCode" value="0x113"/>
+                                       <setting name="CanHwFilterMask" value="0x113"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="4">
+                                       <setting name="Name" value="Can_aHwFilter_Object_4"/>
+                                       <setting name="CanHwFilterCode" value="0x330"/>
+                                       <setting name="CanHwFilterMask" value="0x330"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="5">
+                                       <setting name="Name" value="Can_aHwFilter_Object_5"/>
+                                       <setting name="CanHwFilterCode" value="0x331"/>
+                                       <setting name="CanHwFilterMask" value="0x331"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="6">
+                                       <setting name="Name" value="Can_aHwFilter_Object_6"/>
+                                       <setting name="CanHwFilterCode" value="0x114"/>
+                                       <setting name="CanHwFilterMask" value="0x114"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="7">
+                                       <setting name="Name" value="Can_aHwFilter_Object_7"/>
+                                       <setting name="CanHwFilterCode" value="0x115"/>
+                                       <setting name="CanHwFilterMask" value="0x115"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="8">
+                                       <setting name="Name" value="Can_aHwFilter_Object_8"/>
+                                       <setting name="CanHwFilterCode" value="0x116"/>
+                                       <setting name="CanHwFilterMask" value="0x116"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="9">
+                                       <setting name="Name" value="Can_aHwFilter_Object_9"/>
+                                       <setting name="CanHwFilterCode" value="0x117"/>
+                                       <setting name="CanHwFilterMask" value="0x117"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                    <struct name="10">
+                                       <setting name="Name" value="Can_aHwFilter_Object_10"/>
+                                       <setting name="CanHwFilterCode" value="0x119"/>
+                                       <setting name="CanHwFilterMask" value="0x119"/>
+                                       <setting name="CanHwFilterIDE" value="false"/>
+                                    </struct>
+                                 </array>
                               </struct>
                            </array>
                         </struct>
@@ -3419,7 +3501,7 @@
                                  <setting name="Name" value="UartChannel_0"/>
                                  <setting name="UartHwUsing" value="LPUART_IP"/>
                                  <setting name="UartChannelId" value="0"/>
-                                 <setting name="UartClockRef" value="/Mcu/Mcu/McuModuleConfiguration/McuClockSettingConfig_0/McuClockReferencePoint_0"/>
+                                 <setting name="UartClockRef" value="/Mcu/Mcu/McuModuleConfiguration/McuClockSettingConfig_0/LPUART_2"/>
                                  <array name="UartChannelEcucPartitionRef"/>
                                  <struct name="DetailModuleConfiguration">
                                     <setting name="Name" value="DetailModuleConfiguration"/>
