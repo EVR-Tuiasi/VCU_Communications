@@ -171,7 +171,7 @@ int main(void)
 
 
 	//CanMessaging_Test();
-	//UartMessaging_Test();
+	UartMessaging_Test();
 
 	//Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
 

@@ -176,53 +176,53 @@ void UartMessaging_Update(void){
 	volatile int i;
 	UartMessaging_CreateBuffer(idUartInvertorStanga);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartInvertorDreapta);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartInvertoare);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartBord);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartAcceleratie);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartFrana);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 
 	UartMessaging_CreateBuffer(idUartBaterie1);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	for(uint16_t index = 0; index < CELLS_LINES; index++){
 		UartMessaging_CreateCellVoltageBuffer(index);
 		Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-		i=100000;
-		while(i--);
+		/*i=100000;
+		while(i--);*/
 	}
 	for(uint16_t index = 0; index < THERMISTOR_LINES; index++){
 		UartMessaging_CreateCellTemperatureBuffer(index);
 		Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-		i=100000;
-		while(i--);
+		/*i=100000;
+		while(i--);*/
 	}
 	UartMessaging_CreateBuffer(idUartBaterie4);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	UartMessaging_CreateBuffer(idUartBaterie5);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
-	i=100000;
-	while(i--);
+	/*i=100000;
+	while(i--);*/
 	/*UartMessaging_CreateBuffer(idUartComunicatii);
 	Uart_SyncSend(UART_Channel, bufferUart, 10, 10000000);
 	i=100000;
