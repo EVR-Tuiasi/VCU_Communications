@@ -59,7 +59,7 @@ extern "C"{
 ==================================================================================================*/
 
 #define ReadUartDataFromAddress(xMonitoredValue_t_Address) (xMonitoredValue_t_Address)->valueUart
-#define WriteUartDataAtAddress(data, xMonitoredValue_t_Address) (xMonitoredValue_t_Address)->valueUart = (data)
+#define WriteUartDataAtAddress(data, xMonitoredValue_t_Address) (xMonitoredValue_t_Address)->valueUart = ((data) <= (xMonitoredValue_t_Address)->maxValue) ? (data) : ((xMonitoredValue_t_Address)->maxValue)
 
 void UartMessaging_Init(void);
 void UartMessaging_Test(void);
