@@ -413,12 +413,12 @@ void CanMessaging_Test(void){
 
 		for(uint16_t index = 0; index < CELLS_NUM; index++){
 			CanMessaging_SetCellVoltageErrors(cnt & 1, index);
-			CanMessaging_SetCellVoltage(cnt, index);
+			CanMessaging_SetCellVoltage(cnt%1024, index);
 		}
 
 		for(uint16_t index = 0; index < THERMISTORS_NUM; index++){
 			CanMessaging_SetCellTemperatureErrors(cnt & 1, index);
-			CanMessaging_SetCellTemperature(cnt, index);
+			CanMessaging_SetCellTemperature(cnt%1024, index);
 		}
 
 		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);

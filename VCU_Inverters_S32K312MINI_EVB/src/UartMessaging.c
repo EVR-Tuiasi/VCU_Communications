@@ -251,7 +251,7 @@ void UartMessaging_Init(void){
 }
 
 void UartMessaging_Test(void){
-	int cnt = 0;
+	uint64_t cnt = 0;
 	volatile int i;
 	while(1){
 		WriteUartDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
@@ -279,12 +279,12 @@ void UartMessaging_Test(void){
 
 		for(uint16_t index = 0; index < CELLS_NUM; index++){
 			UartMessaging_SetCellVoltageErrors(cnt & 1, index);
-			UartMessaging_SetCellVoltage(cnt, index);
+			UartMessaging_SetCellVoltage(cnt%1024, index);
 		}
 
 		for(uint16_t index = 0; index < THERMISTORS_NUM; index++){
 			UartMessaging_SetCellTemperatureErrors(cnt & 1, index);
-			UartMessaging_SetCellTemperature(cnt, index);
+			UartMessaging_SetCellTemperature(cnt%1024, index);
 		}
 
 		WriteUartDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
@@ -402,18 +402,26 @@ boolean UartMessaging_ReadCellTemperatureErrors(uint16_t index){
 
 void UartMessaging_SetCellVoltage(uint16_t Value, uint16_t index){
 	//NU SCOATE IF-URILE: SUNT DE SIGURANTA
-	if(index < CELLS_NUM)
-		MonitoredValues.TsacMonitoredValues.CellVoltage[index].valueUart = Value;
+	if(index < CELLS_NUM){
+		if(Value <= 1023)
+			MonitoredValues.TsacMonitoredValues.CellVoltage[index].valueUart = Value;
+		else
+			MonitoredValues.TsacMonitoredValues.CellVoltage[index].valueUart = 1023;
+	}
 }
 void UartMessaging_SetCellVoltageErrors(boolean Value, uint16_t index){
 	//NU SCOATE IF-URILE: SUNT DE SIGURANTA
 	if(index < CELLS_NUM)
-		 MonitoredValues.TsacMonitoredValues.CellVoltage[index].errorUart = Value;
+		MonitoredValues.TsacMonitoredValues.CellVoltage[index].errorUart = Value;
 }
 void UartMessaging_SetCellTemperature(uint16_t Value, uint16_t index){
 	//NU SCOATE IF-URILE: SUNT DE SIGURANTA
-	if(index < THERMISTORS_NUM)
-		 MonitoredValues.TsacMonitoredValues.ThermistorTemperature[index].valueUart = Value;
+	if(index < THERMISTORS_NUM){
+		if(Value <= 1023)
+			MonitoredValues.TsacMonitoredValues.ThermistorTemperature[index].valueUart = Value;
+		else
+			MonitoredValues.TsacMonitoredValues.ThermistorTemperature[index].valueUart = 1023;
+	}
 }
 void UartMessaging_SetCellTemperatureErrors(boolean Value, uint16_t index){
 	//NU SCOATE IF-URILE: SUNT DE SIGURANTA
