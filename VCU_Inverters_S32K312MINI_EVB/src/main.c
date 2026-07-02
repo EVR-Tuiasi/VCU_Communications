@@ -31,7 +31,9 @@ extern "C" {
 *                                       LOCAL MACROS
 ==================================================================================================*/
 
+#define ID_MASK 			0x3FFFFFFF
 #define SEND_MASK 			0x80000000
+#define CAN_HTH_HANDLE  	0x00000001
 
 /*==================================================================================================
 *                                      LOCAL CONSTANTS
@@ -156,16 +158,16 @@ int main(void)
 	pduInfoTSAC4.swPduHandle=0;
 	pduInfoTSAC4.length=8;
 	pduInfoTSAC4.sdu=dataDeTrimisTSAC4;
-	pduInfoTSAC4.id=ID_CAN_BATERIE_2 | SEND_MASK;*/
-
+	pduInfoTSAC4.id=ID_CAN_BATERIE_2 | SEND_MASK;
+	*/
 
 
 	//CanMessaging_Test();
-	UartMessaging_Test();
+	//UartMessaging_Test();
 
-	//Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
+	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
 
-	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
 	i=400000;
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInv);
@@ -179,14 +181,14 @@ int main(void)
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoFrana);
 	i=400000;
-	while(i--);*/
-	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC1);
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC1);
 	i=400000;
 	while(i--);
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
 	i=400000;
-	while(i--);*/
-	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
+	while(i--);
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_0);
 	i=400000;
 	while(i--);
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_1);

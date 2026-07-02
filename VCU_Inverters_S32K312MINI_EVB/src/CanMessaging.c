@@ -85,8 +85,6 @@ boolean CanMessaging_ReceiveData(Can_HwHandleType handle, Can_IdType id, PduLeng
 			//extragere date
 			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
 			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
-			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
-			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
 			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
 			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
 			WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
@@ -371,12 +369,12 @@ void CanMessaging_Init(void){
 	Dio_WriteChannel(CAN_CHANNEL_1_STB_N, STD_HIGH); //CAN0_STB_N
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(CAN_CHANNEL_1_EN, STD_HIGH); //CAN1_EN
+	/*Dio_WriteChannel(CAN_CHANNEL_2_EN, STD_HIGH); //CAN1_EN
 	i = 1000000;
 	while(i--);
-	Dio_WriteChannel(CAN_CHANNEL_1_STB_N, STD_HIGH); //CAN1_STB_N
+	Dio_WriteChannel(CAN_CHANNEL_2_STB_N, STD_HIGH); //CAN1_STB_N
 	i = 1000000;
-	while(i--);
+	while(i--);*/
 
 	Can_43_FLEXCAN_SetControllerMode(CAN_CONTROLLER_ID_1, CAN_CS_STARTED);
 	//Can_43_FLEXCAN_SetControllerMode(CAN_CONTROLLER_ID_2, CAN_CS_STARTED);
@@ -521,16 +519,26 @@ void CanMessaging_Update(void){
 	for(uint16_t index = 0; index < CELLS_LINES; index++){
 		CanMessaging_CreateCellVoltageBuffer(index);
 		pduInfo.sdu=bufferCan;
-		pduInfo.id=ID_CAN_BATERIE_TENSIUNI_CELULE | ID_MASK;
+		pduInfo.id=ID_CAN_BATERIE_TENSIUNI_CELULE | SEND_MASK;
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	}
 
 	for(uint16_t index = 0; index < THERMISTORS_LINES; index++){
 		CanMessaging_CreateCellTemperatureBuffer(index);
 		pduInfo.sdu=bufferCan;
-		pduInfo.id=ID_CAN_BATERIE_TEMPERATURI_CELULE | ID_MASK;
+		pduInfo.id=ID_CAN_BATERIE_TEMPERATURI_CELULE | SEND_MASK;
 		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 	}
+
+	CanMessaging_CreateBuffer(ID_CAN_BATERIE_2, bufferCan);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=ID_CAN_BATERIE_2 | SEND_MASK;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+
+	CanMessaging_CreateBuffer(ID_CAN_BATERIE_CHARGER, bufferCan);
+	pduInfo.sdu=bufferCan;
+	pduInfo.id=ID_CAN_BATERIE_CHARGER | SEND_MASK;
+	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
 }
 
 uint16_t CanMessaging_ReadCellVoltage(uint16_t index){
