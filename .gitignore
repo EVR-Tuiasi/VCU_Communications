@@ -58,3 +58,5 @@ dkms.conf
 /Dio_Example_S32K344/board
 /Dio_Example_S32K344/Debug_FLASH
 /Dio_Example_S32K344/.settings/language.settings.xml
+/VCU_Communications_S32K312MINI_EVB/generate
+/VCU_Communications_S32K312MINI_EVB/RTD
