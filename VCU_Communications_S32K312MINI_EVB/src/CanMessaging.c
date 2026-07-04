@@ -34,7 +34,20 @@ extern "C"{
 ==================================================================================================*/
 #define ID_MASK 			0x3FFFFFFF
 #define SEND_MASK 			0x80000000
-#define CAN_HTH_HANDLE  	0x00000001
+
+#define CAN_HTH_INVERTOR_STANGA				12U
+#define CAN_HTH_INVERTOR_DREAPTA			13U
+#define CAN_HTH_INVERTOARE					14U
+#define CAN_HTH_BORD						15U
+#define CAN_HTH_ACCELERATIE					16U
+#define CAN_HTH_FRANA						17U
+#define CAN_HTH_BATERIE						18U
+#define CAN_HTH_BATERIE_TENSIUNI_CELULE		19U
+#define CAN_HTH_BATERIE_TEMPERATURI_CELULE	20U
+#define CAN_HTH_BATERIE_2					21U
+#define CAN_HTH_BATERIE_CHARGER				22U
+#define CAN_HTH_COMUNICATII					23U
+
 #define CAN_CONTROLLER_ID_1	0U
 #define CAN_CONTROLLER_ID_2	1U
 
@@ -358,10 +371,59 @@ static void CanMessaging_CreateBuffer(MessageId_t type, uint8_t *buffer){
 	buffer[6] = (uint8_t)(buffer_merged << 8U);
 	buffer[7] = (uint8_t)buffer_merged;
 }
+
+void Can_Receive_Interrupt_INVERTOR_STANGA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+
+}
+
+void Can_Receive_Interrupt_INVERTOR_DREAPTA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_INVERTOARE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BORD(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_ACCELERATIE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_FRANA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BATERIE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BATERIE_TENSIUNI_CELULE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BATERIE_TEMPERATURI_CELULE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BATERIE_2(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_BATERIE_CHARGER(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
+void Can_Receive_Interrupt_COMUNICATII(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
+	(void)RxPduId;
+}
+
 /*==================================================================================================
 *                                       GLOBAL FUNCTIONS
 ==================================================================================================*/
-
 void CanMessaging_Init(void){
 	Dio_WriteChannel(CAN_CHANNEL_1_EN, STD_HIGH); //CAN0_EN
 	volatile uint64 i = 1000000;
@@ -484,61 +546,61 @@ void CanMessaging_Update(void){
 	CanMessaging_CreateBuffer(ID_CAN_INVERTOR_STANGA, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_INVERTOR_STANGA | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_INVERTOR_STANGA, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_INVERTOR_DREAPTA, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_INVERTOR_DREAPTA | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_INVERTOR_DREAPTA, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_INVERTOARE, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_INVERTOARE | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_INVERTOARE, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_BORD, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_BORD | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_BORD, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_ACCELERATIE, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_ACCELERATIE | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_ACCELERATIE, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_FRANA, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_FRANA | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_FRANA, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_BATERIE, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_BATERIE | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_BATERIE, &pduInfo);
 
 	for(uint16_t index = 0; index < CELLS_LINES; index++){
 		CanMessaging_CreateCellVoltageBuffer(index);
 		pduInfo.sdu=bufferCan;
 		pduInfo.id=ID_CAN_BATERIE_TENSIUNI_CELULE | SEND_MASK;
-		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+		Can_43_FLEXCAN_Write(CAN_HTH_BATERIE_TENSIUNI_CELULE, &pduInfo);
 	}
 
 	for(uint16_t index = 0; index < THERMISTORS_LINES; index++){
 		CanMessaging_CreateCellTemperatureBuffer(index);
 		pduInfo.sdu=bufferCan;
 		pduInfo.id=ID_CAN_BATERIE_TEMPERATURI_CELULE | SEND_MASK;
-		Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+		Can_43_FLEXCAN_Write(CAN_HTH_BATERIE_TEMPERATURI_CELULE, &pduInfo);
 	}
 
 	CanMessaging_CreateBuffer(ID_CAN_BATERIE_2, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_BATERIE_2 | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_BATERIE_2, &pduInfo);
 
 	CanMessaging_CreateBuffer(ID_CAN_BATERIE_CHARGER, bufferCan);
 	pduInfo.sdu=bufferCan;
 	pduInfo.id=ID_CAN_BATERIE_CHARGER | SEND_MASK;
-	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfo);
+	Can_43_FLEXCAN_Write(CAN_HTH_BATERIE_CHARGER, &pduInfo);
 }
 
 uint16_t CanMessaging_ReadCellVoltage(uint16_t index){
