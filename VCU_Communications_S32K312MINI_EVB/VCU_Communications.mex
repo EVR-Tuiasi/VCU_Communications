@@ -2966,7 +2966,9 @@
                            <array name="CanLPduReceiveCalloutFunction"/>
                            <array name="CanEcucPartitionRef"/>
                            <array name="CanOsCounterRef"/>
-                           <array name="CanApiEnableMbAbort"/>
+                           <array name="CanApiEnableMbAbort">
+                              <setting name="0" value="true"/>
+                           </array>
                            <array name="CanSetBaudrateApi"/>
                            <setting name="CanEnableDualClockMode" value="false"/>
                            <array name="CanListenOnlyModeApi"/>

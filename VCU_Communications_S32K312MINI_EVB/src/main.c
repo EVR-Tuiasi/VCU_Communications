@@ -95,8 +95,12 @@ int main(void)
 
 	CanMessaging_Init();
 	UartMessaging_Init();
-	volatile int i = 1000000;
-	while(i--);
+
+	//CanMessaging_Test();
+	//UartMessaging_Test();
+	CanMessaging_AppTest();
+
+	while(1);
 	//UartMessaging_SetValue(Uart_TSAC_OverallCurrent, 123);
 	//Uart_SyncSend(UART_Channel, dataDeTrimis, 10, 10000000);
 	/*Can_PduType pduInfoInvSt;
@@ -161,10 +165,6 @@ int main(void)
 	pduInfoTSAC4.id=ID_CAN_BATERIE_2 | SEND_MASK;
 	*/
 
-
-	CanMessaging_Test();
-	//UartMessaging_Test();
-
 	/*Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvSt);
 
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoInvDr);
@@ -194,8 +194,6 @@ int main(void)
 	Can_43_FLEXCAN_Write(CAN_HTH_HANDLE, &pduInfoTSAC2_1);
 	i=400000;
 	while(i--);*/
-	CanMessaging_AppTest();
-    return (0U);
 }
 
 
