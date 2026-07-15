@@ -96,7 +96,7 @@ int main(void)
 	CanMessaging_Init();
 	UartMessaging_Init();
 
-	//CanMessaging_Test();
+	CanMessaging_Test();
 	//UartMessaging_Test();
 	CanMessaging_AppTest();
 
