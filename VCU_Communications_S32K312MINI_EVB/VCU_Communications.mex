@@ -191,8 +191,6 @@
                         <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="ADC0" signal="adc0_p1" pin_num="8" pin_signal="PTD0"/>
-                  <pin peripheral="ADC0" signal="adc0_p0" pin_num="7" pin_signal="PTD1"/>
                   <pin peripheral="ADC1" signal="adc1_p1" pin_num="155" pin_signal="PTA13"/>
                   <pin peripheral="ADC0" signal="adc0_p2" pin_num="172" pin_signal="PTA8"/>
                   <pin peripheral="CAN0" signal="can0_tx" pin_num="100" pin_signal="PTA7"/>
@@ -1539,48 +1537,6 @@
                                        <setting name="PortPinInvertControl" value="false"/>
                                        <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
                                        <setting name="PortPinId" value="38"/>
-                                       <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
-                                       <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
-                                       <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <setting name="ImcrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <array name="IGFSettings"/>
-                                       <array name="PortPinEcucPartitionRef"/>
-                                    </struct>
-                                    <struct name="38">
-                                       <setting name="Name" value="PortPin_38"/>
-                                       <setting name="PortPinPue" value="false"/>
-                                       <setting name="PortPinPus" value="false"/>
-                                       <setting name="PortPinSafeMode" value="false"/>
-                                       <setting name="PortPinDse" value="false"/>
-                                       <setting name="PortPinWithReadBack" value="false"/>
-                                       <setting name="PortPinPke" value="false"/>
-                                       <setting name="PortPinIfe" value="false"/>
-                                       <setting name="PortPinDirectionChangeable" value="true"/>
-                                       <setting name="PortPinModeChangeable" value="true"/>
-                                       <setting name="PortPinInvertControl" value="false"/>
-                                       <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
-                                       <setting name="PortPinId" value="39"/>
-                                       <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
-                                       <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
-                                       <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <setting name="ImcrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
-                                       <array name="IGFSettings"/>
-                                       <array name="PortPinEcucPartitionRef"/>
-                                    </struct>
-                                    <struct name="39">
-                                       <setting name="Name" value="PortPin_39"/>
-                                       <setting name="PortPinPue" value="false"/>
-                                       <setting name="PortPinPus" value="false"/>
-                                       <setting name="PortPinSafeMode" value="false"/>
-                                       <setting name="PortPinDse" value="false"/>
-                                       <setting name="PortPinWithReadBack" value="false"/>
-                                       <setting name="PortPinPke" value="false"/>
-                                       <setting name="PortPinIfe" value="false"/>
-                                       <setting name="PortPinDirectionChangeable" value="true"/>
-                                       <setting name="PortPinModeChangeable" value="true"/>
-                                       <setting name="PortPinInvertControl" value="false"/>
-                                       <setting name="PortPinSiul2Instance" value="SIUL2_0"/>
-                                       <setting name="PortPinId" value="40"/>
                                        <setting name="PortPinInitialMode" value="PORT_GPIO_MODE"/>
                                        <setting name="OBEGroupSelect" value="NO_OBE_GROUP"/>
                                        <setting name="MscrPdacSlot" value="VIRTUAL_WRAPPER_PDAC0"/>
