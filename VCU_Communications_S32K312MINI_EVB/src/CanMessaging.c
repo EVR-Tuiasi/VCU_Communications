@@ -106,11 +106,22 @@ static bool dashboard_transmission_schedule = 0;
 static bool battery_transmission_schedule = 0;
 static bool communications_transmission_schedule = 0;
 
+static bool inverters_transmission_timeout = 0;
+static bool pedals_transmission_timeout = 0;
+static bool dashboard_transmission_timeout = 0;
+static bool battery_transmission_timeout = 0;
+static bool communications_transmission_timeout = 0;
+
 static uint8_t inverters_transmission_contor = 0;
 static uint8_t pedals_transmission_contor = 0;
 static uint8_t dashboard_transmission_contor = 0;
 static uint8_t battery_transmission_contor = 0;
 static uint8_t communications_transmission_contor = 0;
+static uint8_t inverters_timeout_contor = 0;
+static uint8_t pedals_timeout_contor = 0;
+static uint8_t dashboard_timeout_contor = 0;
+static uint8_t battery_timeout_contor = 0;
+static uint8_t communications_timeout_contor = 0;
 
 static CAN_STATE currentState = CAN_IDLE;
 
@@ -564,12 +575,27 @@ void Can_Timer_Timeout(void){
 	battery_transmission_contor++;
 	communications_transmission_contor++;
 
+	inverters_timeout_contor++;
+	pedals_timeout_contor++;
+	dashboard_timeout_contor++;
+	battery_timeout_contor++;
+	communications_timeout_contor++;
+
 	inverters_transmission_schedule = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD);
 	pedals_transmission_schedule = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD);
 	dashboard_transmission_schedule = (dashboard_transmission_contor == CAN_DASHBOARD_SCHEDULE_PERIOD);
 	battery_transmission_schedule = (battery_transmission_contor == CAN_BATTERY_SCHEDULE_PERIOD);
 	communications_transmission_schedule = (communications_transmission_contor == CAN_COMMUNICATIONS_SCHEDULE_PERIOD);
+
 	transmission_schedule = inverters_transmission_schedule | pedals_transmission_schedule | dashboard_transmission_schedule | battery_transmission_schedule | communications_transmission_schedule | communications_transmission_schedule;
+
+	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD) && (inverters_transmission_confirmation[0] || inverters_transmission_confirmation[1] || inverters_transmission_confirmation[2]);
+	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD) && (pedals_transmission_confirmation[0] || pedals_transmission_confirmation[1]);
+	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_SCHEDULE_PERIOD) && (battery_transmission_confirmation[0] || battery_transmission_confirmation[1] || battery_transmission_confirmation[2] || battery_transmission_confirmation[3] || battery_transmission_confirmation[4]);
+	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_SCHEDULE_PERIOD) && (dashboard_transmission_confirmation);
+	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_SCHEDULE_PERIOD) && (communications_transmission_confirmation);
+
+	transmission_timeout = inverters_transmission_timeout | pedals_transmission_timeout | battery_transmission_timeout | dashboard_transmission_timeout | communications_transmission_timeout;
 }
 
 static void CanMessaging_InvertersUpdate(void){
@@ -612,8 +638,8 @@ static void CanMessaging_BatteryUpdate(void){
 	CanMessaging_CreateBuffer(ID_CAN_BATERIE_CHARGER, bufferCan_BATERIE_CHARGER);
 	Can_43_FLEXCAN_Write(CAN_HTH_BATERIE_CHARGER, &pduInfo_BATERIE_CHARGER);
 
-	cells_voltage_last_index = (cells_voltage_last_index) % CELLS_LINES;
-	cells_temperature_last_index = (cells_temperature_last_index) % THERMISTORS_LINES;
+	cells_voltage_last_index = (cells_voltage_last_index + 1) % CELLS_LINES;
+	cells_temperature_last_index = (cells_temperature_last_index + 1) % THERMISTORS_LINES;
 }
 
 static void CanMessaging_CommunicationsUpdate(void){
@@ -640,99 +666,100 @@ void CanMessaging_Init(void){
 
 void CanMessaging_Test(void){
 	uint64_t cnt = 0;
-	volatile uint64_t i;
+	volatile uint64_t i = 0;
 	while(1){
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.HighestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.LowestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.HighestCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.LowestCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.OverallVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.OverallVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.OverallCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.OverallCurrent);
+		i++;
+		if(i == 5000){
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.HighestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.LowestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.HighestCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.HighestCellVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.LowestCellVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.LowestCellVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.OverallVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.OverallVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.OverallCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.OverallCurrent);
 
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.AmsError);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.TransceiverError);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ShuntError);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.Bms0Error);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.Bms1Error);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ThermistorsError);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ChargerStatus);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ChargerCommand);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.AmsError);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.TransceiverError);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ShuntError);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.Bms0Error);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.Bms1Error);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ThermistorsError);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ChargerStatus);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.TsacMonitoredValues.ChargerCommand);
 
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.ReportedChargingVolts.maxValue+1), &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.ReportedChargingVolts.maxValue+1), &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent.maxValue+1), &MonitoredValues.TsacMonitoredValues.DesiredChargingCurrent);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage.maxValue+1), &MonitoredValues.TsacMonitoredValues.DesiredChargingVoltage);
 
-		for(uint16_t index = 0; index < CELLS_NUM; index++){
-			CanMessaging_SetCellVoltageErrors(cnt & 1, index);
-			CanMessaging_SetCellVoltage(cnt%1024, index);
+			for(uint16_t index = 0; index < CELLS_NUM; index++){
+				CanMessaging_SetCellVoltageErrors(cnt & 1, index);
+				CanMessaging_SetCellVoltage(cnt%1024, index);
+			}
+
+			for(uint16_t index = 0; index < THERMISTORS_NUM; index++){
+				CanMessaging_SetCellTemperatureErrors(cnt & 1, index);
+				CanMessaging_SetCellTemperature(cnt%1024, index);
+			}
+
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.PressureSensorBars.maxValue+1), &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
+
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorRpm.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterCurrent.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorRpm.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterThrottle.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
+			WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
+
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
+			WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
+
+			cnt++;
+			CanMessaging_Update();
+			i = 0;
 		}
-
-		for(uint16_t index = 0; index < THERMISTORS_NUM; index++){
-			CanMessaging_SetCellTemperatureErrors(cnt & 1, index);
-			CanMessaging_SetCellTemperature(cnt%1024, index);
-		}
-
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1TravelPercentage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2TravelPercentage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor1TravelPercentage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.BrakeSensor2TravelPercentage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage.maxValue+1), &MonitoredValues.PedalsMonitoredValues.PressureSensorVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.PedalsMonitoredValues.PressureSensorBars.maxValue+1), &MonitoredValues.PedalsMonitoredValues.PressureSensorBars);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToGnd);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_ShortToVcc);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor1_OutOfRangeOutput);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Accel_Implausibility);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToGnd);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_ShortToVcc);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor1_OutOfRangeOutput);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToGnd);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_ShortToVcc);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Sensor2_OutOfRangeOutput);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.PedalsMonitoredValues.Brake_Implausibility);
-
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterInputVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterCurrent);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorRpm.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorRpm);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftMotorSpeedKmh);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottle);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback.maxValue+1), &MonitoredValues.InvertersMonitoredValues.LeftInverterThrottleFeedback);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorTemperature.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterInputVoltage);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterCurrent.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterCurrent);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorRpm.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorRpm);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterThrottle.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
-		WriteCanDataAtAddress(cnt%(MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback.maxValue+1), &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
-
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
-		WriteCanDataAtAddress(cnt&1, &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
-
-		cnt++;
-		CanMessaging_Update();
-		i=10000000;
-		while(i--);
 	}
 }
 
 void CanMessaging_Update(void){
-	//Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_STANGA);
 	switch(currentState){
 		case CAN_IDLE:
 			if(transmission_schedule == 1 && transmission_data_updated == 1){
@@ -761,10 +788,55 @@ void CanMessaging_Update(void){
 					communications_transmission_schedule = 0;
 					communications_transmission_contor = 0;
 				}
+				transmission_data_updated = 0;
 				currentState = CAN_TRANSMITTING;
 			}
 			break;
 		case CAN_TRANSMITTING:
+			if(transmission_timeout == 1){
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_STANGA);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_DREAPTA);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOARE);
+
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_ACCELERATIE);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_FRANA);
+
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BORD);
+
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_TENSIUNI_CELULE);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_TEMPERATURI_CELULE);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_2);
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_CHARGER);
+
+				Can_43_FLEXCAN_AbortMb(CAN_HTH_COMUNICATII);
+				currentState = CAN_IDLE;
+			}
+			if(
+					inverters_transmission_confirmation[0] && inverters_transmission_confirmation[1] && inverters_transmission_confirmation[2] &&
+					pedals_transmission_confirmation[0] && pedals_transmission_confirmation[1] &&
+					dashboard_transmission_confirmation &&
+					battery_transmission_confirmation[0] && battery_transmission_confirmation[1] && battery_transmission_confirmation[2] && battery_transmission_confirmation[3] && battery_transmission_confirmation[4] &&
+					communications_transmission_confirmation
+			){
+				inverters_timeout_contor = 0;
+				pedals_timeout_contor = 0;
+				battery_timeout_contor = 0;
+				dashboard_timeout_contor = 0;
+				communications_timeout_contor = 0;
+				inverters_transmission_confirmation[0] = 0;
+				inverters_transmission_confirmation[1] = 0;
+				inverters_transmission_confirmation[2] = 0;
+				pedals_transmission_confirmation[0] = 0;
+				pedals_transmission_confirmation[1] = 0;
+				battery_transmission_confirmation[0] = 0;
+				battery_transmission_confirmation[1] = 0;
+				battery_transmission_confirmation[2] = 0;
+				battery_transmission_confirmation[3] = 0;
+				battery_transmission_confirmation[4] = 0;
+				communications_transmission_confirmation = 0;
+				currentState = CAN_IDLE;
+			}
 			break;
 	}
 }
