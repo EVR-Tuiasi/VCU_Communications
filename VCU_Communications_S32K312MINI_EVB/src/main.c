@@ -20,6 +20,7 @@ extern "C" {
 #include "CDD_Uart.h"
 #include "Dio.h"
 #include "Mcl.h"
+#include "Gpt.h"
 #include "CanMessaging.h"
 #include "UartMessaging.h"
 
@@ -92,11 +93,12 @@ int main(void)
 	Platform_Init(NULL_PTR);
 	Can_43_FLEXCAN_Init(NULL_PTR);
 	CanIf_Init(NULL_PTR);
+	Gpt_Init(NULL_PTR);
 
 	CanMessaging_Init();
 	UartMessaging_Init();
 
-	CanMessaging_Test();
+	//CanMessaging_Test();
 	//UartMessaging_Test();
 	CanMessaging_AppTest();
 
