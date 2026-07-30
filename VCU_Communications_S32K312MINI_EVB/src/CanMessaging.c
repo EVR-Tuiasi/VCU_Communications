@@ -99,41 +99,41 @@ static uint8_t bufferCan_BATERIE_2[8];
 static uint8_t bufferCan_BATERIE_CHARGER[8];
 static uint8_t bufferCan_COMUNICATII[8];
 
-static uint8_t cells_voltage_last_index = 0;
-static uint8_t cells_temperature_last_index = 0;
+volatile uint8_t cells_voltage_last_index = 0;
+volatile uint8_t cells_temperature_last_index = 0;
 
-static bool inverters_transmission_confirmation[3] = {0, 0, 0};
-static bool pedals_transmission_confirmation[2] = {0, 0};
-static bool dashboard_transmission_confirmation = 0;
-static bool battery_transmission_confirmation[5] = {0, 0, 0, 0, 0};
-static bool communications_transmission_confirmation = 0;
+volatile bool inverters_transmission_confirmation[3] = {0, 0, 0};
+volatile bool pedals_transmission_confirmation[2] = {0, 0};
+volatile bool dashboard_transmission_confirmation = 0;
+volatile bool battery_transmission_confirmation[5] = {0, 0, 0, 0, 0};
+volatile bool communications_transmission_confirmation = 0;
 
-static bool transmission_schedule = 0;
-static bool transmission_timeout = 0;
-bool transmission_data_updated = 0;
+volatile bool transmission_schedule = 0;
+volatile bool transmission_timeout = 0;
+volatile bool transmission_data_updated = 0;
 
-static bool inverters_transmission_schedule = 0;
-static bool pedals_transmission_schedule = 0;
-static bool dashboard_transmission_schedule = 0;
-static bool battery_transmission_schedule = 0;
-static bool communications_transmission_schedule = 0;
+volatile bool inverters_transmission_schedule = 0;
+volatile bool pedals_transmission_schedule = 0;
+volatile bool dashboard_transmission_schedule = 0;
+volatile bool battery_transmission_schedule = 0;
+volatile bool communications_transmission_schedule = 0;
 
-static bool inverters_transmission_timeout = 0;
-static bool pedals_transmission_timeout = 0;
-static bool dashboard_transmission_timeout = 0;
-static bool battery_transmission_timeout = 0;
-static bool communications_transmission_timeout = 0;
+volatile bool inverters_transmission_timeout = 0;
+volatile bool pedals_transmission_timeout = 0;
+volatile bool dashboard_transmission_timeout = 0;
+volatile bool battery_transmission_timeout = 0;
+volatile bool communications_transmission_timeout = 0;
 
-static uint8_t inverters_transmission_contor = 0;
-static uint8_t pedals_transmission_contor = 0;
-static uint8_t dashboard_transmission_contor = 0;
-static uint8_t battery_transmission_contor = 0;
-static uint8_t communications_transmission_contor = 0;
-static uint8_t inverters_timeout_contor = 0;
-static uint8_t pedals_timeout_contor = 0;
-static uint8_t dashboard_timeout_contor = 0;
-static uint8_t battery_timeout_contor = 0;
-static uint8_t communications_timeout_contor = 0;
+volatile uint8_t inverters_transmission_contor = 0;
+volatile uint8_t pedals_transmission_contor = 0;
+volatile uint8_t dashboard_transmission_contor = 0;
+volatile uint8_t battery_transmission_contor = 0;
+volatile uint8_t communications_transmission_contor = 0;
+volatile uint8_t inverters_timeout_contor = 0;
+volatile uint8_t pedals_timeout_contor = 0;
+volatile uint8_t dashboard_timeout_contor = 0;
+volatile uint8_t battery_timeout_contor = 0;
+volatile uint8_t communications_timeout_contor = 0;
 
 static CAN_STATE currentState = CAN_IDLE;
 
@@ -602,48 +602,48 @@ void Can_Timer_Timeout(void){
 		communications_transmission_contor++;
 	#endif
 
-	inverters_transmission_schedule = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD);
+	inverters_transmission_schedule = (inverters_transmission_contor >= CAN_INVERTERS_SCHEDULE_PERIOD);
 	if(inverters_transmission_schedule){
 		inverters_transmission_contor = 0;
 	}
-	pedals_transmission_schedule = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD);
+	pedals_transmission_schedule = (pedals_transmission_contor >= CAN_PEDALS_SCHEDULE_PERIOD);
 	if(pedals_transmission_schedule){
 		pedals_transmission_contor = 0;
 	}
-	dashboard_transmission_schedule = (dashboard_transmission_contor == CAN_DASHBOARD_SCHEDULE_PERIOD);
+	dashboard_transmission_schedule = (dashboard_transmission_contor >= CAN_DASHBOARD_SCHEDULE_PERIOD);
 	if(dashboard_transmission_schedule){
 		dashboard_transmission_contor = 0;
 	}
-	battery_transmission_schedule = (battery_transmission_contor == CAN_BATTERY_SCHEDULE_PERIOD);
+	battery_transmission_schedule = (battery_transmission_contor >= CAN_BATTERY_SCHEDULE_PERIOD);
 	if(battery_transmission_schedule){
 		battery_transmission_contor = 0;
 	}
-	communications_transmission_schedule = (communications_transmission_contor == CAN_COMMUNICATIONS_SCHEDULE_PERIOD);
+	communications_transmission_schedule = (communications_transmission_contor >= CAN_COMMUNICATIONS_SCHEDULE_PERIOD);
 	if(communications_transmission_schedule){
 		communications_transmission_contor = 0;
 	}
 
 	transmission_schedule = inverters_transmission_schedule | pedals_transmission_schedule | dashboard_transmission_schedule | battery_transmission_schedule | communications_transmission_schedule | communications_transmission_schedule;
 
-	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_TIMEOUT_PERIOD) && (!inverters_transmission_confirmation[0] || !inverters_transmission_confirmation[1] || !inverters_transmission_confirmation[2]);
+	inverters_transmission_timeout = (inverters_timeout_contor >= CAN_INVERTERS_TIMEOUT_PERIOD) && (!inverters_transmission_confirmation[0] || !inverters_transmission_confirmation[1] || !inverters_transmission_confirmation[2]);
 	if(inverters_transmission_timeout){
-		inverters_transmission_contor = 0;
+		inverters_timeout_contor = 0;
 	}
-	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_TIMEOUT_PERIOD) && (!pedals_transmission_confirmation[0] || !pedals_transmission_confirmation[1]);
+	pedals_transmission_timeout = (pedals_timeout_contor >= CAN_PEDALS_TIMEOUT_PERIOD) && (!pedals_transmission_confirmation[0] || !pedals_transmission_confirmation[1]);
 	if(pedals_transmission_timeout){
-		pedals_transmission_contor = 0;
+		pedals_timeout_contor = 0;
 	}
-	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_TIMEOUT_PERIOD) && (!battery_transmission_confirmation[0] || !battery_transmission_confirmation[1] || !battery_transmission_confirmation[2] || !battery_transmission_confirmation[3] || !battery_transmission_confirmation[4]);
+	battery_transmission_timeout = (battery_timeout_contor >= CAN_BATTERY_TIMEOUT_PERIOD) && (!battery_transmission_confirmation[0] || !battery_transmission_confirmation[1] || !battery_transmission_confirmation[2] || !battery_transmission_confirmation[3] || !battery_transmission_confirmation[4]);
 	if(battery_transmission_timeout){
-		battery_transmission_contor = 0;
+		battery_timeout_contor = 0;
 	}
-	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_TIMEOUT_PERIOD) && (!dashboard_transmission_confirmation);
+	dashboard_transmission_timeout = (dashboard_timeout_contor >= CAN_DASHBOARD_TIMEOUT_PERIOD) && (!dashboard_transmission_confirmation);
 	if(dashboard_transmission_timeout){
-		dashboard_transmission_contor = 0;
+		dashboard_timeout_contor = 0;
 	}
-	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (!communications_transmission_confirmation);
+	communications_transmission_timeout = (communications_timeout_contor >= CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (!communications_transmission_confirmation);
 	if(communications_transmission_timeout){
-		communications_transmission_contor = 0;
+		communications_timeout_contor = 0;
 	}
 
 	transmission_timeout = inverters_transmission_timeout | pedals_transmission_timeout | battery_transmission_timeout | dashboard_transmission_timeout | communications_transmission_timeout;
@@ -874,39 +874,41 @@ void CanMessaging_Update(void){
 				transmission_timeout = 0;
 				currentState = CAN_IDLE;
 			}
-			#if STD_ON == INVERTERS_VCU
-			if(inverters_transmission_confirmation[0] && inverters_transmission_confirmation[1] && inverters_transmission_confirmation[2])
-			#endif
-			#if STD_ON == PEDALS_VCU
-			if(pedals_transmission_confirmation[0] && pedals_transmission_confirmation[1])
-			#endif
-			#if STD_ON == DASHBOARD_VCU
-			if(dashboard_transmission_confirmation)
-			#endif
-			#if STD_ON == BATTERY_VCU
-			if(battery_transmission_confirmation[0] && battery_transmission_confirmation[1] && battery_transmission_confirmation[2] && battery_transmission_confirmation[3] && battery_transmission_confirmation[4])
-			#endif
-			#if STD_ON == COMMUNICATIONS_VCU
-			if(communications_transmission_confirmation)
-			#endif
-			{
-				inverters_timeout_contor = 0;
-				pedals_timeout_contor = 0;
-				battery_timeout_contor = 0;
-				dashboard_timeout_contor = 0;
-				communications_timeout_contor = 0;
-				inverters_transmission_confirmation[0] = 0;
-				inverters_transmission_confirmation[1] = 0;
-				inverters_transmission_confirmation[2] = 0;
-				pedals_transmission_confirmation[0] = 0;
-				pedals_transmission_confirmation[1] = 0;
-				battery_transmission_confirmation[0] = 0;
-				battery_transmission_confirmation[1] = 0;
-				battery_transmission_confirmation[2] = 0;
-				battery_transmission_confirmation[3] = 0;
-				battery_transmission_confirmation[4] = 0;
-				communications_transmission_confirmation = 0;
-				currentState = CAN_IDLE;
+			else{
+				#if STD_ON == INVERTERS_VCU
+				if(inverters_transmission_confirmation[0] && inverters_transmission_confirmation[1] && inverters_transmission_confirmation[2])
+				#endif
+				#if STD_ON == PEDALS_VCU
+				if(pedals_transmission_confirmation[0] && pedals_transmission_confirmation[1])
+				#endif
+				#if STD_ON == DASHBOARD_VCU
+				if(dashboard_transmission_confirmation)
+				#endif
+				#if STD_ON == BATTERY_VCU
+				if(battery_transmission_confirmation[0] && battery_transmission_confirmation[1] && battery_transmission_confirmation[2] && battery_transmission_confirmation[3] && battery_transmission_confirmation[4])
+				#endif
+				#if STD_ON == COMMUNICATIONS_VCU
+				if(communications_transmission_confirmation)
+				#endif
+				{
+					inverters_timeout_contor = 0;
+					pedals_timeout_contor = 0;
+					battery_timeout_contor = 0;
+					dashboard_timeout_contor = 0;
+					communications_timeout_contor = 0;
+					inverters_transmission_confirmation[0] = 0;
+					inverters_transmission_confirmation[1] = 0;
+					inverters_transmission_confirmation[2] = 0;
+					pedals_transmission_confirmation[0] = 0;
+					pedals_transmission_confirmation[1] = 0;
+					battery_transmission_confirmation[0] = 0;
+					battery_transmission_confirmation[1] = 0;
+					battery_transmission_confirmation[2] = 0;
+					battery_transmission_confirmation[3] = 0;
+					battery_transmission_confirmation[4] = 0;
+					communications_transmission_confirmation = 0;
+					currentState = CAN_IDLE;
+				}
 			}
 			break;
 	}
