@@ -603,18 +603,48 @@ void Can_Timer_Timeout(void){
 	#endif
 
 	inverters_transmission_schedule = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD);
+	if(inverters_transmission_schedule){
+		inverters_transmission_contor = 0;
+	}
 	pedals_transmission_schedule = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD);
+	if(pedals_transmission_schedule){
+		pedals_transmission_contor = 0;
+	}
 	dashboard_transmission_schedule = (dashboard_transmission_contor == CAN_DASHBOARD_SCHEDULE_PERIOD);
+	if(dashboard_transmission_schedule){
+		dashboard_transmission_contor = 0;
+	}
 	battery_transmission_schedule = (battery_transmission_contor == CAN_BATTERY_SCHEDULE_PERIOD);
+	if(battery_transmission_schedule){
+		battery_transmission_contor = 0;
+	}
 	communications_transmission_schedule = (communications_transmission_contor == CAN_COMMUNICATIONS_SCHEDULE_PERIOD);
+	if(communications_transmission_schedule){
+		communications_transmission_contor = 0;
+	}
 
 	transmission_schedule = inverters_transmission_schedule | pedals_transmission_schedule | dashboard_transmission_schedule | battery_transmission_schedule | communications_transmission_schedule | communications_transmission_schedule;
 
-	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_TIMEOUT_PERIOD) && (inverters_transmission_confirmation[0] || inverters_transmission_confirmation[1] || inverters_transmission_confirmation[2]);
-	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_TIMEOUT_PERIOD) && (pedals_transmission_confirmation[0] || pedals_transmission_confirmation[1]);
-	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_TIMEOUT_PERIOD) && (battery_transmission_confirmation[0] || battery_transmission_confirmation[1] || battery_transmission_confirmation[2] || battery_transmission_confirmation[3] || battery_transmission_confirmation[4]);
-	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_TIMEOUT_PERIOD) && (dashboard_transmission_confirmation);
-	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (communications_transmission_confirmation);
+	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_TIMEOUT_PERIOD) && (!inverters_transmission_confirmation[0] || !inverters_transmission_confirmation[1] || !inverters_transmission_confirmation[2]);
+	if(inverters_transmission_timeout){
+		inverters_transmission_contor = 0;
+	}
+	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_TIMEOUT_PERIOD) && (!pedals_transmission_confirmation[0] || !pedals_transmission_confirmation[1]);
+	if(pedals_transmission_timeout){
+		pedals_transmission_contor = 0;
+	}
+	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_TIMEOUT_PERIOD) && (!battery_transmission_confirmation[0] || !battery_transmission_confirmation[1] || !battery_transmission_confirmation[2] || !battery_transmission_confirmation[3] || !battery_transmission_confirmation[4]);
+	if(battery_transmission_timeout){
+		battery_transmission_contor = 0;
+	}
+	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_TIMEOUT_PERIOD) && (!dashboard_transmission_confirmation);
+	if(dashboard_transmission_timeout){
+		dashboard_transmission_contor = 0;
+	}
+	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (!communications_transmission_confirmation);
+	if(communications_transmission_timeout){
+		communications_transmission_contor = 0;
+	}
 
 	transmission_timeout = inverters_transmission_timeout | pedals_transmission_timeout | battery_transmission_timeout | dashboard_transmission_timeout | communications_transmission_timeout;
 }
@@ -623,7 +653,6 @@ static void CanMessaging_SendData(void){
 	#if STD_ON == INVERTERS_VCU
 		if(inverters_transmission_schedule){
 			inverters_transmission_schedule = 0;
-			inverters_transmission_contor = 0;
 
 			CanMessaging_CreateBuffer(ID_CAN_INVERTOR_STANGA, bufferCan_INVERTOR_STANGA);
 			Can_43_FLEXCAN_Write(CAN_HTH_INVERTOR_STANGA, &pduInfo_INVERTOR_STANGA);
@@ -639,7 +668,6 @@ static void CanMessaging_SendData(void){
 	#if STD_ON == PEDALS_VCU
 		if(pedals_transmission_schedule){
 			pedals_transmission_schedule = 0;
-			pedals_transmission_contor = 0;
 
 			CanMessaging_CreateBuffer(ID_CAN_ACCELERATIE, bufferCan_ACCELERATIE);
 			Can_43_FLEXCAN_Write(CAN_HTH_ACCELERATIE, &pduInfo_ACCELERATIE);
@@ -652,7 +680,6 @@ static void CanMessaging_SendData(void){
 	#if STD_ON == DASHBOARD_VCU
 		if(dashboard_transmission_schedule){
 			dashboard_transmission_schedule = 0;
-			dashboard_transmission_contor = 0;
 
 			CanMessaging_CreateBuffer(ID_CAN_BORD, bufferCan_BORD);
 			Can_43_FLEXCAN_Write(CAN_HTH_BORD, &pduInfo_BORD);
@@ -662,7 +689,6 @@ static void CanMessaging_SendData(void){
 	#if STD_ON == BATTERY_VCU
 		if(battery_transmission_schedule){
 			battery_transmission_schedule = 0;
-			battery_transmission_contor = 0;
 
 			CanMessaging_CreateBuffer(ID_CAN_BATERIE, bufferCan_BATERIE);
 			Can_43_FLEXCAN_Write(CAN_HTH_BATERIE, &pduInfo_BATERIE);
@@ -687,7 +713,6 @@ static void CanMessaging_SendData(void){
 	#if STD_ON == COMMUNICATIONS_VCU
 		if(communications_transmission_schedule){
 			communications_transmission_schedule = 0;
-			communications_transmission_contor = 0;
 
 			CanMessaging_CreateBuffer(ID_CAN_COMUNICATII, bufferCan_COMUNICATII);
 			Can_43_FLEXCAN_Write(CAN_HTH_COMUNICATII, &pduInfo_COMUNICATII);
@@ -812,6 +837,7 @@ void CanMessaging_Update(void){
 		case CAN_IDLE:
 			if((transmission_schedule == 1) && (transmission_data_updated == 1)){
 				transmission_data_updated = 0;
+				transmission_schedule = 0;
 				CanMessaging_SendData();
 				currentState = CAN_TRANSMITTING;
 			}
@@ -822,13 +848,16 @@ void CanMessaging_Update(void){
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_STANGA);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_DREAPTA);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOARE);
+					inverters_timeout_contor = 0;
 				#endif
 				#if STD_ON == PEDALS_VCU
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_ACCELERATIE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_FRANA);
+					pedals_timeout_contor = 0;
 				#endif
 				#if STD_ON == DASHBOARD_VCU
-					EXCAN_AbortMb(CAN_HTH_BORD);
+					Can_43_FLEXCAN_AbortMb(CAN_HTH_BORD);
+					dashboard_timeout_contor = 0;
 				#endif
 				#if STD_ON == BATTERY_VCU
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE);
@@ -836,10 +865,13 @@ void CanMessaging_Update(void){
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_TEMPERATURI_CELULE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_2);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_CHARGER);
+					battery_timeout_contor = 0;
 				#endif
 				#if STD_ON == COMMUNICATIONS_VCU
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_COMUNICATII);
+					communications_timeout_contor = 0;
 				#endif
+				transmission_timeout = 0;
 				currentState = CAN_IDLE;
 			}
 			#if STD_ON == INVERTERS_VCU
