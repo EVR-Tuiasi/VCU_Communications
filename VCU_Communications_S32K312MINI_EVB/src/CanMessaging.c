@@ -62,6 +62,12 @@ extern "C"{
 #define CAN_BATTERY_SCHEDULE_PERIOD 20U
 #define CAN_COMMUNICATIONS_SCHEDULE_PERIOD 200U
 
+#define CAN_PEDALS_TIMEOUT_PERIOD 1U
+#define CAN_INVERTERS_TIMEOUT_PERIOD 20U
+#define CAN_DASHBOARD_TIMEOUT_PERIOD 200U
+#define CAN_BATTERY_TIMEOUT_PERIOD 20U
+#define CAN_COMMUNICATIONS_TIMEOUT_PERIOD 200U
+
 #define INVERTERS_VCU STD_ON
 #define PEDALS_VCU STD_OFF
 #define BATTERY_VCU STD_OFF
@@ -575,17 +581,26 @@ void Can_Transmit_Interrupt_COMUNICATII(void){
 }
 
 void Can_Timer_Timeout(void){
-	inverters_transmission_contor++;
-	pedals_transmission_contor++;
-	dashboard_transmission_contor++;
-	battery_transmission_contor++;
-	communications_transmission_contor++;
-
-	inverters_timeout_contor++;
-	pedals_timeout_contor++;
-	dashboard_timeout_contor++;
-	battery_timeout_contor++;
-	communications_timeout_contor++;
+	#if INVERTERS_VCU == STD_ON
+		inverters_transmission_contor++;
+		inverters_timeout_contor++;
+	#endif
+	#if PEDALS_VCU == STD_ON
+		pedals_timeout_contor++;
+		pedals_transmission_contor++;
+	#endif
+	#if DASHBOARD_VCU == STD_ON
+		dashboard_timeout_contor++;
+		dashboard_transmission_contor++;
+	#endif
+	#if BATTERY_VCU == STD_ON
+		battery_timeout_contor++;
+		battery_transmission_contor++;
+	#endif
+	#if COMMUNICATIONS_VCU == STD_ON
+		communications_timeout_contor++;
+		communications_transmission_contor++;
+	#endif
 
 	inverters_transmission_schedule = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD);
 	pedals_transmission_schedule = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD);
@@ -595,11 +610,11 @@ void Can_Timer_Timeout(void){
 
 	transmission_schedule = inverters_transmission_schedule | pedals_transmission_schedule | dashboard_transmission_schedule | battery_transmission_schedule | communications_transmission_schedule | communications_transmission_schedule;
 
-	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_SCHEDULE_PERIOD) && (inverters_transmission_confirmation[0] || inverters_transmission_confirmation[1] || inverters_transmission_confirmation[2]);
-	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_SCHEDULE_PERIOD) && (pedals_transmission_confirmation[0] || pedals_transmission_confirmation[1]);
-	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_SCHEDULE_PERIOD) && (battery_transmission_confirmation[0] || battery_transmission_confirmation[1] || battery_transmission_confirmation[2] || battery_transmission_confirmation[3] || battery_transmission_confirmation[4]);
-	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_SCHEDULE_PERIOD) && (dashboard_transmission_confirmation);
-	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_SCHEDULE_PERIOD) && (communications_transmission_confirmation);
+	inverters_transmission_timeout = (inverters_transmission_contor == CAN_INVERTERS_TIMEOUT_PERIOD) && (inverters_transmission_confirmation[0] || inverters_transmission_confirmation[1] || inverters_transmission_confirmation[2]);
+	pedals_transmission_timeout = (pedals_transmission_contor == CAN_PEDALS_TIMEOUT_PERIOD) && (pedals_transmission_confirmation[0] || pedals_transmission_confirmation[1]);
+	battery_transmission_timeout = (battery_transmission_contor == CAN_BATTERY_TIMEOUT_PERIOD) && (battery_transmission_confirmation[0] || battery_transmission_confirmation[1] || battery_transmission_confirmation[2] || battery_transmission_confirmation[3] || battery_transmission_confirmation[4]);
+	dashboard_transmission_timeout = (dashboard_transmission_contor == CAN_DASHBOARD_TIMEOUT_PERIOD) && (dashboard_transmission_confirmation);
+	communications_transmission_timeout = (communications_transmission_contor == CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (communications_transmission_confirmation);
 
 	transmission_timeout = inverters_transmission_timeout | pedals_transmission_timeout | battery_transmission_timeout | dashboard_transmission_timeout | communications_transmission_timeout;
 }
@@ -812,7 +827,7 @@ void CanMessaging_Update(void){
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_ACCELERATIE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_FRANA);
 				#endif
-				#if STD_ON == DSHBOARD_VCU
+				#if STD_ON == DASHBOARD_VCU
 					EXCAN_AbortMb(CAN_HTH_BORD);
 				#endif
 				#if STD_ON == BATTERY_VCU
