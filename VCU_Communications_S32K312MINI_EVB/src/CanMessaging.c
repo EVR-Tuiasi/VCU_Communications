@@ -633,7 +633,7 @@ void Can_Timer_Timeout(void){
 		communications_transmission_contor = 0;
 	}
 
-	if(inverters_transmission_schedule || pedals_transmission_schedule || dashboard_transmission_schedule || battery_transmission_schedule || communications_transmission_schedule || communications_transmission_schedule){
+	if(inverters_transmission_schedule || pedals_transmission_schedule || dashboard_transmission_schedule || battery_transmission_schedule || communications_transmission_schedule){
 		transmission_schedule = 1;
 	}
 
@@ -869,31 +869,31 @@ void CanMessaging_Update(void){
 		case CAN_TRANSMITTING:
 			if(transmission_timeout == 1){
 				#if STD_ON == INVERTERS_VCU
+					inverters_transmission_timeout = 0;
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_STANGA);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOR_DREAPTA);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_INVERTOARE);
-					inverters_timeout_contor = 0;
 				#endif
 				#if STD_ON == PEDALS_VCU
+					pedals_transmission_timeout = 0;
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_ACCELERATIE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_FRANA);
-					pedals_timeout_contor = 0;
 				#endif
 				#if STD_ON == DASHBOARD_VCU
+					dashboard_transmission_timeout = 0;
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BORD);
-					dashboard_timeout_contor = 0;
 				#endif
 				#if STD_ON == BATTERY_VCU
+					battery_transmission_timeout = 0;
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_TENSIUNI_CELULE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_TEMPERATURI_CELULE);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_2);
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_BATERIE_CHARGER);
-					battery_timeout_contor = 0;
 				#endif
 				#if STD_ON == COMMUNICATIONS_VCU
+					communications_transmission_timeout = 0;
 					Can_43_FLEXCAN_AbortMb(CAN_HTH_COMUNICATII);
-					communications_timeout_contor = 0;
 				#endif
 				transmission_timeout = 0;
 				currentState = CAN_IDLE;
@@ -930,6 +930,7 @@ void CanMessaging_Update(void){
 					battery_transmission_confirmation[2] = 0;
 					battery_transmission_confirmation[3] = 0;
 					battery_transmission_confirmation[4] = 0;
+					dashboard_transmission_confirmation = 0;
 					communications_transmission_confirmation = 0;
 					currentState = CAN_IDLE;
 				}
