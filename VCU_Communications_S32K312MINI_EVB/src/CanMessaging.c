@@ -472,8 +472,9 @@ static void CanMessaging_CreateBuffer(MessageId_t type, uint8_t *buffer){
 }
 
 void Can_Receive_Interrupt_INVERTOR_STANGA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	inverters_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	inverters_receive_timeout_contor = 0;
+	inverters_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftMotorTemperature);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.LeftInverterTemperature);
@@ -486,8 +487,9 @@ void Can_Receive_Interrupt_INVERTOR_STANGA(PduIdType RxPduId, const PduInfoType 
 }
 
 void Can_Receive_Interrupt_INVERTOR_DREAPTA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	inverters_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	inverters_receive_timeout_contor = 0;
+	inverters_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightMotorTemperature);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.RightInverterTemperature);
@@ -500,8 +502,9 @@ void Can_Receive_Interrupt_INVERTOR_DREAPTA(PduIdType RxPduId, const PduInfoType
 }
 
 void Can_Receive_Interrupt_INVERTOARE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	inverters_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	inverters_receive_timeout_contor = 0;
+	inverters_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.IsCarRunning);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.InvertersMonitoredValues.IsCarInReverse);
@@ -511,8 +514,9 @@ void Can_Receive_Interrupt_INVERTOARE(PduIdType RxPduId, const PduInfoType * Pdu
 }
 
 void Can_Receive_Interrupt_BORD(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	dashboard_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	dashboard_receive_timeout_contor = 0;
+	dashboard_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.ActivationButtonPressed);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.DashboardMonitoredValues.CarReverseCommandPressed);
@@ -522,8 +526,9 @@ void Can_Receive_Interrupt_BORD(PduIdType RxPduId, const PduInfoType * PduInfoPt
 }
 
 void Can_Receive_Interrupt_ACCELERATIE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	pedals_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	pedals_receive_timeout_contor = 0;
+	pedals_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor2Voltage);
@@ -537,13 +542,13 @@ void Can_Receive_Interrupt_ACCELERATIE(PduIdType RxPduId, const PduInfoType * Pd
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_OutOfRangeOutput);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToVcc);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.Accel_Sensor2_ShortToGnd);
-
 	(void)RxPduId;
 }
 
 void Can_Receive_Interrupt_FRANA(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	pedals_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	pedals_receive_timeout_contor = 0;
+	pedals_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor1Voltage);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.PedalsMonitoredValues.BrakeSensor2Voltage);
@@ -561,8 +566,9 @@ void Can_Receive_Interrupt_FRANA(PduIdType RxPduId, const PduInfoType * PduInfoP
 }
 
 void Can_Receive_Interrupt_BATERIE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	battery_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	battery_receive_timeout_contor = 0;
+	battery_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.OverallCurrent);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.OverallVoltage);
@@ -575,6 +581,7 @@ void Can_Receive_Interrupt_BATERIE(PduIdType RxPduId, const PduInfoType * PduInf
 
 void Can_Receive_Interrupt_BATERIE_TENSIUNI_CELULE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
 	battery_receive_timeout_contor = 0;
+	battery_receive_timeout = 0;
 	uint8_t index = ((uint8_t)(PduInfoPtr->SduDataPtr[0])) & (0x07);
 	index = index * 5;
 	CanMessaging_SetCellVoltageErrors(((PduInfoPtr->SduDataPtr[0] & (1<<7)) >> 7), index + 0);
@@ -592,6 +599,7 @@ void Can_Receive_Interrupt_BATERIE_TENSIUNI_CELULE(PduIdType RxPduId, const PduI
 
 void Can_Receive_Interrupt_BATERIE_TEMPERATURI_CELULE(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
 	battery_receive_timeout_contor = 0;
+	battery_receive_timeout = 0;
 	uint16_t index = (uint16_t)((PduInfoPtr->SduDataPtr[0] << 2) | (PduInfoPtr->SduDataPtr[1] >> 6)) & (0x001F);
 	index = index * 5;
 	CanMessaging_SetCellTemperatureErrors(((PduInfoPtr->SduDataPtr[0] & (1<<7)) >> 7), index + 0);
@@ -608,8 +616,9 @@ void Can_Receive_Interrupt_BATERIE_TEMPERATURI_CELULE(PduIdType RxPduId, const P
 }
 
 void Can_Receive_Interrupt_BATERIE_2(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	battery_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	battery_receive_timeout_contor = 0;
+	battery_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.MedianCellVoltage);
@@ -625,8 +634,9 @@ void Can_Receive_Interrupt_BATERIE_2(PduIdType RxPduId, const PduInfoType * PduI
 }
 
 void Can_Receive_Interrupt_BATERIE_CHARGER(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	battery_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	battery_receive_timeout_contor = 0;
+	battery_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingCurrent);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.TsacMonitoredValues.ReportedChargingVolts);
@@ -635,8 +645,9 @@ void Can_Receive_Interrupt_BATERIE_CHARGER(PduIdType RxPduId, const PduInfoType 
 }
 
 void Can_Receive_Interrupt_COMUNICATII(PduIdType RxPduId, const PduInfoType * PduInfoPtr){
-	communications_receive_timeout_contor = 0;
 	uint64_t data_merged;
+	communications_receive_timeout_contor = 0;
+	communications_receive_timeout = 0;
 	data_merged = (((uint64_t)PduInfoPtr->SduDataPtr[0]) << 56) + (((uint64_t)PduInfoPtr->SduDataPtr[1]) << 48) + (((uint64_t)PduInfoPtr->SduDataPtr[2]) << 40) + (((uint64_t)PduInfoPtr->SduDataPtr[3]) << 32) + (((uint64_t)PduInfoPtr->SduDataPtr[4]) << 24) + (((uint64_t)PduInfoPtr->SduDataPtr[5]) << 16) + (((uint64_t)PduInfoPtr->SduDataPtr[6]) << 8) + (uint64_t)PduInfoPtr->SduDataPtr[7];
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsInvertersVCUSimulated);
 	WriteCanDataFromRawBufferAtAddress(data_merged, &MonitoredValues.CommunicationsMonitoredValues.IsTsacVCUSimulated);
@@ -703,12 +714,32 @@ void Can_Timer_Timeout(void){
 		transmission_schedule = 1;
 	}
 #endif
+#if INVERTERS_VCU == STD_OFF
+	//receive timeout
+	if(inverters_receive_timeout_contor >= CAN_INVERTERS_RECEIVE_TIMEOUT_PERIOD){
+		inverters_receive_timeout = 1;
+		CanMessaging_ResetInverters();
+	}
+	else{
+		inverters_receive_timeout_contor++;
+	}
+#endif
 #if PEDALS_VCU == STD_ON
 	pedals_transmission_contor++;
 	if(pedals_transmission_contor >= CAN_PEDALS_SCHEDULE_PERIOD){
 		pedals_transmission_contor = 0;
 		pedals_transmission_schedule = 1;
 		transmission_schedule = 1;
+	}
+#endif
+#if PEDALS_VCU == STD_OFF
+	//receive timeout
+	if(pedals_receive_timeout_contor >= CAN_PEDALS_RECEIVE_TIMEOUT_PERIOD){
+		pedals_receive_timeout = 1;
+		CanMessaging_ResetPedals();
+	}
+	else{
+		pedals_receive_timeout_contor++;
 	}
 #endif
 #if DASHBOARD_VCU == STD_ON
@@ -719,6 +750,16 @@ void Can_Timer_Timeout(void){
 		transmission_schedule = 1;
 	}
 #endif
+#if DASHBOARD_VCU == STD_OFF
+	//receive timeout
+	if(dashboard_receive_timeout_contor >= CAN_DASHBOARD_RECEIVE_TIMEOUT_PERIOD){
+		dashboard_receive_timeout = 1;
+		CanMessaging_ResetDashboard();
+	}
+	if(dashboard_receive_timeout){
+		dashboard_receive_timeout_contor++;
+	}
+#endif
 #if BATTERY_VCU == STD_ON
 	battery_transmission_contor++;
 	if(battery_transmission_contor >= CAN_BATTERY_SCHEDULE_PERIOD){
@@ -727,12 +768,32 @@ void Can_Timer_Timeout(void){
 		transmission_schedule = 1;
 	}
 #endif
+#if BATTERY_VCU == STD_OFF
+	//receive timeout
+	if(battery_receive_timeout_contor >= CAN_BATTERY_RECEIVE_TIMEOUT_PERIOD){
+		battery_receive_timeout = 1;
+		CanMessaging_ResetBattery();
+	}
+	else{
+		battery_receive_timeout_contor++;
+	}
+#endif
 #if COMMUNICATIONS_VCU == STD_ON
 	communications_transmission_contor++;
 	if(communications_transmission_contor >= CAN_COMMUNICATIONS_SCHEDULE_PERIOD){
 		communications_transmission_contor = 0;
 		communications_transmission_schedule = 1;
 		transmission_schedule = 1;
+	}
+#endif
+#if COMMUNICATIONS_VCU == STD_OFF
+	//receive timeout
+	if(communications_receive_timeout_contor >= CAN_COMMUNICATIONS_RECEIVE_TIMEOUT_PERIOD){
+		communications_receive_timeout = 1;
+		CanMessaging_ResetCommunications();
+	}
+	else{
+		communications_receive_timeout_contor++;
 	}
 #endif
 	//
@@ -795,64 +856,6 @@ void Can_Timer_Timeout(void){
 #if COMMUNICATIONS_VCU == STD_ON
 	communications_timeout_contor = 0;
 #endif
-	}
-
-	//RECEIVE TIMEOUT
-	inverters_receive_timeout_contor++;
-	pedals_receive_timeout_contor++;
-	dashboard_receive_timeout_contor++;
-	battery_receive_timeout_contor++;
-	communications_receive_timeout_contor++;
-	if(inverters_receive_timeout_contor >= CAN_INVERTERS_RECEIVE_TIMEOUT_PERIOD){
-		inverters_receive_timeout = 1;
-	}
-	if(pedals_receive_timeout_contor >= CAN_PEDALS_RECEIVE_TIMEOUT_PERIOD){
-		pedals_receive_timeout = 1;
-	}
-	if(battery_receive_timeout_contor >= CAN_BATTERY_RECEIVE_TIMEOUT_PERIOD){
-		battery_receive_timeout = 1;
-	}
-	if(dashboard_receive_timeout_contor >= CAN_DASHBOARD_RECEIVE_TIMEOUT_PERIOD){
-		dashboard_receive_timeout = 1;
-	}
-	if(communications_receive_timeout_contor >= CAN_COMMUNICATIONS_RECEIVE_TIMEOUT_PERIOD){
-		communications_receive_timeout = 1;
-	}
-
-	if(inverters_receive_timeout){
-		inverters_receive_timeout = 0;
-		inverters_receive_timeout_contor = 0;
-		#if INVERTERS_VCU == STD_OFF
-			CanMessaging_ResetInverters();
-		#endif
-	}
-	if(pedals_receive_timeout){
-		pedals_receive_timeout = 0;
-		pedals_receive_timeout_contor = 0;
-		#if PEDALS_VCU == STD_OFF
-			CanMessaging_ResetPedals();
-		#endif
-	}
-	if(battery_receive_timeout){
-		battery_receive_timeout = 0;
-		battery_receive_timeout_contor = 0;
-		#if BATTERY_VCU == STD_OFF
-			CanMessaging_ResetBattery();
-		#endif
-	}
-	if(dashboard_receive_timeout){
-		dashboard_receive_timeout = 0;
-		dashboard_receive_timeout_contor = 0;
-		#if DASHBOARD_VCU == STD_OFF
-			CanMessaging_ResetDashboard();
-		#endif
-	}
-	if(communications_receive_timeout){
-		communications_receive_timeout = 0;
-		communications_receive_timeout_contor = 0;
-		#if COMMUNICATIONS_VCU == STD_OFF
-			CanMessaging_ResetCommunications();
-		#endif
 	}
 }
 
