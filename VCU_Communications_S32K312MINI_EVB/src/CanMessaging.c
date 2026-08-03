@@ -74,10 +74,10 @@ extern "C"{
 #define CAN_BATTERY_RECEIVE_TIMEOUT_PERIOD 20U
 #define CAN_COMMUNICATIONS_RECEIVE_TIMEOUT_PERIOD 200U
 
-#define INVERTERS_VCU STD_ON
+#define INVERTERS_VCU STD_OFF
 #define PEDALS_VCU STD_OFF
 #define BATTERY_VCU STD_OFF
-#define COMMUNICATIONS_VCU STD_OFF
+#define COMMUNICATIONS_VCU STD_ON
 #define DASHBOARD_VCU STD_OFF
 
 /*Takes a uint64_t argument and any xMonitoredValue_t type of argument.*/
