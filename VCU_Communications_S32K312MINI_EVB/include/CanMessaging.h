@@ -104,7 +104,11 @@ uint16_t CanMessaging_ReadCellVoltage(uint16_t index);
 boolean CanMessaging_ReadCellVoltageErrors(uint16_t index);
 uint16_t CanMessaging_ReadCellTemperature(uint16_t index);
 boolean CanMessaging_ReadCellTemperatureErrors(uint16_t index);
-
+bool CanMessaging_GetInvertersReceiveTimeout(void);
+bool CanMessaging_GetPedalsReceiveTimeout(void);
+bool CanMessaging_GetBatteryReceiveTimeout(void);
+bool CanMessaging_GetDashboardReceiveTimeout(void);
+bool CanMessaging_GetCommunicationsReceiveTimeout(void);
 #ifdef __cplusplus
 }
 #endif
