@@ -835,27 +835,37 @@ void Can_Timer_Timeout(void){
 	if(inverters_receive_timeout){
 		inverters_receive_timeout = 0;
 		inverters_receive_timeout_contor = 0;
-		CanMessaging_ResetInverters();
+		#if INVERTERS_VCU == STD_OFF
+			CanMessaging_ResetInverters();
+		#endif
 	}
 	if(pedals_receive_timeout){
 		pedals_receive_timeout = 0;
 		pedals_receive_timeout_contor = 0;
-		CanMessaging_ResetPedals();
+		#if PEDALS_VCU == STD_OFF
+			CanMessaging_ResetPedals();
+		#endif
 	}
 	if(battery_receive_timeout){
 		battery_receive_timeout = 0;
 		battery_receive_timeout_contor = 0;
-		CanMessaging_ResetBattery();
+		#if BATTERY_VCU == STD_OFF
+			CanMessaging_ResetBattery();
+		#endif
 	}
 	if(dashboard_receive_timeout){
 		dashboard_receive_timeout = 0;
 		dashboard_receive_timeout_contor = 0;
-		CanMessaging_ResetDashboard();
+		#if DASHBOARD_VCU == STD_OFF
+			CanMessaging_ResetDashboard();
+		#endif
 	}
 	if(communications_receive_timeout){
 		communications_receive_timeout = 0;
 		communications_receive_timeout_contor = 0;
-		CanMessaging_ResetCommunications();
+		#if COMMUNICATIONS_VCU == STD_OFF
+			CanMessaging_ResetCommunications();
+		#endif
 	}
 }
 
