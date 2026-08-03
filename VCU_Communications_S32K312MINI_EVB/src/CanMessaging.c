@@ -63,7 +63,7 @@ extern "C"{
 #define CAN_COMMUNICATIONS_SCHEDULE_PERIOD 200U
 
 #define CAN_PEDALS_TIMEOUT_PERIOD 1U
-#define CAN_INVERTERS_TIMEOUT_PERIOD 20U
+#define CAN_INVERTERS_TIMEOUT_PERIOD 5U
 #define CAN_DASHBOARD_TIMEOUT_PERIOD 200U
 #define CAN_BATTERY_TIMEOUT_PERIOD 20U
 #define CAN_COMMUNICATIONS_TIMEOUT_PERIOD 200U
@@ -694,120 +694,107 @@ void Can_Transmit_Interrupt_COMUNICATII(void){
 }
 
 void Can_Timer_Timeout(void){
-	#if INVERTERS_VCU == STD_ON
-		inverters_transmission_contor++;
-		if(currentState == CAN_TRANSMITTING){
-			inverters_timeout_contor++;
-		}
-		else{
-			inverters_timeout_contor = 0;
-		}
-	#endif
-	#if PEDALS_VCU == STD_ON
-		pedals_transmission_contor++;
-		if(currentState == CAN_TRANSMITTING){
-			pedals_timeout_contor++;
-		}
-		else{
-			pedals_timeout_contor = 0;
-		}
-	#endif
-	#if DASHBOARD_VCU == STD_ON
-		dashboard_transmission_contor++;
-		if(currentState == CAN_TRANSMITTING){
-			dashboard_timeout_contor++;
-		}
-		else{
-			dashboard_timeout_contor = 0;
-		}
-	#endif
-	#if BATTERY_VCU == STD_ON
-		battery_transmission_contor++;
-		if(currentState == CAN_TRANSMITTING){
-			battery_timeout_contor++;
-		}
-		else{
-			battery_timeout_contor = 0;
-		}
-	#endif
-	#if COMMUNICATIONS_VCU == STD_ON
-		communications_transmission_contor++;
-		if(currentState == CAN_TRANSMITTING){
-			communications_timeout_contor++;
-		}
-		else{
-			communications_timeout_contor = 0;
-		}
-	#endif
-	//TRANSMIT SCHEDULE
+	//general transmission counters increment
+#if INVERTERS_VCU == STD_ON
+	inverters_transmission_contor++;
 	if(inverters_transmission_contor >= CAN_INVERTERS_SCHEDULE_PERIOD){
-		inverters_transmission_schedule = 1;
-	}
-	if(inverters_transmission_schedule){
 		inverters_transmission_contor = 0;
-	}
-	if(pedals_transmission_contor >= CAN_PEDALS_SCHEDULE_PERIOD){
-		pedals_transmission_schedule = 1;
-	}
-	if(pedals_transmission_schedule){
-		pedals_transmission_contor = 0;
-	}
-	if(dashboard_transmission_contor >= CAN_DASHBOARD_SCHEDULE_PERIOD){
-		dashboard_transmission_schedule = 1;
-	}
-	if(dashboard_transmission_schedule){
-		dashboard_transmission_contor = 0;
-	}
-	if(battery_transmission_contor >= CAN_BATTERY_SCHEDULE_PERIOD){
-		battery_transmission_schedule = 1;
-	}
-	if(battery_transmission_schedule){
-		battery_transmission_contor = 0;
-	}
-	if(communications_transmission_contor >= CAN_COMMUNICATIONS_SCHEDULE_PERIOD){
-		communications_transmission_schedule = 1;
-	}
-	if(communications_transmission_schedule){
-		communications_transmission_contor = 0;
-	}
-
-	if(inverters_transmission_schedule || pedals_transmission_schedule || dashboard_transmission_schedule || battery_transmission_schedule || communications_transmission_schedule){
+		inverters_transmission_schedule = 1;
 		transmission_schedule = 1;
 	}
-	//TRANSMIT TIMEOUT
-	if((inverters_timeout_contor >= CAN_INVERTERS_TIMEOUT_PERIOD) && (!inverters_transmission_confirmation[0] && !inverters_transmission_confirmation[1] && !inverters_transmission_confirmation[2])){
-		inverters_transmission_timeout = 1;
+#endif
+#if PEDALS_VCU == STD_ON
+	pedals_transmission_contor++;
+	if(pedals_transmission_contor >= CAN_PEDALS_SCHEDULE_PERIOD){
+		pedals_transmission_contor = 0;
+		pedals_transmission_schedule = 1;
+		transmission_schedule = 1;
 	}
-	if(inverters_transmission_timeout){
-		inverters_timeout_contor = 0;
+#endif
+#if DASHBOARD_VCU == STD_ON
+	dashboard_transmission_contor++;
+	if(dashboard_transmission_contor >= CAN_DASHBOARD_SCHEDULE_PERIOD){
+		dashboard_transmission_contor = 0;
+		dashboard_transmission_schedule = 1;
+		transmission_schedule = 1;
 	}
-	if((pedals_timeout_contor >= CAN_PEDALS_TIMEOUT_PERIOD) && (!pedals_transmission_confirmation[0] && !pedals_transmission_confirmation[1])){
-		pedals_transmission_timeout = 1;
+#endif
+#if BATTERY_VCU == STD_ON
+	battery_transmission_contor++;
+	if(battery_transmission_contor >= CAN_BATTERY_SCHEDULE_PERIOD){
+		battery_transmission_contor = 0;
+		battery_transmission_schedule = 1;
+		transmission_schedule = 1;
 	}
-	if(pedals_transmission_timeout){
-		pedals_timeout_contor = 0;
+#endif
+#if COMMUNICATIONS_VCU == STD_ON
+	communications_transmission_contor++;
+	if(communications_transmission_contor >= CAN_COMMUNICATIONS_SCHEDULE_PERIOD){
+		communications_transmission_contor = 0;
+		communications_transmission_schedule = 1;
+		transmission_schedule = 1;
 	}
-	if((battery_timeout_contor >= CAN_BATTERY_TIMEOUT_PERIOD) && (!battery_transmission_confirmation[0] && !battery_transmission_confirmation[1] && !battery_transmission_confirmation[2] && !battery_transmission_confirmation[3] && !battery_transmission_confirmation[4])){
-		battery_transmission_timeout = 1;
+#endif
+	//
+	if(currentState == CAN_TRANSMITTING){
+		//timeout transmission counters increment
+#if INVERTERS_VCU == STD_ON
+		inverters_timeout_contor++;
+		if((inverters_timeout_contor >= CAN_INVERTERS_TIMEOUT_PERIOD) && (!inverters_transmission_confirmation[0] || !inverters_transmission_confirmation[1] || !inverters_transmission_confirmation[2])){
+			inverters_timeout_contor = 0;
+			inverters_transmission_timeout = 1;
+			transmission_timeout = 1;
+		}
+#endif
+#if PEDALS_VCU == STD_ON
+		pedals_timeout_contor++;
+		if((pedals_timeout_contor >= CAN_PEDALS_TIMEOUT_PERIOD) && (!pedals_transmission_confirmation[0] && !pedals_transmission_confirmation[1])){
+			pedals_timeout_contor = 0;
+			pedals_transmission_timeout = 1;
+			transmission_timeout = 1;
+		}
+#endif
+#if DASHBOARD_VCU == STD_ON
+		dashboard_timeout_contor++;
+		if((dashboard_timeout_contor >= CAN_DASHBOARD_TIMEOUT_PERIOD) && (!dashboard_transmission_confirmation)){
+			dashboard_timeout_contor = 0;
+			dashboard_transmission_timeout = 1;
+			transmission_timeout = 1;
+		}
+#endif
+#if BATTERY_VCU == STD_ON
+		battery_timeout_contor++;
+		if((battery_timeout_contor >= CAN_BATTERY_TIMEOUT_PERIOD) && (!battery_transmission_confirmation[0] && !battery_transmission_confirmation[1] && !battery_transmission_confirmation[2] && !battery_transmission_confirmation[3] && !battery_transmission_confirmation[4])){
+			battery_timeout_contor = 0;
+			battery_transmission_timeout = 1;
+			transmission_timeout = 1;
+		}
+#endif
+#if COMMUNICATIONS_VCU == STD_ON
+		communications_timeout_contor++;
+		if((communications_timeout_contor >= CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (!communications_transmission_confirmation)){
+			communications_timeout_contor = 0;
+			communications_transmission_timeout = 1;
+			transmission_timeout = 1;
+		}
+#endif
 	}
-	if(battery_transmission_timeout){
-		battery_timeout_contor = 0;
-	}
-	if((dashboard_timeout_contor >= CAN_DASHBOARD_TIMEOUT_PERIOD) && (!dashboard_transmission_confirmation)){
-		dashboard_transmission_timeout = 1;
-	}
-	if(dashboard_transmission_timeout){
-		dashboard_timeout_contor = 0;
-	}
-	if((communications_timeout_contor >= CAN_COMMUNICATIONS_TIMEOUT_PERIOD) && (!communications_transmission_confirmation)){
-		communications_transmission_timeout = 1;
-	}
-	if(communications_transmission_timeout){
-		communications_timeout_contor = 0;
-	}
-
-	if(inverters_transmission_timeout || pedals_transmission_timeout || battery_transmission_timeout || dashboard_transmission_timeout || communications_transmission_timeout){
-		transmission_timeout = 1;
+	else{
+#if INVERTERS_VCU == STD_ON
+	inverters_timeout_contor = 0;
+#endif
+#if PEDALS_VCU == STD_ON
+	pedals_timeout_contor = 0;
+#endif
+#if DASHBOARD_VCU == STD_ON
+	dashboard_timeout_contor = 0;
+#endif
+#if BATTERY_VCU == STD_ON
+	battery_timeout_contor = 0;
+#endif
+#if COMMUNICATIONS_VCU == STD_ON
+	communications_timeout_contor = 0;
+#endif
 	}
 
 	//RECEIVE TIMEOUT
