@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding= "UTF-8" ?>
-<configuration name="S32K312" xsi:schemaLocation="http://mcuxpresso.nxp.com/XSD/mex_configuration_19 http://mcuxpresso.nxp.com/XSD/mex_configuration_19.xsd" uuid="cb0a0571-31b0-4026-b225-2a0da4ce6ac1" version="19" xmlns="http://mcuxpresso.nxp.com/XSD/mex_configuration_19" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<configuration name="S32K312" xsi:schemaLocation="http://mcuxpresso.nxp.com/XSD/mex_configuration_18 http://mcuxpresso.nxp.com/XSD/mex_configuration_18.xsd" uuid="cb0a0571-31b0-4026-b225-2a0da4ce6ac1" version="18" xmlns="http://mcuxpresso.nxp.com/XSD/mex_configuration_18" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <common>
       <processor>S32K312</processor>
       <package>S32K312_172HDQFP</package>
@@ -204,7 +204,7 @@
             </function>
          </functions_list>
       </pins>
-      <clocks name="Clocks" version="19.0" enabled="true" update_project_code="true">
+      <clocks name="Clocks" version="17.0" enabled="true" update_project_code="true">
          <generated_project_files>
             <file path="generate/include/Clock_Ip_Cfg.h" update_enabled="true"/>
             <file path="generate/include/Clock_Ip_Cfg_Defines.h" update_enabled="true"/>
@@ -527,6 +527,11 @@
             <dependency resourceType="SWComponent" resourceId="platform.driver.gpt" description="An unsupported version of the Gpt in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. The project might not compile correctly." problem_level="1" source="Peripherals">
                <feature name="version" evaluation="equivalent">
                   <data type="Version">1.0.0</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data>true</data>
                </feature>
             </dependency>
          </dependencies>
@@ -3149,7 +3154,7 @@
                                  <array name="CanHwFilter">
                                     <struct name="0">
                                        <setting name="Name" value="Can_aHwFilter_Object_0"/>
-                                       <setting name="CanHwFilterCode" value="0x330"/>
+                                       <setting name="CanHwFilterCode" value="0x100"/>
                                        <setting name="CanHwFilterMask" value="0x1FFFFFFF"/>
                                        <setting name="CanHwFilterIDE" value="false"/>
                                     </struct>
@@ -3174,7 +3179,7 @@
                                  <array name="CanHwFilter">
                                     <struct name="0">
                                        <setting name="Name" value="Can_aHwFilter_Object_0"/>
-                                       <setting name="CanHwFilterCode" value="0x331"/>
+                                       <setting name="CanHwFilterCode" value="0x101"/>
                                        <setting name="CanHwFilterMask" value="0x1FFFFFFF"/>
                                        <setting name="CanHwFilterIDE" value="false"/>
                                     </struct>
@@ -3662,7 +3667,7 @@
                               <struct name="4">
                                  <setting name="Name" value="CanIfTxPduCfg_ACCELERATIE"/>
                                  <array name="CanIfTxPduCanId">
-                                    <setting name="0" value="0x330"/>
+                                    <setting name="0" value="0x100"/>
                                  </array>
                                  <array name="CanIfTxPduCanIdType">
                                     <setting name="0" value="EXTENDED_CAN"/>
@@ -3677,7 +3682,7 @@
                               <struct name="5">
                                  <setting name="Name" value="CanIfTxPduCfg_FRANA"/>
                                  <array name="CanIfTxPduCanId">
-                                    <setting name="0" value="0x331"/>
+                                    <setting name="0" value="0x101"/>
                                  </array>
                                  <array name="CanIfTxPduCanIdType">
                                     <setting name="0" value="EXTENDED_CAN"/>
