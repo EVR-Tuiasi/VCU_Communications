@@ -68,7 +68,7 @@ extern "C"{
 #define CAN_BATTERY_TIMEOUT_PERIOD 20U
 #define CAN_COMMUNICATIONS_TIMEOUT_PERIOD 200U
 
-#define CAN_PEDALS_RECEIVE_TIMEOUT_PERIOD 1U
+#define CAN_PEDALS_RECEIVE_TIMEOUT_PERIOD 20U
 #define CAN_INVERTERS_RECEIVE_TIMEOUT_PERIOD 20U
 #define CAN_DASHBOARD_RECEIVE_TIMEOUT_PERIOD 200U
 #define CAN_BATTERY_RECEIVE_TIMEOUT_PERIOD 20U
@@ -952,7 +952,7 @@ void CanMessaging_Test(void){
 	volatile uint64_t i = 0;
 	while(1){
 		i++;
-		if(i == 5000){
+		if(i == 50000){
 			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.MedianCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.MedianCellTemperature);
 			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.HighestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.HighestCellTemperature);
 			WriteCanDataAtAddress(cnt%(MonitoredValues.TsacMonitoredValues.LowestCellTemperature.maxValue+1), &MonitoredValues.TsacMonitoredValues.LowestCellTemperature);
