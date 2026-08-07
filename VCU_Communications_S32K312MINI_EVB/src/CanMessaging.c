@@ -286,6 +286,7 @@ static void CanMessaging_ResetInverters(void){
 	WriteCanDataAtAddress(0, &MonitoredValues.InvertersMonitoredValues.RightMotorSpeedKmh);
 	WriteCanDataAtAddress(0, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottle);
 	WriteCanDataAtAddress(0, &MonitoredValues.InvertersMonitoredValues.RightInverterThrottleFeedback);
+	WriteCanDataAtAddress(1, &MonitoredValues.InvertersMonitoredValues.InvertersError);
 }
 static void CanMessaging_ResetPedals(void){
 	WriteCanDataAtAddress(0, &MonitoredValues.PedalsMonitoredValues.AcceleratorSensor1Voltage);
