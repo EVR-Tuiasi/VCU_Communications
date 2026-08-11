@@ -1293,6 +1293,11 @@ void CanMessaging_AppTest(void){
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.IsDisplayWorking), &MonitoredValues.DashboardMonitoredValues.IsDisplayWorking);
 		WriteUartDataAtAddress(ReadCanDataFromAddress(&MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking), &MonitoredValues.DashboardMonitoredValues.IsSegmentsDriverWorking);
 
+		//TODO: SCHIMBAT NUMELE DIN SIMULATED IN TIMEOUT
+		WriteUartDataAtAddress(CanMessaging_GetInvertersReceiveTimeout(), &MonitoredValues.CommunicationsMonitoredValues.IsInvertersVCUSimulated);
+		WriteUartDataAtAddress(CanMessaging_GetPedalsReceiveTimeout(), &MonitoredValues.CommunicationsMonitoredValues.IsPedalsVCUSimulated);
+		WriteUartDataAtAddress(CanMessaging_GetBatteryReceiveTimeout(), &MonitoredValues.CommunicationsMonitoredValues.IsTsacVCUSimulated);
+		WriteUartDataAtAddress(CanMessaging_GetDashboardReceiveTimeout(), &MonitoredValues.CommunicationsMonitoredValues.IsDashboardVCUSimulated);
 		//Send data
 		UartMessaging_Update();
 	}
